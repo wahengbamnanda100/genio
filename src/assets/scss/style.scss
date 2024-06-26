@@ -53,6 +53,40 @@
 	}
 }
 
+// ==============================|| ANIMATION Carousal||============================== //
+
+.carousel-enter {
+	border-color: aquamarine;
+	opacity: 0;
+	transform: translateX(100%);
+}
+
+.carousel-enter-active {
+	opacity: 1;
+	transform: translateX(0);
+	transition:
+		opacity 500ms,
+		transform 500ms;
+}
+
+.carousel-exit {
+	opacity: 1;
+	transform: translateX(0);
+}
+
+.carousel-exit-active {
+	opacity: 0;
+	transform: translateX(-100%);
+	transition:
+		opacity 500ms,
+		transform 500ms;
+}
+
+.table_container {
+	overflow-y: auto;
+	// height: auto;
+	max-height: 180px;
+}
 // ==============================|| ANIMATION KEYFRAMES ||============================== //
 
 @keyframes wings {

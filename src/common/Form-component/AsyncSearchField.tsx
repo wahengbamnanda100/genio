@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from "react";
-import { Controller, useFormContext, useFormState } from "react-hook-form";
+import { Controller } from "react-hook-form";
 import { Autocomplete, Grid, Popper, TextField } from "@mui/material";
 import _ from "lodash";
-import { ErrorContainer } from "./ErrorContainer";
+// import { ErrorContainer } from "./ErrorContainer";
 import { AsyncSearchFieldProps } from "./formField.type";
 
 const StyledPoper = (props: any) => {
@@ -43,11 +43,11 @@ const AsyncSearchField = ({
 	renderItem,
 	...restProps
 }: AsyncSearchFieldProps) => {
-	const { control } = useFormContext();
-	const { errors } = useFormState({ control });
+	// const { control } = useFormContext();
+	// const { errors } = useFormState({ control });
 
 	const [keyStrocke, setKeyStrocke] = useState("");
-	const uniqueOptionsSet = new Set<string>();
+	// const uniqueOptionsSet = new Set<string>();
 
 	const { data: searchData, isLoading } = searchApi(keyStrocke);
 
@@ -76,6 +76,8 @@ const AsyncSearchField = ({
 						sx={sx}
 						loading={isLoading}
 						onChange={(e, value) => {
+							console.log("e", e);
+
 							setValue && setValue(name, value);
 							changes && changes(name, value);
 							if (!freeSolo) {
@@ -99,7 +101,10 @@ const AsyncSearchField = ({
 								return;
 							}
 						}}
-						onInputChange={(e, value) => setKeyStrocke(value)}
+						onInputChange={(e, value) => {
+							console.log("e", e);
+							setKeyStrocke(value);
+						}}
 						options={
 							restProps.disabled ? [] : filterUniqueOptions(options(searchData))
 						}
@@ -108,6 +113,7 @@ const AsyncSearchField = ({
 						PopperComponent={renderItem ? StyledPoper : undefined}
 						renderOption={(props: any, option: any, state) => {
 							const optionList = option[`${optionKey}`];
+							console.log("state", state);
 							return (
 								<React.Fragment key={props["data-option-index"]}>
 									{renderItem ? (

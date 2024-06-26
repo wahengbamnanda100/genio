@@ -1,4 +1,4 @@
-import React, { forwardRef, ReactNode } from "react";
+import { forwardRef, ReactNode } from "react";
 import { motion, useCycle } from "framer-motion";
 
 // Define the prop types
@@ -17,7 +17,7 @@ const AnimateButton = forwardRef<HTMLDivElement, AnimateButtonProps>(
 			type = "scale",
 			direction = "right",
 			offset = 10,
-			scale = { hover: 1, tap: 0.9 },
+			scale = { hover: 1, tap: 0.95 },
 		},
 		ref
 	) => {

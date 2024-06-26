@@ -1,17 +1,14 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { ChangeEvent, forwardRef, useState } from "react";
-import _ from "lodash";
-import { Grid, TextField } from "@mui/material";
+//!______________________________________
+
 import { Controller, useFormContext, useFormState } from "react-hook-form";
+import { Grid, TextField } from "@mui/material";
+import _ from "lodash";
+// import { ChangeEvent, forwardRef, useRef } from "react";
+import { ChangeEvent, forwardRef } from "react";
 import { InputFieldProps } from "./formField.type";
 import { ErrorContainer } from "./ErrorContainer";
-
+// import { IMaskInput } from "react-imask";
 import { NumericFormat, NumericFormatProps } from "react-number-format";
-
-type errors = {
-	[key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
-};
 
 const InputField = ({
 	name,
@@ -19,36 +16,32 @@ const InputField = ({
 	size = "small",
 	variant = "outlined",
 	condition,
-	thousandSeparator,
+	// thousandSeparator,
 	className,
 	style,
 	xs,
 	sm,
 	md,
 	label,
-	numberFormate,
-	maxChars,
+	// numberFormate,
 	hasErrorMessage,
 	...restProps
 }: InputFieldProps) => {
 	const { control } = useFormContext();
-	const { errors }: errors = useFormState({ control });
+	const { errors } = useFormState({ control });
 
-	const [inputValue, setInputValue] = useState("");
-	const [isFocused, setIsFocused] = useState<boolean>(false);
+	// const [isFocused, setIsFocused] = useState<boolean>(false);
 
-	const remainingCharacters = maxChars
-		? maxChars - inputValue.length
-		: undefined;
-	const isMaxLengthExceeded =
-		remainingCharacters !== undefined && remainingCharacters < 0;
+	// const addCommas = (num) =>
+	// 	num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+	// const removeNonNumeric = (num) => num.toString().replace(/[^0-9]/g, "");
 
 	return (
 		<Grid item xs={xs} sm={sm} md={md} className={className} sx={style}>
 			<Controller
 				name={name}
 				control={control}
-				render={({ field: { ref, onChange, value, ...rest } }) => (
+				render={({ field: { ref, onChange, ...rest } }) => (
 					<TextField
 						{...rest}
 						{...restProps}
@@ -57,9 +50,9 @@ const InputField = ({
 						inputRef={ref}
 						variant={variant}
 						size={size}
-						InputLabelProps={{ shrink: Boolean(value) || isFocused }}
-						onFocus={() => setIsFocused(true)}
-						onBlur={() => setIsFocused(false)}
+						// InputLabelProps={{ shrink: Boolean(value) || isFocused }}
+						// onFocus={() => setIsFocused(true)}
+						// onBlur={() => setIsFocused(false)}
 						onChange={(
 							e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
 						) => {
@@ -67,27 +60,14 @@ const InputField = ({
 								? (condition.test(e.target.value) || !e.target.value) &&
 									onChange(e.target.value)
 								: onChange(e.target.value);
-							setInputValue(e.target.value);
 						}}
 						autoComplete="off"
 						label={label}
-						helperText={
-							maxChars !== undefined
-								? isMaxLengthExceeded
-									? `Maximum length exceeded by ${Math.abs(
-											remainingCharacters!
-										)} characters`
-									: remainingCharacters !== undefined
-										? `Remaining characters: ${remainingCharacters}`
-										: undefined
-								: undefined
-						}
 					/>
 				)}
 				rules={rules}
 			/>
-
-			{hasErrorMessage && _.get(errors, name) && (
+			{hasErrorMessage && (
 				<ErrorContainer>
 					{
 						(_.get(errors, name)
@@ -96,21 +76,41 @@ const InputField = ({
 					}
 				</ErrorContainer>
 			)}
-
-			{/* <ErrorContainer>
-        {hasErrorMessage && _.get(errors, name)
-          ? _.get(errors, `${name}.message`)
-          : null}
-      </ErrorContainer> */}
 		</Grid>
 	);
 };
 
-export const NumericFormatCustom = forwardRef<NumericFormatProps, any>(
+interface CustomProps {
+	onChange: (event: { target: { name: string; value: string } }) => void;
+	name: string;
+}
+
+// const TextMaskCustom = forwardRef<HTMLElement, CustomProps>(
+// 	function TextMaskCustom(props, ref) {
+// 		const { onChange, ...other } = props;
+// 		const inputRef = useRef(null);
+// 		return (
+// 			<IMaskInput
+// 				{...other}
+// 				mask="+(00) 0000 000000"
+// 				lazy={true}
+// 				definitions={{
+// 					"#": /[1-9]/,
+// 				}}
+// 				//@ts-ignore
+// 				inputRef={ref}
+// 				onAccept={(value: any) =>
+// 					onChange({ target: { name: props.name, value } })
+// 				}
+// 				overwrite
+// 			/>
+// 		);
+// 	}
+// );
+
+const NumericFormatCustom = forwardRef<NumericFormatProps, CustomProps>(
 	function NumericFormatCustom(props, ref) {
 		const { onChange, ...other } = props;
-
-		// console.log("Mask ==> ", props);
 
 		return (
 			<NumericFormat
@@ -125,13 +125,14 @@ export const NumericFormatCustom = forwardRef<NumericFormatProps, any>(
 					});
 				}}
 				decimalScale={2}
-				fixedDecimalScale
-				// thousandSeparator
+				thousandSeparator
 				valueIsNumericString
-				// fixedDecimalScale
+				fixedDecimalScale
+				// prefix="$"
 			/>
 		);
 	}
 );
 
 export default InputField;
+export { NumericFormatCustom };

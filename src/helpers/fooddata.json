@@ -1,0 +1,508 @@
+{
+	"categories": [
+		{
+			"id": "1",
+			"category": "Breakfast",
+			"items": [
+				{
+					"id": "breakfast-1",
+					"description": "Pancakes",
+					"price": 5.99,
+					"calories": 350
+				},
+				{
+					"id": "breakfast-2",
+					"description": "Waffles",
+					"price": 6.49,
+					"calories": 400
+				},
+				{
+					"id": "breakfast-3",
+					"description": "Omelette",
+					"price": 7.99,
+					"calories": 450
+				},
+				{
+					"id": "breakfast-4",
+					"description": "Breakfast Burrito",
+					"price": 6.99,
+					"calories": 500
+				},
+				{
+					"id": "breakfast-5",
+					"description": "French Toast",
+					"price": 5.49,
+					"calories": 380
+				},
+				{
+					"id": "breakfast-6",
+					"description": "Bagel with Cream Cheese",
+					"price": 3.99,
+					"calories": 300
+				},
+				{
+					"id": "breakfast-7",
+					"description": "Greek Yogurt Parfait",
+					"price": 4.49,
+					"calories": 250
+				},
+				{
+					"id": "breakfast-8",
+					"description": "Smoothie Bowl",
+					"price": 7.49,
+					"calories": 320
+				},
+				{
+					"id": "breakfast-9",
+					"description": "Avocado Toast",
+					"price": 6.99,
+					"calories": 350
+				},
+				{
+					"id": "breakfast-10",
+					"description": "Breakfast Sandwich",
+					"price": 5.99,
+					"calories": 420
+				},
+				{
+					"id": "breakfast-11",
+					"description": "Fruit Salad",
+					"price": 4.99,
+					"calories": 200
+				},
+				{
+					"id": "breakfast-12",
+					"description": "Granola Bar",
+					"price": 2.49,
+					"calories": 180
+				},
+				{
+					"id": "breakfast-13",
+					"description": "Chia Pudding",
+					"price": 4.99,
+					"calories": 240
+				},
+				{
+					"id": "breakfast-14",
+					"description": "Egg and Cheese Croissant",
+					"price": 5.99,
+					"calories": 430
+				},
+				{
+					"id": "breakfast-15",
+					"description": "Oatmeal with Berries",
+					"price": 4.49,
+					"calories": 270
+				},
+				{
+					"id": "breakfast-16",
+					"description": "Muffin",
+					"price": 2.99,
+					"calories": 350
+				},
+				{
+					"id": "breakfast-17",
+					"description": "Quiche",
+					"price": 5.49,
+					"calories": 330
+				},
+				{
+					"id": "breakfast-18",
+					"description": "Cereal with Milk",
+					"price": 3.99,
+					"calories": 220
+				},
+				{
+					"id": "breakfast-19",
+					"description": "Breakfast Sausage",
+					"price": 3.49,
+					"calories": 300
+				},
+				{
+					"id": "breakfast-20",
+					"description": "Scrambled Eggs",
+					"price": 4.99,
+					"calories": 290
+				}
+			]
+		},
+		{
+			"id": "2",
+			"category": "Hot Food",
+			"items": [
+				{
+					"id": "hotfood-1",
+					"description": "Cheeseburger",
+					"price": 8.99,
+					"calories": 700
+				},
+				{
+					"id": "hotfood-2",
+					"description": "Chicken Tenders",
+					"price": 7.99,
+					"calories": 600
+				},
+				{
+					"id": "hotfood-3",
+					"description": "Grilled Cheese Sandwich",
+					"price": 5.49,
+					"calories": 450
+				},
+				{
+					"id": "hotfood-4",
+					"description": "Spaghetti Bolognese",
+					"price": 9.99,
+					"calories": 800
+				},
+				{
+					"id": "hotfood-5",
+					"description": "Pizza Slice",
+					"price": 3.99,
+					"calories": 400
+				},
+				{
+					"id": "hotfood-6",
+					"description": "Hot Dog",
+					"price": 4.99,
+					"calories": 350
+				},
+				{
+					"id": "hotfood-7",
+					"description": "Fish and Chips",
+					"price": 10.99,
+					"calories": 850
+				},
+				{
+					"id": "hotfood-8",
+					"description": "Mac and Cheese",
+					"price": 6.99,
+					"calories": 600
+				},
+				{
+					"id": "hotfood-9",
+					"description": "BBQ Ribs",
+					"price": 12.99,
+					"calories": 900
+				},
+				{
+					"id": "hotfood-10",
+					"description": "Chicken Alfredo",
+					"price": 11.49,
+					"calories": 850
+				},
+				{
+					"id": "hotfood-11",
+					"description": "Beef Tacos",
+					"price": 7.49,
+					"calories": 500
+				},
+				{
+					"id": "hotfood-12",
+					"description": "Fried Rice",
+					"price": 8.99,
+					"calories": 650
+				},
+				{
+					"id": "hotfood-13",
+					"description": "Grilled Salmon",
+					"price": 14.99,
+					"calories": 550
+				},
+				{
+					"id": "hotfood-14",
+					"description": "Meatloaf",
+					"price": 10.49,
+					"calories": 700
+				},
+				{
+					"id": "hotfood-15",
+					"description": "Vegetable Stir Fry",
+					"price": 8.49,
+					"calories": 400
+				},
+				{
+					"id": "hotfood-16",
+					"description": "Lasagna",
+					"price": 11.99,
+					"calories": 750
+				},
+				{
+					"id": "hotfood-17",
+					"description": "Chicken Pot Pie",
+					"price": 9.99,
+					"calories": 650
+				},
+				{
+					"id": "hotfood-18",
+					"description": "Beef Stew",
+					"price": 10.99,
+					"calories": 800
+				},
+				{
+					"id": "hotfood-19",
+					"description": "Shrimp Scampi",
+					"price": 13.49,
+					"calories": 700
+				},
+				{
+					"id": "hotfood-20",
+					"description": "Pork Chops",
+					"price": 12.49,
+					"calories": 750
+				}
+			]
+		},
+		{
+			"id": "3",
+			"category": "Grab and Go",
+			"items": [
+				{
+					"id": "grabngo-1",
+					"description": "Caesar Salad",
+					"price": 6.99,
+					"calories": 300
+				},
+				{
+					"id": "grabngo-2",
+					"description": "Chicken Wrap",
+					"price": 7.49,
+					"calories": 450
+				},
+				{
+					"id": "grabngo-3",
+					"description": "Veggie Wrap",
+					"price": 6.99,
+					"calories": 350
+				},
+				{
+					"id": "grabngo-4",
+					"description": "Turkey Sandwich",
+					"price": 7.99,
+					"calories": 500
+				},
+				{
+					"id": "grabngo-5",
+					"description": "Hummus and Veggies",
+					"price": 5.49,
+					"calories": 250
+				},
+				{
+					"id": "grabngo-6",
+					"description": "Fruit Cup",
+					"price": 4.99,
+					"calories": 150
+				},
+				{
+					"id": "grabngo-7",
+					"description": "Yogurt Cup",
+					"price": 3.99,
+					"calories": 180
+				},
+				{
+					"id": "grabngo-8",
+					"description": "Protein Bar",
+					"price": 2.99,
+					"calories": 200
+				},
+				{
+					"id": "grabngo-9",
+					"description": "Cheese and Crackers",
+					"price": 4.49,
+					"calories": 300
+				},
+				{
+					"id": "grabngo-10",
+					"description": "Pasta Salad",
+					"price": 6.49,
+					"calories": 400
+				},
+				{
+					"id": "grabngo-11",
+					"description": "Chips and Salsa",
+					"price": 3.99,
+					"calories": 250
+				},
+				{
+					"id": "grabngo-12",
+					"description": "Granola and Berries",
+					"price": 4.49,
+					"calories": 220
+				},
+				{
+					"id": "grabngo-13",
+					"description": "Cold Brew Coffee",
+					"price": 3.99,
+					"calories": 5
+				},
+				{
+					"id": "grabngo-14",
+					"description": "Energy Drink",
+					"price": 2.99,
+					"calories": 120
+				},
+				{
+					"id": "grabngo-15",
+					"description": "Bottle Water",
+					"price": 1.49,
+					"calories": 0
+				},
+				{
+					"id": "grabngo-16",
+					"description": "Apple Slices",
+					"price": 2.99,
+					"calories": 80
+				},
+				{
+					"id": "grabngo-17",
+					"description": "Turkey Jerky",
+					"price": 3.49,
+					"calories": 150
+				},
+				{
+					"id": "grabngo-18",
+					"description": "Mixed Nuts",
+					"price": 4.99,
+					"calories": 350
+				},
+				{
+					"id": "grabngo-19",
+					"description": "Banana",
+					"price": 1.29,
+					"calories": 100
+				},
+				{
+					"id": "grabngo-20",
+					"description": "Veggie Chips",
+					"price": 3.49,
+					"calories": 200
+				}
+			]
+		},
+		{
+			"id": "4",
+			"category": "Sandwich and Wrap",
+			"items": [
+				{
+					"id": "sandwichwrap-1",
+					"description": "BLT Sandwich",
+					"price": 7.99,
+					"calories": 550
+				},
+				{
+					"id": "sandwichwrap-2",
+					"description": "Ham and Cheese Sandwich",
+					"price": 6.99,
+					"calories": 500
+				},
+				{
+					"id": "sandwichwrap-3",
+					"description": "Turkey Club Sandwich",
+					"price": 8.99,
+					"calories": 600
+				},
+				{
+					"id": "sandwichwrap-4",
+					"description": "Roast Beef Sandwich",
+					"price": 8.49,
+					"calories": 550
+				},
+				{
+					"id": "sandwichwrap-5",
+					"description": "Chicken Caesar Wrap",
+					"price": 7.99,
+					"calories": 500
+				},
+				{
+					"id": "sandwichwrap-6",
+					"description": "Buffalo Chicken Wrap",
+					"price": 8.49,
+					"calories": 550
+				},
+				{
+					"id": "sandwichwrap-7",
+					"description": "Veggie Wrap",
+					"price": 6.99,
+					"calories": 400
+				},
+				{
+					"id": "sandwichwrap-8",
+					"description": "Tuna Salad Sandwich",
+					"price": 7.49,
+					"calories": 450
+				},
+				{
+					"id": "sandwichwrap-9",
+					"description": "Egg Salad Sandwich",
+					"price": 6.99,
+					"calories": 400
+				},
+				{
+					"id": "sandwichwrap-10",
+					"description": "Italian Sub",
+					"price": 8.99,
+					"calories": 650
+				},
+				{
+					"id": "sandwichwrap-11",
+					"description": "Chicken Salad Sandwich",
+					"price": 7.49,
+					"calories": 480
+				},
+				{
+					"id": "sandwichwrap-12",
+					"description": "Caprese Sandwich",
+					"price": 7.99,
+					"calories": 450
+				},
+				{
+					"id": "sandwichwrap-13",
+					"description": "Philly Cheesesteak",
+					"price": 9.49,
+					"calories": 700
+				},
+				{
+					"id": "sandwichwrap-14",
+					"description": "Pulled Pork Sandwich",
+					"price": 8.99,
+					"calories": 600
+				},
+				{
+					"id": "sandwichwrap-15",
+					"description": "Falafel Wrap",
+					"price": 7.49,
+					"calories": 500
+				},
+				{
+					"id": "sandwichwrap-16",
+					"description": "Pastrami Sandwich",
+					"price": 9.49,
+					"calories": 650
+				},
+				{
+					"id": "sandwichwrap-17",
+					"description": "Grilled Veggie Sandwich",
+					"price": 7.49,
+					"calories": 400
+				},
+				{
+					"id": "sandwichwrap-18",
+					"description": "Hummus Wrap",
+					"price": 6.99,
+					"calories": 350
+				},
+				{
+					"id": "sandwichwrap-19",
+					"description": "Shrimp Po' Boy",
+					"price": 9.99,
+					"calories": 700
+				},
+				{
+					"id": "sandwichwrap-20",
+					"description": "BBQ Chicken Sandwich",
+					"price": 8.49,
+					"calories": 550
+				}
+			]
+		}
+	]
+}

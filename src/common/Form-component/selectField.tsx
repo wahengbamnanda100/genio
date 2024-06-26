@@ -15,7 +15,7 @@ import {
 	useTheme,
 } from "@mui/material";
 import _ from "lodash";
-import { ChangeEvent } from "react";
+// import { ChangeEvent } from "react";
 import { SelectFieldProps } from "./index";
 import { ErrorContainer } from "./ErrorContainer";
 type errors = {
@@ -55,7 +55,7 @@ const SelectField = ({
 				<Controller
 					name={name}
 					control={control}
-					render={({ field: { value, ref, ...rest }, fieldState }) => (
+					render={({ field: { value, ref, ...rest } }) => (
 						<Select
 							{...rest}
 							{...restProps}

@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Controller, useFormContext, useFormState } from "react-hook-form";
 import _ from "lodash";
-import { Grid, TextField } from "@mui/material";
+import { Grid } from "@mui/material";
 import { DateFieldProps } from ".";
 import { ErrorContainer } from "./ErrorContainer";
 // import { useTranslation } from "react-i18next";
-import { isAfter, isEqual, isValid, parse } from "date-fns";
+import { isAfter, isEqual, isValid } from "date-fns";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 // import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 
@@ -54,11 +54,12 @@ const DateField = ({
 								inputProps: {
 									placeholder: "Select a Date",
 								},
+								size: size,
 								error: !!fieldState.error,
 							},
 						}}
 						localeText={{
-							fieldMonthPlaceholder: () => "MMM",
+							fieldMonthPlaceholder: () => "MM",
 						}}
 					/>
 				)}
@@ -81,11 +82,15 @@ const DateField = ({
 					},
 				}}
 			/>
-			<ErrorContainer>
-				{hasErrorMessage && _.get(errors, name)
-					? _.get(errors, `${name}.message`)
-					: null}
-			</ErrorContainer>
+			{hasErrorMessage && _.get(errors, name) && (
+				<ErrorContainer>
+					{
+						(_.get(errors, name)
+							? _.get(errors, `${name}.message`)
+							: null) as React.ReactNode
+					}
+				</ErrorContainer>
+			)}
 		</Grid>
 	);
 };

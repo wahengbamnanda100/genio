@@ -1,35 +1,34 @@
-import {
-	CssBaseline,
-	StyledEngineProvider,
-	ThemeProvider,
-} from "@mui/material";
+import { CssBaseline, StyledEngineProvider } from "@mui/material";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { RouterProvider } from "react-router-dom";
-import theme from "./theme";
-import { Customization } from "./theme/types";
+import { Provider } from "react-redux";
+
 import NavigationScroll from "./layout/NavigationScroll";
 import router from "./routes";
+import CustomThemeProvider from "./theme/CustomThemeProvider";
+import store from "./store";
 
 // const AppContent = () => { }
 
 function App() {
 	const queryClient = new QueryClient();
-	const customisation: Customization = { navType: "light" };
 	console.log("this page is loaded @app");
 
 	return (
-		<QueryClientProvider client={queryClient}>
-			<ReactQueryDevtools initialIsOpen={false} />
-			<StyledEngineProvider injectFirst>
-				<ThemeProvider theme={theme(customisation)}>
-					<CssBaseline />
-					<NavigationScroll>
-						<RouterProvider router={router} />
-					</NavigationScroll>
-				</ThemeProvider>
-			</StyledEngineProvider>
-		</QueryClientProvider>
+		<Provider store={store}>
+			<QueryClientProvider client={queryClient}>
+				<ReactQueryDevtools initialIsOpen={false} />
+				<StyledEngineProvider injectFirst>
+					<CustomThemeProvider>
+						<CssBaseline />
+						<NavigationScroll>
+							<RouterProvider router={router} />
+						</NavigationScroll>
+					</CustomThemeProvider>
+				</StyledEngineProvider>
+			</QueryClientProvider>
+		</Provider>
 	);
 }
 

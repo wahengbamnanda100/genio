@@ -1,4 +1,4 @@
-import { IconButton, InputAdornment } from "@mui/material";
+import { IconButton, InputAdornment, Theme, Typography } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { FieldProps } from "../Form-component";
@@ -22,6 +22,7 @@ const handleMouseDownPassword = (
 };
 
 export const LoginFields = (
+	theme: Theme,
 	showPassword: boolean,
 	setShowPassword: React.Dispatch<React.SetStateAction<boolean>>
 ): FieldProps[] => [
@@ -39,6 +40,7 @@ export const LoginFields = (
 				borderRadius: "10px",
 				height: "3rem",
 				background: "transparent",
+
 				// boxShadow: theme.shadows[2],
 			},
 		},
@@ -47,6 +49,23 @@ export const LoginFields = (
 				background: "transparent",
 			},
 		},
+		sx: {
+			"& .MuiOutlinedInput-root": {
+				"& fieldset": {
+					borderColor: theme.palette.primary.main,
+				},
+				"&:hover fieldset": {
+					borderColor: theme.palette.primary.light,
+					borderWidth: "2px",
+				},
+				"&.Mui-focused fieldset": {
+					borderColor: theme.palette.primary.main,
+					borderWidth: "2px",
+				},
+			},
+		},
+		md: 12,
+		xs: 12,
 	},
 	{
 		fieldType: "text",
@@ -78,6 +97,7 @@ export const LoginFields = (
 				borderRadius: "10px",
 				height: "3rem",
 				background: "transparent",
+
 				// boxShadow: theme.shadows[2],
 			},
 		},
@@ -86,5 +106,31 @@ export const LoginFields = (
 				background: "transparent",
 			},
 		},
+		sx: {
+			"& .MuiOutlinedInput-root": {
+				"& fieldset": {
+					borderColor: theme.palette.primary.dark,
+				},
+				"&:hover fieldset": {
+					borderColor: theme.palette.primary.main,
+				},
+				"&.Mui-focused fieldset": {
+					borderColor: theme.palette.primary.main,
+				},
+			},
+		},
+		md: 12,
+		xs: 12,
+	},
+	{
+		fieldType: "checkbox",
+		name: "rememberMe",
+		labelPlacement: "end",
+		checkBoxs: [
+			{
+				label: <Typography variant="subtitle1">Remember me</Typography>,
+				name: "rememberMe",
+			},
+		],
 	},
 ];

@@ -105,7 +105,7 @@ type CheckBoxFieldProps = {
 	title?: string;
 	checkBoxs: {
 		name: string;
-		label?: string;
+		label?: string | ReactNode;
 		disabled?: boolean;
 		style?: CSSProperties;
 	}[];
