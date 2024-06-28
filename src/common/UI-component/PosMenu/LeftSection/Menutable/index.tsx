@@ -2,7 +2,6 @@
 // import { useForm } from "react-hook-form";
 // import { MenuTableSchema } from "../../../Component-types/posMenu.type";
 import { Box, ButtonBase, Typography, useTheme } from "@mui/material";
-
 import {
 	Column,
 	EditingCell,
@@ -14,12 +13,10 @@ import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { ReactNode, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+
 import { AppDispatch, RootState } from "../../../../../store";
 import {
-	// PosMenuItem,
 	removePosMenu,
-	// editMenuItem,
-	// removePosMenu,
 	selectMenuTable,
 	updateMenuItem,
 } from "../../../../../store/slices/posMenuSlice";
@@ -45,11 +42,6 @@ const MenuTable = () => {
 	const [editColumnExtension] = useState<EditingState.ColumnExtension[]>([
 		{ columnName: "sl", editingEnabled: false },
 	]);
-
-	// const handleRowDelete = (row: MenuItem) => {
-	// 	console.log("delete clicked", row.id);
-	// 	dispatch(removePosMenu(row.id));
-	// };
 
 	const column: Column[] = [
 		{
@@ -105,15 +97,12 @@ const MenuTable = () => {
 		deleted,
 	}) => {
 		if (changed) {
-			console.log("changed data", changed);
 			dispatch(updateMenuItem(changed));
 		}
-
 		if (deleted) {
-			const key = deleted[9];
+			const key = deleted[0];
 			const deleteid = menuTable[key as number].id;
 			dispatch(removePosMenu(deleteid));
-			console.log("Deleted IDs:", deleteid);
 		}
 	};
 
@@ -128,7 +117,6 @@ const MenuTable = () => {
 				isLoading={false}
 				grid={{
 					columns: column,
-					// rows: tableData,
 					rows: menuTable,
 				}}
 				table={{
