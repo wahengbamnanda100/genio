@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "..";
 
@@ -17,6 +18,7 @@ interface PosMenu {
 	discountAmount: number;
 	discountPercentage: number;
 	netTotal: number;
+	discountDisable: boolean;
 }
 
 const initialState: PosMenu = {
@@ -25,6 +27,18 @@ const initialState: PosMenu = {
 	discountPercentage: 0,
 	netTotal: 0,
 	discountAmount: 0,
+	discountDisable: false,
+};
+
+const hasDiscount = (updates: {
+	[key: number]: Partial<PosMenuItem>;
+}): boolean => {
+	for (const key in updates) {
+		if (updates[key].discount !== undefined) {
+			return true;
+		}
+	}
+	return false;
 };
 
 const calculateTotalAmount = (menuTable: PosMenuItem[]): number => {
@@ -206,6 +220,47 @@ const posMenuSlice = createSlice({
 				(state.totalAmount - state.discountAmount).toFixed(2)
 			);
 		},
+		updateMenuItem: (
+			state,
+			action: PayloadAction<{ [key: number]: Partial<PosMenuItem> }>
+		) => {
+			const updates = action.payload;
+			const check = hasDiscount(action.payload);
+			state.discountDisable = check;
+			for (const index in updates) {
+				const itemIndex = parseInt(index);
+				if (!isNaN(itemIndex) && state.menuTable[itemIndex]) {
+					const itemUpdates = updates[itemIndex];
+					for (const key in itemUpdates) {
+						if (
+							itemUpdates[key] !== undefined &&
+							key in state.menuTable[itemIndex]
+						) {
+							(state.menuTable[itemIndex][key as keyof PosMenuItem] as any) =
+								itemUpdates[key];
+						}
+					}
+
+					// Update amount and netAmount according to the quantity and discount
+					const item = state.menuTable[itemIndex];
+					item.amount = parseFloat((item.unitPrice * item.quantity).toFixed(2));
+					item.netAmount = parseFloat((item.amount - item.discount).toFixed(2));
+				}
+			}
+			state.totalAmount = calculateTotalAmount(state.menuTable);
+			state.discountAmount = calculateDiscountAmount(
+				state.totalAmount,
+				state.discountPercentage
+			);
+			state.discountPercentage = calculateDiscountPercentage(
+				state.discountAmount,
+				state.totalAmount
+			);
+			state.netTotal = calculateNetTotalAmount(
+				state.totalAmount,
+				state.discountPercentage
+			);
+		},
 	},
 });
 
@@ -219,6 +274,8 @@ export const selectNetTotalAmount = (state: RootState) =>
 	state.posMenuTable.netTotal;
 export const selectDiscountPercent = (state: RootState) =>
 	state.posMenuTable.discountPercentage;
+export const selectDiscountDisable = (state: RootState) =>
+	state.posMenuTable.discountDisable;
 
 export const {
 	addPosMenu,
@@ -229,6 +286,7 @@ export const {
 	setMenuItems,
 	setNetTotalAmount,
 	setDiscountPercentage,
+	updateMenuItem,
 } = posMenuSlice.actions;
 
 export default posMenuSlice.reducer;

@@ -2,6 +2,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
 	Column,
+	EditingState,
+	EditingStateProps,
 	FilteringState,
 	GroupingState,
 	IntegratedFiltering,
@@ -17,7 +19,7 @@ import {
 	TableRowDetail,
 	// TableSummaryRow,
 } from "@devexpress/dx-react-grid-material-ui";
-import { ComponentType, ReactNode } from "react";
+import { ComponentType, Dispatch, ReactNode, SetStateAction } from "react";
 
 export type CustomTableProps = {
 	isLoading?: boolean;
@@ -74,6 +76,7 @@ export type CustomTableProps = {
 	tableRowDetail?: {
 		contentComponent?: ComponentType<TableRowDetail.ContentProps>;
 	};
+	editingState?: EditingStateProps;
 	children?: ReactNode;
 	hasPaging?: boolean;
 	hasExport?: boolean;
@@ -87,7 +90,7 @@ export type CustomTableProps = {
 	hasBoxShadow?: boolean;
 	hasSelect?: boolean;
 	hasSummary?: boolean;
-	selection?: any[];
+	selection?: (string | number)[];
 	setSelection?: (c: any) => void;
 	rightColumns?: TableFixedColumnsProps["rightColumns"];
 	leftColumns?: TableFixedColumnsProps["leftColumns"];
@@ -97,3 +100,23 @@ export type CustomTableProps = {
 		width: string;
 	}[];
 };
+
+export interface EditTableProps {
+	grid: {
+		rows: readonly any[];
+		columns: readonly Column[];
+	};
+	isLoading?: boolean;
+	paperElevation?: number;
+	hasVerticalPadding?: boolean;
+	hasHorizontalPadding?: boolean;
+	hasBoxShadow?: boolean;
+	children?: ReactNode;
+	table?: {
+		columnExtensions?: Table.ColumnExtension[];
+		rowComponent?: ComponentType<Table.DataRowProps>;
+	};
+	editingState?: EditingStateProps;
+	selection?: (string | number)[];
+	setSelection?: Dispatch<SetStateAction<(string | number)[]>>;
+}

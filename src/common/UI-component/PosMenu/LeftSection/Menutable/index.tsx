@@ -1,27 +1,30 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // import { useForm } from "react-hook-form";
 // import { MenuTableSchema } from "../../../Component-types/posMenu.type";
+import { Box, ButtonBase, Typography, useTheme } from "@mui/material";
+
 import {
-	Box,
-	ButtonBase,
-	IconButton,
-	Typography,
-	useTheme,
-} from "@mui/material";
-import CustomTable from "../../../../CutomTable/CustomTable";
-import { Column, GridColumnExtension } from "@devexpress/dx-react-grid";
-import { ReactNode, useState } from "react";
-import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
+	Column,
+	EditingCell,
+	EditingState,
+	EditingStateProps,
+	GridColumnExtension,
+} from "@devexpress/dx-react-grid";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
-import { MenuItem } from "../../../../Component-types/posMenu.type";
-import AnimateButton from "../../../Extended/AnimateButton";
-import { AppDispatch, RootState } from "../../../../../store";
+import { ReactNode, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../../../../store";
 import {
+	// PosMenuItem,
 	removePosMenu,
+	// editMenuItem,
+	// removePosMenu,
 	selectMenuTable,
+	updateMenuItem,
 } from "../../../../../store/slices/posMenuSlice";
+import EditingCustomTable from "../../../../CutomTable/EditableTable";
+import AnimateButton from "../../../Extended/AnimateButton";
 
 const MenuTable = () => {
 	const dispatch: AppDispatch = useDispatch();
@@ -37,13 +40,16 @@ const MenuTable = () => {
 		{ columnName: "netAmount", width: "100", align: "right" },
 		{ columnName: "action", width: "60", align: "center" },
 	]);
+	const [selection, setSelection] = useState<(string | number)[]>([]);
+	const [editingCells, setEditingCells] = useState<EditingCell[]>([]);
+	const [editColumnExtension] = useState<EditingState.ColumnExtension[]>([
+		{ columnName: "sl", editingEnabled: false },
+	]);
 
-	const [selection, setSelection] = useState<any[]>([]);
-
-	const handleRowDelete = (row: MenuItem) => {
-		console.log("delete clicked", row.id);
-		dispatch(removePosMenu(row.id));
-	};
+	// const handleRowDelete = (row: MenuItem) => {
+	// 	console.log("delete clicked", row.id);
+	// 	dispatch(removePosMenu(row.id));
+	// };
 
 	const column: Column[] = [
 		{
@@ -76,28 +82,46 @@ const MenuTable = () => {
 			title: "Net Amount",
 			name: "netAmount",
 		},
-		{
-			title: "Action",
-			name: "action",
-			getCellValue: (row: MenuItem) => (
-				<IconButton
-					color="error"
-					onClick={() => handleRowDelete(row)}
-					sx={{ p: 0, alignSelf: "center" }}>
-					<DeleteOutlinedIcon
-						color="error"
-						fontSize="small"
-						sx={{ fontSize: "0.6em", p: 0 }}
-					/>
-				</IconButton>
-			),
-		},
+		// {
+		// 	title: "Action",
+		// 	name: "action",
+		// 	getCellValue: (row: MenuItem) => (
+		// 		<IconButton
+		// 			color="error"
+		// 			onClick={() => handleRowDelete(row)}
+		// 			sx={{ p: 0, alignSelf: "center" }}>
+		// 			<DeleteOutlinedIcon
+		// 				color="error"
+		// 				fontSize="small"
+		// 				sx={{ fontSize: "0.6em", p: 0 }}
+		// 			/>
+		// 		</IconButton>
+		// 	),
+		// },
 	];
+
+	const commitChanges: EditingStateProps["onCommitChanges"] = ({
+		changed,
+		deleted,
+	}) => {
+		if (changed) {
+			console.log("changed data", changed);
+			dispatch(updateMenuItem(changed));
+		}
+
+		if (deleted) {
+			const key = deleted[9];
+			const deleteid = menuTable[key as number].id;
+			dispatch(removePosMenu(deleteid));
+			console.log("Deleted IDs:", deleteid);
+		}
+	};
 
 	return (
 		<Box>
 			<TableHeader />
-			<CustomTable
+
+			<EditingCustomTable
 				hasHorizontalPadding={false}
 				hasVerticalPadding={false}
 				hasBoxShadow={false}
@@ -110,7 +134,13 @@ const MenuTable = () => {
 				table={{
 					columnExtensions: columnExtension,
 				}}
-				hasSelect={true}
+				editingState={{
+					onCommitChanges: commitChanges,
+					editingCells: editingCells,
+					onEditingCellsChange: setEditingCells,
+					columnExtensions: editColumnExtension,
+				}}
+				// hasSelect={true}
 				selection={selection}
 				setSelection={setSelection}
 			/>

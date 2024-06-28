@@ -16,6 +16,7 @@ import {
 	selectDiscountAmount,
 	setDiscountPercentage,
 	selectDiscountPercent,
+	selectDiscountDisable,
 } from "../../../../../store/slices/posMenuSlice";
 import { useEffect } from "react";
 
@@ -37,6 +38,10 @@ const DiscountAmount = () => {
 
 	const discountPercent = useSelector((state: RootState) =>
 		selectDiscountPercent(state)
+	);
+
+	const discountDisable = useSelector((state: RootState) =>
+		selectDiscountDisable(state)
 	);
 
 	const changeDiscountPercentAmount = watch("discount");
@@ -77,7 +82,7 @@ const DiscountAmount = () => {
 			<Grid item xs={6}>
 				{/* <FormProvider {...method}> */}
 				<Grid container spacing={1}>
-					{discountAmountField(theme).map((field) => (
+					{discountAmountField(theme, discountDisable).map((field) => (
 						<Field key={field.name} {...field} />
 					))}
 				</Grid>

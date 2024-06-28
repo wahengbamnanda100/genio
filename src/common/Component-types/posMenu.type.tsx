@@ -169,7 +169,10 @@ export const cardDetailFields = (): FieldProps[] => [
 	},
 ];
 
-export const discountAmountField = (theme: Theme): FieldProps[] => [
+export const discountAmountField = (
+	theme: Theme,
+	disabled: boolean
+): FieldProps[] => [
 	{
 		fieldType: "text",
 		name: "total",
@@ -177,6 +180,7 @@ export const discountAmountField = (theme: Theme): FieldProps[] => [
 		size: "small",
 		condition: /^-?\d*\.?\d{0,2}$/,
 		hasErrorMessage: true,
+		disabled: true,
 		rules: {
 			required: "Please enter your Total",
 		},
@@ -196,6 +200,7 @@ export const discountAmountField = (theme: Theme): FieldProps[] => [
 		size: "small",
 		hasErrorMessage: true,
 		condition: /^-?\d*\.?\d{0,2}$/,
+		disabled,
 		InputProps: {
 			endAdornment: (
 				<InputAdornment position="end">
@@ -225,6 +230,7 @@ export const discountAmountField = (theme: Theme): FieldProps[] => [
 		size: "small",
 		hasErrorMessage: true,
 		condition: /^-?\d*\.?\d{0,2}$/,
+		disabled,
 		rules: {
 			required: "Please enter your Net Amount",
 		},
