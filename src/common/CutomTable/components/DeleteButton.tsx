@@ -17,7 +17,7 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({ onExecute }) => (
 		title="Delete row"
 		size="small"
 		sx={{}}>
-		<DeleteOutlineIcon />
+		<DeleteOutlineIcon sx={{ fontSize: "16px" }} />
 	</IconButton>
 );
 

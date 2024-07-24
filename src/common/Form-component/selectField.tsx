@@ -121,7 +121,7 @@ const SelectField = ({
 					rules={rules}
 				/>
 			</FormControl>
-			{hasErrorMessage && (
+			{hasErrorMessage && _.get(errors, name) && (
 				<ErrorContainer>
 					{
 						(_.get(errors, name)

@@ -12,7 +12,6 @@ import {
 import { DatePickerProps } from "@mui/x-date-pickers";
 import React, { CSSProperties, ReactNode } from "react";
 import { RegisterOptions } from "react-hook-form";
-import { UseQueryResult } from "@tanstack/react-query";
 
 type common_type = {
 	name: string;
@@ -30,10 +29,15 @@ type common_type = {
 		| true
 		| 1
 		| 2
+		| 2.4
 		| 3
 		| 3.5
 		| 4
 		| 5
+		| 5.5
+		| 5.6
+		| 5.7
+		| 5.8
 		| 6
 		| 7
 		| 8
@@ -123,9 +127,27 @@ export type CheckBoxFieldType = {
 		name: string;
 	};
 
+export type Student = {
+	StudentId: string;
+	StudentName: string;
+	CardNumber: string;
+	AdmissionNumber: string;
+	FamilyId: string;
+	Grade: string;
+	AvailableBalance: string;
+	ImageUrl: string;
+	DailyLimit: string;
+};
+
 type AsyncSearchFieldProps = {
 	placeholder?: string;
-	searchApi: (keyStrocke: string) => UseQueryResult;
+	// searchApi: (keyStroke: string) => { data: unknown[]; isLoading: boolean };
+	searchApi: (
+		keyStroke: string
+	) => Promise<{ data: unknown[]; isLoading: boolean }>;
+	// searchApi: (
+	// 	keyStroke: string
+	// ) => UseMutationResult<unknown, Error, unknown, unknown>;
 	options: (searchData: any) => any[];
 	getOptionLabel: (option: any) => string;
 	getValueLabel?: string;
@@ -141,8 +163,14 @@ type AsyncSearchFieldProps = {
 	optionKey?: string;
 	rules?: any;
 	changes?: any;
+	highlightColor?: string;
 	columns?: ColumnProps[];
-	renderItem?: ({ option, props }: any) => React.ReactNode;
+	renderItem?: ({
+		option,
+		props,
+		isSelected,
+		highlightColor,
+	}: any) => React.ReactNode;
 } & common_type;
 
 export type AsyncSearchFieldType = {

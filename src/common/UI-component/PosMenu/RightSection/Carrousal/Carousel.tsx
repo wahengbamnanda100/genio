@@ -11,9 +11,11 @@ import {
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import SwipeableViews from "react-swipeable-views";
 // import { TransitionGroup, CSSTransition } from "react-transition-group";
 import AnimateButton from "../../../Extended/AnimateButton";
 import DotIndicator from "./Indicator";
+// import { distance } from "framer-motion";
 
 interface CarouselProps {
 	children: React.ReactNode[];
@@ -53,19 +55,17 @@ const Carousel: React.FC<CarouselProps> = ({
 	const totalSlides = Math.ceil(children.length / itemsPerPage);
 
 	const handleNext = () => {
-		// setSlideDirection("right");
 		setCurrentPage((prevPage) => Math.min(prevPage + 1, totalSlides - 1));
 	};
 
 	const handlePrevious = () => {
-		// setSlideDirection("left");
 		setCurrentPage((prevPage) => Math.max(prevPage - 1, 0));
 	};
 
-	const startIndex = currentPage * itemsPerPage;
-	const endIndex = startIndex + itemsPerPage;
+	// const startIndex = currentPage * itemsPerPage;
+	// const endIndex = startIndex + itemsPerPage;
 
-	const visibleItemsOnPage = children.slice(startIndex, endIndex);
+	// const visibleItemsOnPage = children.slice(startIndex, endIndex);
 
 	return (
 		<CarouselContainer>
@@ -74,10 +74,7 @@ const Carousel: React.FC<CarouselProps> = ({
 				justifyContent="space-between"
 				alignItems="center"
 				mb={2}>
-				<NaviationButton
-					onClick={handlePrevious}
-					// disabled={startIndex === 0}
-				>
+				<NaviationButton onClick={handlePrevious} disabled={currentPage === 0}>
 					<ArrowBackIcon />
 				</NaviationButton>
 				<Box
@@ -99,12 +96,12 @@ const Carousel: React.FC<CarouselProps> = ({
 				<NaviationButton
 					onClick={handleNext}
 					// disabled={startIndex + visibleItemsCount >= children.length}
-				>
+					disabled={currentPage === totalSlides - 1}>
 					<ArrowForwardIcon />
 				</NaviationButton>
 			</Box>
 
-			<Grid container spacing={2}>
+			{/* <Grid container spacing={2} ref={carouselRef}>
 				{visibleItemsOnPage.length > 0 ? (
 					visibleItemsOnPage.map((item, index) => (
 						<Grid item xs={12 / columns} key={index}>
@@ -125,7 +122,24 @@ const Carousel: React.FC<CarouselProps> = ({
 						</Typography>
 					</Box>
 				)}
-			</Grid>
+			</Grid> */}
+
+			<SwipeableViews
+				index={currentPage}
+				onChangeIndex={(index: number) => setCurrentPage(index)}
+				containerStyle={{ width: "100%" }}>
+				{Array.from({ length: totalSlides }).map((_, pageIndex) => (
+					<Grid container spacing={2} key={pageIndex}>
+						{children
+							.slice(pageIndex * itemsPerPage, (pageIndex + 1) * itemsPerPage)
+							.map((item, index) => (
+								<Grid item xs={12 / columns} key={index}>
+									{item}
+								</Grid>
+							))}
+					</Grid>
+				))}
+			</SwipeableViews>
 		</CarouselContainer>
 	);
 };

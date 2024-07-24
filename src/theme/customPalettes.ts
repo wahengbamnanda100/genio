@@ -65,7 +65,7 @@ export const defaultPalette: PaletteOptions = {
 	text: {
 		primary: "#000",
 		secondary: "#ffff",
-		disabled: "#2282d8",
+		disabled: "#13692F",
 	},
 	previousSale: {
 		light: "#E2E3EC",

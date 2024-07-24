@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Box, Grid } from "@mui/material";
 import ButtonGroup from "./ButtonGroup";
 import PaidAmount from "./PaidAmount";
@@ -5,12 +6,15 @@ import DiscountAmount from "./DiscountAmount";
 import MenuTable from "./Menutable";
 import CardDetail from "./CardDetail";
 import { FC } from "react";
+// import { SubmitHandler } from "react-hook-form";
+// import { PosMenuFormSchema } from "../../../Component-types/posMenu.type";
 
 interface LeftMenuSectionProps {
 	handleSubmitClick: () => void;
 	handleCancelClick: () => void;
 	handlePreviousClick: () => void;
 	handleBackClick: () => void;
+	// onSubmit: () => any;
 }
 
 const LeftMenuSection: FC<LeftMenuSectionProps> = ({
@@ -18,18 +22,19 @@ const LeftMenuSection: FC<LeftMenuSectionProps> = ({
 	handleCancelClick,
 	handlePreviousClick,
 	handleBackClick,
+	// onSubmit,
 }) => {
 	return (
 		<Grid item xs={12} md={6}>
 			<CardDetail />
 
-			{/* <LeftSpacing /> */}
+			<LeftSpacing />
 			<MenuTable />
-			{/* <Spacing /> */}
 			<DiscountAmount />
-			<LeftSpacing />
+			{/* <LeftSpacing />
+			<LeftSpacing /> */}
 			<PaidAmount />
-			<LeftSpacing />
+			{/* <LeftSpacing /> */}
 			<ButtonGroup
 				handleSubmitClick={handleSubmitClick}
 				handleCancelClick={handleCancelClick}

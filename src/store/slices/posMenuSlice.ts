@@ -30,16 +30,16 @@ const initialState: PosMenu = {
 	discountDisable: false,
 };
 
-const hasDiscount = (updates: {
-	[key: number]: Partial<PosMenuItem>;
-}): boolean => {
-	for (const key in updates) {
-		if (updates[key].discount !== undefined) {
-			return true;
-		}
-	}
-	return false;
-};
+// const hasDiscount = (updates: {
+// 	[key: number]: Partial<PosMenuItem>;
+// }): boolean => {
+// 	for (const key in updates) {
+// 		if (updates[key].discount !== undefined) {
+// 			return true;
+// 		}
+// 	}
+// 	return false;
+// };
 
 const calculateTotalAmount = (menuTable: PosMenuItem[]): number => {
 	return parseFloat(
@@ -144,10 +144,16 @@ const posMenuSlice = createSlice({
 		},
 		decrementItemQuantity: (state, action: PayloadAction<string>) => {
 			const item = state.menuTable.find((item) => item.id === action.payload);
-			if (item && item.quantity > 0) {
+			if (item) {
 				item.quantity -= 1;
-				item.amount = parseFloat((item.unitPrice * item.quantity).toFixed(2));
-				item.netAmount = parseFloat((item.amount - item.discount).toFixed(2));
+				if (item.quantity <= 0) {
+					state.menuTable = state.menuTable.filter(
+						(menuItem) => menuItem.id !== item.id
+					);
+				} else {
+					item.amount = parseFloat((item.unitPrice * item.quantity).toFixed(2));
+					item.netAmount = parseFloat((item.amount - item.discount).toFixed(2));
+				}
 			}
 
 			state.totalAmount = calculateTotalAmount(state.menuTable);
@@ -225,12 +231,12 @@ const posMenuSlice = createSlice({
 			action: PayloadAction<{ [key: number]: Partial<PosMenuItem> }>
 		) => {
 			const updates = action.payload;
-			const check = hasDiscount(action.payload);
-			state.discountDisable = check;
+			// const check = hasDiscount(action.payload);
+			// state.discountDisable = check;
 			for (const index in updates) {
 				const itemIndex = parseInt(index);
 				if (!isNaN(itemIndex) && state.menuTable[itemIndex]) {
-					const itemUpdates = updates[itemIndex];
+					const itemUpdates: any = updates[itemIndex];
 					for (const key in itemUpdates) {
 						if (
 							itemUpdates[key] !== undefined &&

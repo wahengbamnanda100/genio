@@ -1,4 +1,4 @@
-import { Components, Theme } from "@mui/material";
+import { Components, Theme, alpha } from "@mui/material";
 // import { defaultPalette as palette } from "./customPalettes";
 
 export const overridesInputBase: Pick<
@@ -7,6 +7,16 @@ export const overridesInputBase: Pick<
 > = {
 	MuiInputBase: {
 		styleOverrides: {
+			root: ({ ownerState, theme }) => ({
+				...(ownerState.size === "small" && {
+					// fontSize: 8,
+					// height: 39,
+					"&.Mui-disabled": {
+						color: theme.palette.text.disabled,
+						backgroundColor: alpha(theme.palette.secondary.light, 0.4),
+					},
+				}),
+			}),
 			input: {
 				"&::-webkit-outer-spin-button, &::-webkit-inner-spin-button": {
 					WebkitAppearance: "none",
@@ -15,28 +25,6 @@ export const overridesInputBase: Pick<
 					MozAppearance: "textfield",
 				},
 			},
-			root: {
-				"&.Mui-disabled": {
-					backgroundColor: "rgba(0, 0, 0, 0.12)",
-				},
-			},
 		},
 	},
-	// MuiOutlinedInput: {
-	// 	styleOverrides: {
-	// 		input: {
-	// 			"&::-webkit-outer-spin-button, &::-webkit-inner-spin-button": {
-	// 				WebkitAppearance: "none",
-	// 			},
-	// 			"&[type=number]": {
-	// 				MozAppearance: "textfield",
-	// 			},
-	// 		},
-	// 		root: {
-	// 			"&.Mui-disabled": {
-	// 				backgroundColor: "secondary", // Example styling for disabled input
-	// 			},
-	// 		},
-	// 	},
-	// },
 };

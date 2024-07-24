@@ -20,6 +20,7 @@ const Header: React.FC<HeaderProps> = ({ handleLeftDrawerToggle }) => {
 				[theme.breakpoints.down("md")]: {
 					width: "auto",
 				},
+				zIndex: 1000,
 			}}>
 			<ButtonBase sx={{ borderRadius: "12px", overflow: "hidden" }}>
 				<Avatar

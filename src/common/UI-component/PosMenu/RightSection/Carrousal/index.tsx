@@ -98,15 +98,15 @@ const SelectMenuBox: FC<SelectMenuBoxProps> = ({
 				category ? (
 					<BreakfastItem
 						key={index}
-						label={item.category}
+						label={item.CategoryDescription}
 						isActive={index === activeItem}
 						color={gradientColors[index % gradientColors.length]}
 						hoverColor={darkColor[index % darkColor.length]}
-						onClick={() => handleCategoryClick(index, item.category)}
+						onClick={() => handleCategoryClick(index, item)}
 					/>
 				) : (
 					<Item
-						label={item.description}
+						label={item.PartDescription}
 						onClick={() => handleItemClick(item)}
 					/>
 				)

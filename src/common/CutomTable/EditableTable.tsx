@@ -2,7 +2,11 @@
 import React from "react";
 import Paper from "@mui/material/Paper";
 import { Getter } from "@devexpress/dx-react-core";
-import { EditingState, SelectionState } from "@devexpress/dx-react-grid";
+import {
+	EditingState,
+	IntegratedSelection,
+	SelectionState,
+} from "@devexpress/dx-react-grid";
 import {
 	Grid,
 	Table,
@@ -17,6 +21,7 @@ import {
 
 import {
 	Command,
+	// CustomTableRow,
 	FocusableCell,
 	HeadComponent,
 	StyledCommandCell,
@@ -24,6 +29,7 @@ import {
 } from "./components/customComponent";
 import StyledEditCell from "./components/EditCell";
 import { EditTableProps } from "./CustomTable.types";
+// import { CustomSelectCell } from "./components/SelectionCell";
 
 // const getRowId = (row: Row) => row.id;
 
@@ -62,10 +68,15 @@ const MyGridComponent: React.FC<EditTableProps> = ({
 					onSelectionChange={setSelection}
 				/>
 
+				<IntegratedSelection />
+
 				<Table
 					cellComponent={FocusableCell}
 					tableComponent={TableComponent}
 					headComponent={HeadComponent}
+					// rowComponent={(props) => (
+					// 	<CustomTableRow {...props} selection={selection} />
+					// )}
 					{...table}
 				/>
 				<TableHeaderRow />
@@ -74,10 +85,12 @@ const MyGridComponent: React.FC<EditTableProps> = ({
 					selectTextOnEditStart={false}
 					cellComponent={StyledEditCell}
 				/>
+
 				<TableSelection
 					selectByRowClick
 					highlightRow
 					showSelectionColumn={false}
+					// cellComponent={CustomSelectCell as any}
 				/>
 
 				<TableEditColumn

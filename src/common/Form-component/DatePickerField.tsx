@@ -51,6 +51,7 @@ const DateField = ({
 						format={inputFormat}
 						slotProps={{
 							textField: {
+								fullWidth: true,
 								inputProps: {
 									placeholder: "Select a Date",
 								},
@@ -74,9 +75,6 @@ const DateField = ({
 						currentDate.setHours(0, 0, 0, 0);
 						const isValidDate =
 							isAfter(value, currentDate) || isEqual(value, currentDate);
-
-						console.log("📶", isValidDate, currentDate, value);
-						console.log("🪁🪁", value, inputFormat);
 
 						return isValidDate ? undefined : "Date exceeds current date";
 					},

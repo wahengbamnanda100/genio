@@ -2,11 +2,13 @@
 import { InputAdornment, Theme, alpha } from "@mui/material";
 import { FieldProps } from "../Form-component";
 import { NumericFormatCustom } from "../Form-component/inputField";
+import StudentCard from "../Form-component/StudentListItem";
+import { Student, searchStudentList } from "../../services";
 
 export type cardDetailSchema = {
 	cardNumber: string;
 	familyId: string;
-	idNumbar: number;
+	idNumbar: string;
 	dailyLimit: number;
 	name: string;
 	gardeLimit: number;
@@ -58,6 +60,19 @@ export type ScanUnitSchema = {
 	salesPersonName: string;
 };
 
+export type ExchangeRatSchema = {
+	currency: any[];
+	rate: number;
+	exchangePaidAmount: number;
+	amount: number;
+};
+
+export type CardPaymentSchema = {
+	cardType: any[];
+	cardTypeNumber: number;
+	cardAmount: number;
+};
+
 export type PosMenuFormSchema =
 	| cardDetailSchema
 	| MenuItem
@@ -67,107 +82,194 @@ export type PosMenuFormSchema =
 	| PaidAmountSchema
 	| AvailableBalanceSchema
 	| ScanComponentSchema
-	| ScanUnitSchema;
+	| ScanUnitSchema
+	| ExchangeRatSchema
+	| CardPaymentSchema;
 
-// export type PosMenuFormSchema = cardDetailSchema &
-// 	MenuItem &
-// 	MenuTableSchema &
-// 	DiscountAmountSchema &
-// 	NetAmountSchema &
-// 	PaidAmountSchema &
-// 	AvailableBalanceSchema &
-// 	ScanComponentSchema &
-// 	ScanUnitSchema;
+export const cardDetailFields = (): FieldProps[] => {
+	return [
+		{
+			fieldType: "search",
+			name: "cardNumber",
+			label: "Card Number",
+			size: "small",
+			renderItem: ({ option, props, isSelected, highlightColor }) => (
+				<StudentCard
+					key={option.StudentId}
+					options={option}
+					props={props}
+					isSelected={isSelected}
+					highlightColor={highlightColor}
+				/>
+			),
+			hasErrorMessage: true,
+			// rules: {
+			// 	required: "Please enter your card number",
+			// },
+			searchApi: async (keyStroke: string) => {
+				const response = await searchStudentList(
+					{
+						FamilyId: "",
+						CardNumber: keyStroke,
+						StudentName: "",
+						ShowroomId: "7",
+						Cmp_ID_N: "1",
+					},
+					keyStroke && keyStroke !== "" ? true : false
+				);
 
-export const cardDetailFields = (): FieldProps[] => [
-	{
-		fieldType: "text",
-		name: "cardNumber",
-		label: "Card Number",
-		size: "small",
-		hasErrorMessage: true,
-		rules: {
-			required: "Please enter your card number",
+				return response;
+			},
+			getOptionLabel: (option) => (option ? `${option.CardNumber}` : ""),
+			optionKey: "CardNumber",
+			options: (searchData) => searchData ?? [],
+			xs: 12,
+			md: 6,
 		},
-		xs: 12,
-		md: 6,
-	},
-	{
-		fieldType: "text",
-		name: "familyId",
-		label: "Family ID",
-		size: "small",
-		hasErrorMessage: true,
-		rules: {
-			required: "Please enter your family ID",
+		{
+			fieldType: "search",
+			name: "name",
+			label: "Name",
+			size: "small",
+			renderItem: ({ option, props, isSelected, highlightColor }) => (
+				<StudentCard
+					key={option.StudentId}
+					options={option}
+					props={props}
+					isSelected={isSelected}
+					highlightColor={highlightColor}
+				/>
+			),
+			// rules: {
+			// 	required: "Please enter your family ID",
+			// },
+			searchApi: (keyStroke: string) => {
+				return searchStudentList(
+					{
+						FamilyId: "",
+						CardNumber: "",
+						StudentName: keyStroke,
+						ShowroomId: "7",
+						Cmp_ID_N: "1",
+					},
+					keyStroke && keyStroke !== "" ? true : false
+				);
+			},
+			getOptionLabel: (option: Student) => (option ? `${option.FamilyId}` : ""),
+			optionKey: "StudentName",
+			options: (searchData) => searchData ?? [],
+			xs: 6,
+			md: 6,
 		},
-		xs: 12,
-		md: 6,
-	},
-	{
-		fieldType: "text",
-		name: "idNumbar",
-		label: "ID Number",
-		size: "small",
-		condition: /^-?\d+$/,
-		hasErrorMessage: true,
-		rules: {
-			required: "Please enter your ID Number",
+
+		{
+			fieldType: "search",
+			name: "idNumbar",
+			label: "ID Number",
+			size: "small",
+			renderItem: ({ option, props, isSelected, highlightColor }) => (
+				<StudentCard
+					key={option.StudentId}
+					options={option}
+					props={props}
+					isSelected={isSelected}
+					highlightColor={highlightColor}
+				/>
+			),
+			// rules: {
+			// 	required: "Please enter your family ID",
+			// },
+			searchApi: (keyStroke: string) => {
+				return searchStudentList(
+					{
+						FamilyId: "",
+						CardNumber: keyStroke,
+						StudentName: "",
+						ShowroomId: "7",
+						Cmp_ID_N: "1",
+					},
+					keyStroke && keyStroke !== "" ? true : false
+				);
+			},
+			getOptionLabel: (option: Student) => (option ? `${option.FamilyId}` : ""),
+			optionKey: "CardNumber",
+			options: (searchData) => searchData ?? [],
+			xs: 6,
+			md: 4,
 		},
-		inputProps: {
-			maxLength: 14,
-			style: { textAlign: "end" },
+		{
+			fieldType: "text",
+			name: "dailyLimit",
+			label: "Daily Limit",
+			size: "small",
+			condition: /^-?\d+$/,
+			hasErrorMessage: true,
+			rules: {
+				required: "Please enter your Daily Limit",
+			},
+			inputProps: {
+				maxLength: 5,
+				style: { textAlign: "end" },
+			},
+			xs: 6,
+			md: 2,
 		},
-		xs: 6,
-		md: 4,
-	},
-	{
-		fieldType: "text",
-		name: "dailyLimit",
-		label: "Daily Limit",
-		size: "small",
-		condition: /^-?\d+$/,
-		hasErrorMessage: true,
-		rules: {
-			required: "Please enter your Daily Limit",
+
+		{
+			fieldType: "search",
+			name: "familyId",
+			label: "Family ID",
+			size: "small",
+			hasErrorMessage: true,
+			renderItem: ({ option, props, isSelected, highlightColor }) => (
+				<StudentCard
+					key={option.StudentId}
+					options={option}
+					props={props}
+					isSelected={isSelected}
+					highlightColor={highlightColor}
+				/>
+			),
+			// rules: {
+			// 	required: "Please enter your family ID",
+			// },
+			searchApi: (keyStroke: string) => {
+				return searchStudentList(
+					{
+						FamilyId: keyStroke,
+						CardNumber: "",
+						StudentName: "",
+						ShowroomId: "7",
+						Cmp_ID_N: "1",
+					},
+					keyStroke && keyStroke !== "" ? true : false
+				);
+			},
+			getOptionLabel: (option: Student) => (option ? `${option.FamilyId}` : ""),
+			optionKey: "FamilyId",
+			options: (searchData) => searchData ?? [],
+			xs: 12,
+			md: 4,
 		},
-		inputProps: {
-			maxLength: 5,
-			style: { textAlign: "end" },
+		{
+			fieldType: "text",
+			name: "gardeLimit",
+			label: "Garde Limit",
+			size: "small",
+			condition: /^-?\d+$/,
+			hasErrorMessage: true,
+			rules: {
+				required: "Please enter your Garde Limit",
+			},
+			inputProps: {
+				maxLength: 5,
+				style: { textAlign: "end" },
+			},
+			xs: 6,
+			md: 2,
 		},
-		xs: 6,
-		md: 2,
-	},
-	{
-		fieldType: "text",
-		name: "name",
-		label: "Name",
-		size: "small",
-		hasErrorMessage: true,
-		rules: {
-			required: "Please enter your Name",
-		},
-		xs: 6,
-		md: 4,
-	},
-	{
-		fieldType: "text",
-		name: "gardeLimit",
-		label: "Garde Limit",
-		size: "small",
-		condition: /^-?\d+$/,
-		hasErrorMessage: true,
-		rules: {
-			required: "Please enter your Garde Limit",
-		},
-		inputProps: {
-			maxLength: 5,
-			style: { textAlign: "end" },
-		},
-		xs: 6,
-		md: 2,
-	},
-];
+	];
+};
 
 export const discountAmountField = (
 	theme: Theme,
@@ -306,15 +408,15 @@ export const paidAmountField = (): FieldProps[] => [
 		name: "cashAmount",
 		label: "Cash Amount",
 		size: "small",
-		hasErrorMessage: true,
+		// hasErrorMessage: true,
 		condition: /^-?\d*\.?\d{0,2}$/,
-		rules: {
-			required: "Please enter your Cash Amount",
-		},
+		//
 		InputProps: {
 			inputComponent: NumericFormatCustom as any,
 		},
 		inputProps: {
+			// 	required: "Please enter your Cash Amount",
+			// },Props: {
 			maxLength: 15,
 			style: { textAlign: "end" },
 		},
@@ -325,11 +427,11 @@ export const paidAmountField = (): FieldProps[] => [
 		name: "totalPaid",
 		label: "Total Paid",
 		size: "small",
-		hasErrorMessage: true,
+		// hasErrorMessage: true,
 		condition: /^-?\d*\.?\d{0,2}$/,
-		rules: {
-			required: "Please enter your Total Paid",
-		},
+		// rules: {
+		// 	required: "Please enter your Total Paid",
+		// },
 		InputProps: {
 			inputComponent: NumericFormatCustom as any,
 		},
@@ -344,11 +446,11 @@ export const paidAmountField = (): FieldProps[] => [
 		name: "balance",
 		label: "Balance",
 		size: "small",
-		hasErrorMessage: true,
+		// hasErrorMessage: true,
 		condition: /^-?\d*\.?\d{0,2}$/,
-		rules: {
-			required: "Please enter your Balance",
-		},
+		// rules: {
+		// 	required: "Please enter your Balance",
+		// },
 		InputProps: {
 			inputComponent: NumericFormatCustom as any,
 		},
@@ -366,11 +468,11 @@ export const availableBalancefield = (theme: Theme): FieldProps[] => [
 		name: "availableBalance",
 		label: "Available Balance",
 		size: "small",
-		hasErrorMessage: true,
+		// hasErrorMessage: true,
 		condition: /^-?\d*\.?\d{0,2}$/,
-		rules: {
-			required: "Please enter your Available Balance",
-		},
+		// rules: {
+		// 	required: "Please enter your Available Balance",
+		// },
 		sx: {
 			"& .MuiOutlinedInput-root": {
 				background: alpha(theme.palette.primary.main, 0.1),
@@ -391,11 +493,11 @@ export const availableBalancefield = (theme: Theme): FieldProps[] => [
 		name: "paidAmount",
 		label: "Paid Amount",
 		size: "small",
-		hasErrorMessage: true,
+		// hasErrorMessage: true,
 		condition: /^-?\d*\.?\d{0,2}$/,
-		rules: {
-			required: "Please enter your Paid Amount",
-		},
+		// rules: {
+		// 	required: "Please enter your Paid Amount",
+		// },
 		InputProps: {
 			inputComponent: NumericFormatCustom as any,
 		},
@@ -410,11 +512,11 @@ export const availableBalancefield = (theme: Theme): FieldProps[] => [
 		name: "balanceAmount",
 		label: "Balance Amount",
 		size: "small",
-		hasErrorMessage: true,
+		// hasErrorMessage: true,
 		condition: /^-?\d*\.?\d{0,2}$/,
-		rules: {
-			required: "Please enter your Balance Amount",
-		},
+		// rules: {
+		// 	required: "Please enter your Balance Amount",
+		// },
 		InputProps: {
 			inputComponent: NumericFormatCustom as any,
 		},
@@ -501,3 +603,319 @@ export const scanUnitField = (): FieldProps[] => [
 		xs: 8,
 	},
 ];
+
+export const exchangeRateField = (): FieldProps[] => [
+	{
+		fieldType: "select",
+		name: "currency",
+		label: "Foreign Currency",
+		size: "small",
+		options: [],
+		// hasErrorMessage: true,
+		// rules: {
+		// 	required: "Please enter your Currency",
+		// },
+		xs: 12,
+	},
+	{
+		fieldType: "text",
+		name: "rate",
+		label: "Exchange Rate",
+		size: "small",
+		// hasErrorMessage: true,
+		condition: /^-?\d*\.?\d{0,2}$/,
+		// rules: {
+		// 	required: "Please enter your Balance Amount",
+		// },
+		InputProps: {
+			inputComponent: NumericFormatCustom as any,
+		},
+		inputProps: {
+			maxLength: 15,
+			style: { textAlign: "end" },
+		},
+		xs: 12,
+	},
+	{
+		fieldType: "text",
+		name: "exchangePaidAmount",
+		label: "Paid Amount (QAR)",
+		size: "small",
+		// hasErrorMessage: true,
+		condition: /^-?\d*\.?\d{0,2}$/,
+		// rules: {
+		// 	required: "Please enter your Balance Amount",
+		// },
+		InputProps: {
+			inputComponent: NumericFormatCustom as any,
+		},
+		inputProps: {
+			maxLength: 15,
+			style: { textAlign: "end" },
+		},
+		xs: 5.8,
+	},
+	{
+		fieldType: "text",
+		name: "amount",
+		label: "Amount (QAR)",
+		size: "small",
+		// hasErrorMessage: true,
+		condition: /^-?\d*\.?\d{0,2}$/,
+		// rules: {
+		// 	required: "Please enter your Balance Amount",
+		// },
+		InputProps: {
+			inputComponent: NumericFormatCustom as any,
+		},
+		inputProps: {
+			maxLength: 15,
+			style: { textAlign: "end" },
+		},
+		xs: 5.8,
+	},
+];
+
+export const cardTypeField = (): FieldProps[] => [
+	{
+		fieldType: "select",
+		name: "cardType",
+		label: "Card Type",
+		size: "small",
+		options: [],
+		// hasErrorMessage: true,
+		// rules: {
+		// 	required: "Please enter your Currency",
+		// },
+		xs: 12,
+	},
+	{
+		fieldType: "text",
+		name: "cardTypeNumber",
+		label: "Card Number",
+		size: "small",
+		// hasErrorMessage: true,
+		condition: /^-?\d*\.?\d{0,2}$/,
+		// rules: {
+		// 	required: "Please enter your Balance Amount",
+		// },
+		InputProps: {
+			inputComponent: NumericFormatCustom as any,
+		},
+		inputProps: {
+			maxLength: 15,
+			style: { textAlign: "end" },
+		},
+		xs: 12,
+	},
+	{
+		fieldType: "text",
+		name: "cardAmount",
+		label: "Card Amount",
+		size: "small",
+		// hasErrorMessage: true,
+		condition: /^-?\d*\.?\d{0,2}$/,
+		// rules: {
+		// 	required: "Please enter your Balance Amount",
+		// },
+		InputProps: {
+			inputComponent: NumericFormatCustom as any,
+		},
+		inputProps: {
+			maxLength: 15,
+			style: { textAlign: "end" },
+		},
+		xs: 12,
+	},
+];
+
+export const dummyMenuData = {
+	CategoryDetails: [
+		{
+			CategoryId: "2",
+			CategoryCode: null,
+			CategoryDescription: "SANDWICH",
+		},
+		{
+			CategoryId: "3",
+			CategoryCode: null,
+			CategoryDescription: "BREAKFAST",
+		},
+		{
+			CategoryId: "72",
+			CategoryCode: null,
+			CategoryDescription: "WRAPS",
+		},
+		{
+			CategoryId: "40",
+			CategoryCode: null,
+			CategoryDescription: "HOT FOOD",
+		},
+		{
+			CategoryId: "189",
+			CategoryCode: null,
+			CategoryDescription: "GRAB & GO",
+		},
+		{
+			CategoryId: "208",
+			CategoryCode: null,
+			CategoryDescription: "HOTFOOD",
+		},
+		{
+			CategoryId: "5",
+			CategoryCode: null,
+			CategoryDescription: "CONTAINER",
+		},
+		{
+			CategoryId: "167",
+			CategoryCode: null,
+			CategoryDescription: "A - FRIENDSHIP FESTIVAL - HOT/ICED COFFEE",
+		},
+	],
+	ItemDetails: [
+		{
+			PartId: "418",
+			PartNumber: "ASD0238",
+			PartDescription: "BAGEL WITH GRILLED CHICKEN\n",
+			Price: "18.00",
+		},
+		{
+			PartId: "421",
+			PartNumber: "ASD0241",
+			PartDescription: "BAGEL WITH CREAM CHEESE\n",
+			Price: "16.00",
+		},
+		{
+			PartId: "422",
+			PartNumber: "ASD0242",
+			PartDescription: "CHICKEN WRAP\n",
+			Price: "15.00",
+		},
+		{
+			PartId: "429",
+			PartNumber: "ASD0249",
+			PartDescription: "CHICKEN FAJITAS\n",
+			Price: "16.00",
+		},
+		{
+			PartId: "430",
+			PartNumber: "ASD0250",
+			PartDescription: "RATATOUILLE\n",
+			Price: "12.00",
+		},
+		{
+			PartId: "431",
+			PartNumber: "ASD0251",
+			PartDescription: "CLASSIC CHEESE SANDWICH\n",
+			Price: "8.00",
+		},
+		{
+			PartId: "432",
+			PartNumber: "ASD0252",
+			PartDescription: "CLASSIC CHICKEN SANDWICH\n",
+			Price: "9.00",
+		},
+		{
+			PartId: "433",
+			PartNumber: "ASD0253",
+			PartDescription: "CLASSIC ROAST BEEF SANDWICH\n",
+			Price: "10.00",
+		},
+		{
+			PartId: "434",
+			PartNumber: "ASD0254",
+			PartDescription: "CLASSIC TUNA SANDWICH\n",
+			Price: "9.00",
+		},
+		{
+			PartId: "435",
+			PartNumber: "ASD0255",
+			PartDescription: "CLASSIC TURKEY SANDWICH\n",
+			Price: "10.00",
+		},
+		{
+			PartId: "436",
+			PartNumber: "ASD0256",
+			PartDescription: "PREMIUM CHEESE SANDWICH\n",
+			Price: "13.00",
+		},
+		{
+			PartId: "437",
+			PartNumber: "ASD0257",
+			PartDescription: "PREMIUM CHICKEN SANDWICH\n",
+			Price: "14.00",
+		},
+		{
+			PartId: "438",
+			PartNumber: "ASD0258",
+			PartDescription: "PREMIUM ROAST BEEF SANDWICH\n",
+			Price: "16.00",
+		},
+		{
+			PartId: "439",
+			PartNumber: "ASD0259",
+			PartDescription: "PREMIUM TUNA SANDWICH\n",
+			Price: "15.00",
+		},
+		{
+			PartId: "440",
+			PartNumber: "ASD0260",
+			PartDescription: "PREMIUM TURKEY SANDWICH\n",
+			Price: "16.00",
+		},
+		{
+			PartId: "441",
+			PartNumber: "ASD0261",
+			PartDescription: "MINI BAGEL W/ CHICKEN\n",
+			Price: "15.00",
+		},
+		{
+			PartId: "442",
+			PartNumber: "ASD0262",
+			PartDescription: "MINI BAGEL W/ TURKEY\n",
+			Price: "16.00",
+		},
+		{
+			PartId: "443",
+			PartNumber: "ASD0263",
+			PartDescription: "MINI BAGEL W/ ROAST BEEF\n",
+			Price: "15.00",
+		},
+		{
+			PartId: "444",
+			PartNumber: "ASD0264",
+			PartDescription: "MINI BAGEL W/ TUNA\n",
+			Price: "15.00",
+		},
+		{
+			PartId: "445",
+			PartNumber: "ASD0265",
+			PartDescription: "ASSORTED BREAD ROLL",
+			Price: "8.00",
+		},
+		{
+			PartId: "449",
+			PartNumber: "ASD0269",
+			PartDescription: "JUMBO SANDWICHES (1X4)\n",
+			Price: "15.00",
+		},
+		{
+			PartId: "851",
+			PartNumber: "ASD0671",
+			PartDescription: "PLAIN BAGEL",
+			Price: "10.00",
+		},
+		{
+			PartId: "852",
+			PartNumber: "ASD0672",
+			PartDescription: "CREAM CHEESE",
+			Price: "6.00",
+		},
+		{
+			PartId: "1053",
+			PartNumber: "ASD0873",
+			PartDescription: "CHICKEN SHAWARMA",
+			Price: "12.00",
+		},
+	],
+};

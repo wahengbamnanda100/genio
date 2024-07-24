@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Grid, Stack, alpha, useTheme } from "@mui/material";
 import {
 	PosMenuFormSchema,
@@ -18,9 +19,13 @@ import {
 	selectDiscountPercent,
 	selectDiscountDisable,
 } from "../../../../../store/slices/posMenuSlice";
-import { useEffect } from "react";
+import { FC, useEffect } from "react";
 
-const DiscountAmount = () => {
+interface DiscountAmountProps {
+	// onSubmit: (data: unknown) => void;
+}
+
+const DiscountAmount: FC<DiscountAmountProps> = () => {
 	const theme = useTheme();
 	const dispatch: AppDispatch = useDispatch();
 	const { watch, setValue } = useFormContext<PosMenuFormSchema>();
@@ -77,42 +82,54 @@ const DiscountAmount = () => {
 		else dispatch(setDiscountPercentage(0));
 	}, [changeDiscountAmount]);
 
+	// const onSubmit: SubmitHandler<PosMenuFormSchema> = (data) => {
+	// 	console.log("handle submit", data);
+	// };
+
 	return (
-		<Grid container spacing={2} sx={{ mt: 0 }}>
-			<Grid item xs={6}>
-				{/* <FormProvider {...method}> */}
-				<Grid container spacing={1}>
-					{discountAmountField(theme, discountDisable).map((field) => (
-						<Field key={field.name} {...field} />
-					))}
-				</Grid>
-				{/* </FormProvider> */}
-			</Grid>
-			<Grid item xs={6} container alignItems="center" justifyContent="center">
-				{/* <FormProvider {...netAmountMethod}> */}
-				<Stack
-					flexDirection={"row"}
-					width={"100%"}
-					borderRadius={1}
-					gap={2}
-					p={2}
-					py={3}
-					// justifyContent="center"
-					// alignItems="center"
-					boxShadow={theme.shadows[4]}
-					bgcolor={alpha(theme.palette.secondary.main, 0.3)}>
-					<Field {...netAmountField(theme)} />
-					<Grid item xs={6}>
-						<AnimateButton>
-							<Button variant="contained" color="secondary" fullWidth>
-								Submit
-							</Button>
-						</AnimateButton>
+		<>
+			<Grid container columnSpacing={2} sx={{ mt: 0, px: 0, py: 1 }}>
+				<Grid item xs={6}>
+					{/* <FormProvider {...method}> */}
+					<Grid container spacing={1}>
+						{discountAmountField(theme, discountDisable).map((field) => (
+							<Field key={field.name} {...field} />
+						))}
 					</Grid>
-				</Stack>
-				{/* </FormProvider> */}
+					{/* </FormProvider> */}
+				</Grid>
+				<Grid item xs={6} container alignItems="center" justifyContent="center">
+					{/* <FormProvider {...netAmountMethod}> */}
+					<Stack
+						flexDirection={"row"}
+						width={"100%"}
+						borderRadius={1}
+						gap={2}
+						p={2}
+						py={3}
+						// justifyContent="center"
+						// alignItems="center"
+						boxShadow={theme.shadows[4]}
+						bgcolor={alpha(theme.palette.secondary.main, 0.3)}>
+						<Field {...netAmountField(theme)} />
+						<Grid item xs={6}>
+							<AnimateButton>
+								<Button
+									type="submit"
+									variant="contained"
+									color="secondary"
+									fullWidth
+									// onClick={handleSubmit(onSubmit)}
+								>
+									Submit
+								</Button>
+							</AnimateButton>
+						</Grid>
+					</Stack>
+					{/* </FormProvider> */}
+				</Grid>
 			</Grid>
-		</Grid>
+		</>
 	);
 };
 

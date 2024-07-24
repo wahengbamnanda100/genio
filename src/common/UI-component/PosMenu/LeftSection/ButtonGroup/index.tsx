@@ -25,7 +25,7 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
 			<Grid item xs={12} md={3}>
 				<ActionButton
 					label="Submit & Print"
-					type="submit"
+					type="submitPrint"
 					color={"secondary"}
 					onClick={handleSubmitClick}
 				/>
@@ -60,7 +60,7 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
 
 interface ActionButtonProps {
 	label: string;
-	type: "submit" | "cancel" | "previous" | "back";
+	type: "submitPrint" | "cancel" | "previous" | "back";
 	color: any;
 	colors?: OverridableStringUnion<
 		| "primary"
@@ -87,7 +87,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
 	onClick,
 }) => {
 	const buttonIcons = {
-		submit: <DoneRoundedIcon />,
+		submitPrint: <DoneRoundedIcon />,
 		cancel: <ClearRoundedIcon />,
 		previous: <RestoreRoundedIcon />,
 		back: <ReplyRoundedIcon />,

@@ -67,7 +67,7 @@ const InputField = ({
 				)}
 				rules={rules}
 			/>
-			{hasErrorMessage && (
+			{hasErrorMessage && _.get(errors, name) && (
 				<ErrorContainer>
 					{
 						(_.get(errors, name)

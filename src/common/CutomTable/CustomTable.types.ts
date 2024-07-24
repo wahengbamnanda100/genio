@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
 	Column,
-	EditingState,
+	// EditingState,
 	EditingStateProps,
 	FilteringState,
 	GroupingState,
@@ -97,7 +97,7 @@ export type CustomTableProps = {
 	columnReordering?: string[];
 	defaultColumnWidths?: {
 		columnName: string;
-		width: string;
+		width: number;
 	}[];
 };
 
@@ -118,5 +118,7 @@ export interface EditTableProps {
 	};
 	editingState?: EditingStateProps;
 	selection?: (string | number)[];
-	setSelection?: Dispatch<SetStateAction<(string | number)[]>>;
+	setSelection?:
+		| Dispatch<SetStateAction<(string | number)[]>>
+		| ((selection: (string | number)[]) => void);
 }

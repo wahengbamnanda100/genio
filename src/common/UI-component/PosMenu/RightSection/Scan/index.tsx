@@ -61,7 +61,7 @@ const SubmitBtn: FC<SubmitBtnProps> = ({ handleSubmit }) => {
 				color="secondary"
 				fullWidth
 				onClick={handleSubmit}>
-				Submit
+				Scan
 			</Button>
 		</AnimateButton>
 	);

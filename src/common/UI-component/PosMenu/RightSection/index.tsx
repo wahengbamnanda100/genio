@@ -1,40 +1,30 @@
 import { Box, Grid } from "@mui/material";
 import ScanComponent from "./Scan";
 import SelectMenuBox from "./Carrousal";
-import { FC, useState } from "react";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../../../store";
 import { PosMenuItem, addPosMenu } from "../../../../store/slices/posMenuSlice";
+import { CategoryDetailsType, ItemDetailsType } from "../../../../services";
+import { dummyMenuData } from "../../../Component-types/posMenu.type";
 
-type itemsType = {
-	id: string;
-	description: string;
-	price: number;
-	calories: number;
-};
+// interface RightMenuProps {
+// 	data: MenuItemDataType;
+// }
 
-type foodType = {
-	category: string;
-	items: itemsType[];
-};
-
-type foodDataType = foodType[];
-
-interface RightMenuProps {
-	data: foodDataType;
-}
-
-const RightMenuSection: FC<RightMenuProps> = ({ data }) => {
+const RightMenuSection = () => {
 	const dispatch: AppDispatch = useDispatch();
+	const data = dummyMenuData;
 
-	const [foodItems, setFoodItems] = useState<itemsType[]>([]);
+	const [foodItems, setFoodItems] = useState<ItemDetailsType[]>([]);
 
-	const handleCategory = (category: unknown) => {
-		//todo chang later
-		const filteredCategory = data.find((food) => food.category === category);
+	const handleCategory = (item: CategoryDetailsType) => {
+		const filteredCategory = data.CategoryDetails.find(
+			(category) => category.CategoryId === item.CategoryId
+		);
 
 		if (filteredCategory) {
-			setFoodItems(filteredCategory.items);
+			setFoodItems(data.ItemDetails); // Assuming each item has a CategoryId field
 		} else {
 			setFoodItems([]);
 		}
@@ -42,14 +32,14 @@ const RightMenuSection: FC<RightMenuProps> = ({ data }) => {
 
 	const handleItem = (item: unknown) => {
 		console.log("item clicked", item);
-		const typedItem = item as itemsType;
+		const typedItem = item as ItemDetailsType;
 		const temp: PosMenuItem = {
-			id: typedItem.id,
-			description: typedItem.description,
-			unitPrice: typedItem.price,
+			id: typedItem.PartId,
+			description: typedItem.PartDescription,
+			unitPrice: Number(typedItem.Price),
 			quantity: 1,
-			netAmount: typedItem.price,
-			amount: typedItem.price,
+			netAmount: Number(typedItem.Price),
+			amount: Number(typedItem.Price),
 			discount: 0,
 		};
 		dispatch(addPosMenu(temp));
@@ -58,7 +48,11 @@ const RightMenuSection: FC<RightMenuProps> = ({ data }) => {
 		<Grid item xs={12} md={6}>
 			<ScanComponent />
 
-			<SelectMenuBox data={data} category={true} onClickItem={handleCategory} />
+			<SelectMenuBox
+				data={data.CategoryDetails}
+				category={true}
+				onClickItem={handleCategory as (item: unknown) => void}
+			/>
 
 			<RightSpacing />
 

@@ -1,13 +1,13 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
 	Paper,
 	CircularProgress,
 	Button,
 	InputAdornment,
 	useMediaQuery,
-	// Menu,
-	// MenuItem,
+	Menu,
+	MenuItem,
 } from "@mui/material";
 import {
 	Grid,
@@ -16,7 +16,7 @@ import {
 	PagingPanel,
 	TableFilterRow,
 	TableColumnVisibility,
-	// Toolbar,
+	Toolbar,
 	ColumnChooser,
 	SearchPanel,
 	TableGroupRow,
@@ -41,7 +41,7 @@ import {
 	// IntegratedSelection,
 	IntegratedSorting,
 	PagingState,
-	// RowDetailState,
+	RowDetailState,
 	SearchState,
 	SelectionState,
 	SortingState,
@@ -52,8 +52,7 @@ import {
 import React, { ComponentType, useEffect, useState } from "react";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import SearchIcon from "@mui/icons-material/Search";
-// import { useTranslation } from "react-i18next";
-// import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
+import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import {
 	LoadingShade,
 	TableHeadStyled,
@@ -62,18 +61,11 @@ import {
 	TextFieldStyled,
 } from "./CustomTable.style";
 import { CustomTableProps } from "./CustomTable.types";
-// import {
-// 	EXPORT_TYPES,
-// 	tableExportFn,
-// 	tableExportFnProps,
-// } from "helpers/tableExportFn";
-
-// const CurrencyFormatter = ({ value }: any) =>
-// 	value.toLocaleString("en-US", { style: "currency", currency: "USD" });
-
-// const CurrencyTypeProvider = (props: any) => (
-// 	<DataTypeProvider formatterComponent={CurrencyFormatter} {...props} />
-// );
+import {
+	EXPORT_TYPES,
+	tableExportFn,
+	tableExportFnProps,
+} from "../../helpers/tableExportFn";
 
 const messages = {
 	Total: "Total",
@@ -117,6 +109,72 @@ const TableComponent: ComponentType<object> = (props) => {
 	return <TableStyled {...props} className="table" />;
 };
 
+const ToolbarComponent: ComponentType<
+	Toolbar.RootProps &
+		Omit<tableExportFnProps, "selected"> & { hasExport?: boolean }
+> = ({ rows, columns, customExport, hasExport, ...props }) => {
+	const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+	const open = Boolean(anchorEl);
+	const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+		setAnchorEl(event.currentTarget);
+	};
+	const handleClose = () => {
+		setAnchorEl(null);
+	};
+	const handleMenuItemClick =
+		(selected: (typeof EXPORT_TYPES)[number]) => () => {
+			tableExportFn({ rows, columns, customExport, selected });
+			setAnchorEl(null);
+		};
+
+	return (
+		<Toolbar.Root {...props} style={{ borderBottom: "none", padding: "0" }}>
+			{props.children}
+			{hasExport && (
+				<Button
+					startIcon={<ArrowUpwardIcon />}
+					type="button"
+					variant="outlined"
+					style={{
+						marginLeft: 20,
+						minWidth: "fit-content",
+						marginRight: 0,
+					}}
+					onClick={handleClick}>
+					Export
+				</Button>
+			)}
+			<Menu
+				elevation={0}
+				anchorOrigin={{
+					vertical: "bottom",
+					horizontal: "right",
+				}}
+				transformOrigin={{
+					vertical: "top",
+					horizontal: "right",
+				}}
+				anchorEl={anchorEl}
+				open={open}
+				onClose={handleClose}
+				sx={{
+					"& .MuiPaper-root": {
+						width: "120px",
+						borderRadius: "0px",
+						boxShadow:
+							"rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px",
+					},
+				}}>
+				{EXPORT_TYPES.map((type) => (
+					<MenuItem key={type} onClick={handleMenuItemClick(type)}>
+						{type}
+					</MenuItem>
+				))}
+			</Menu>
+		</Toolbar.Root>
+	);
+};
+
 const HeadComponent: ComponentType<object> = (props) => {
 	return <TableHeadStyled {...props} className="tableHead" />;
 };
@@ -125,11 +183,10 @@ const InputSearchComponent: ComponentType<SearchPanel.InputProps> = ({
 	value,
 	onValueChange,
 }) => {
-	// const { t } = useTranslation();
 	return (
 		<TextFieldStyled
 			variant="outlined"
-			placeholder={"search_text" + "..."}
+			placeholder={"Quick search" + "..."}
 			value={value}
 			onChange={(e) => onValueChange(e.target.value)}
 			InputProps={{
@@ -147,8 +204,6 @@ const ToggleButtonComponent: ComponentType<ColumnChooser.ToggleButtonProps> = ({
 	onToggle,
 	buttonRef,
 }) => {
-	// const { t } = useTranslation();
-
 	return (
 		<Button
 			variant="outlined"
@@ -156,16 +211,10 @@ const ToggleButtonComponent: ComponentType<ColumnChooser.ToggleButtonProps> = ({
 			color="primary"
 			onClick={onToggle}
 			ref={(filterButtonRef) => buttonRef(filterButtonRef!)}>
-			Filter Text
+			Filter
 		</Button>
 	);
 };
-
-// const GroupComponent: ComponentType<GroupingPanel.EmptyMessageProps> = () => {
-// 	// const { t } = useTranslation();
-
-// 	return <span>drag</span>;
-// };
 
 const CustomTable = ({
 	isLoading,
@@ -190,14 +239,16 @@ const CustomTable = ({
 	hasGrouping,
 	hasToggleVisibility,
 	hasVerticalPadding,
-	// hasExport,
+	hasExport,
 	hasSelect,
 	selection,
 	setSelection,
-	// customExport,
+	customExport,
 	hasHorizontalPadding = true,
 	hasBoxShadow = true,
 	paperElevation = 0,
+	rightColumns = [],
+	leftColumns = [],
 	hasSummary,
 	columnReordering = [],
 	defaultColumnWidths = [],
@@ -208,9 +259,9 @@ const CustomTable = ({
 	] = useState(integratedFiltering?.columnExtensions ?? []);
 	const [grouping, setGrouping] = useState<Grouping[]>([]);
 
-	const [rightColumns] = useState(["Action"]);
-	const [leftColumns] = useState(["RowIndex", "ReferNo", "SectorCode"]);
-	// const [expandedRowId, setExpandedRowId] = useState(null);
+	// const [rightColumns] = useState(["Action"]);
+	// const [leftColumns] = useState(["RowIndex", "ReferNo", "SectorCode"]);
+	const [expandedRowId, setExpandedRowId] = useState(null);
 
 	const onHiddenColumnNamesChange = (hiddenColumnNames: string[]) => {
 		setColumnIntegratedFilteringExtensionsState(
@@ -226,11 +277,11 @@ const CustomTable = ({
 	const matches = useMediaQuery("(min-width:1000px)");
 	useEffect(() => {}, [matches]);
 
-	// const handleDetailRowExpand = (expandedRowIds) => {
-	// 	setExpandedRowId(
-	// 		expandedRowIds.length ? expandedRowIds[expandedRowIds.length - 1] : null
-	// 	);
-	// };
+	const handleDetailRowExpand = (expandedRowIds: any) => {
+		setExpandedRowId(
+			expandedRowIds.length ? expandedRowIds[expandedRowIds.length - 1] : null
+		);
+	};
 
 	return (
 		<Paper
@@ -245,14 +296,14 @@ const CustomTable = ({
 					? "-0px -0px 10px 0px rgba(0, 0, 0, 0.1)"
 					: undefined,
 			}}
-			className="table_container">
+			className="table_container_main">
 			<Grid {...grid}>
 				{children}
 				{/* <RowDetailState /> */}
-				{/* <RowDetailState
+				<RowDetailState
 					expandedRowIds={expandedRowId !== null ? [expandedRowId] : []}
 					onExpandedRowIdsChange={handleDetailRowExpand}
-				/> */}
+				/>
 				<VirtualTable columnExtensions={table?.columnExtensions} />
 
 				<SearchState />
@@ -291,14 +342,6 @@ const CustomTable = ({
 
 				{/* <TableGroupRow.InlineSummary getMessage={(messageKey: string) => "string"}  /> */}
 
-				{hasSelect && (
-					<TableSelection
-						selectByRowClick
-						highlightRow
-						showSelectionColumn={true}
-					/>
-				)}
-
 				<SummaryState {...summaryState} />
 				<IntegratedSummary calculator={totalCalculator} />
 
@@ -323,6 +366,8 @@ const CustomTable = ({
 				<TableHeaderRow showSortingControls={hasSort} {...tableHeaderRow} />
 
 				{tableRowDetail && <TableRowDetail {...tableRowDetail} />}
+
+				{hasSelect && <TableSelection /*selectByRowClick*/ showSelectAll />}
 
 				{hasGrouping && <TableGroupRow />}
 
@@ -349,7 +394,7 @@ const CustomTable = ({
 
 				{hasPaging && <PagingPanel pageSizes={[5, 10, 25, 50]} />}
 
-				{/* {(hasSearch || hasGrouping || hasToggleVisibility || hasExport) && (
+				{(hasSearch || hasGrouping || hasToggleVisibility || hasExport) && (
 					<Toolbar
 						rootComponent={(props) => (
 							<ToolbarComponent
@@ -361,7 +406,7 @@ const CustomTable = ({
 							/>
 						)}
 					/>
-				)} */}
+				)}
 
 				{hasGrouping && <GroupingPanel showGroupingControls />}
 

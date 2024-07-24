@@ -16,6 +16,8 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { AppDispatch, RootState } from "../../../../../store";
 import {
+	decrementItemQuantity,
+	incrementItemQuantity,
 	removePosMenu,
 	selectMenuTable,
 	updateMenuItem,
@@ -92,6 +94,15 @@ const MenuTable = () => {
 		// },
 	];
 
+	const handleSelectionChange = (newSelection: (string | number)[]) => {
+		if (newSelection.length > 0) {
+			// Only keep the most recent selection
+			setSelection([newSelection[newSelection.length - 1]]);
+		} else {
+			setSelection([]);
+		}
+	};
+
 	const commitChanges: EditingStateProps["onCommitChanges"] = ({
 		changed,
 		deleted,
@@ -106,9 +117,31 @@ const MenuTable = () => {
 		}
 	};
 
+	const handleAddItem = () => {
+		if (selection.length > 0) {
+			const _id = menuTable[selection[0] as number].id;
+			dispatch(incrementItemQuantity(_id));
+		} else {
+			console.log("Menu item is not slected");
+		}
+	};
+
+	const handleRemoveItem = () => {
+		if (selection.length > 0) {
+			const _id = menuTable[selection[0] as number].id;
+			dispatch(decrementItemQuantity(_id));
+			setSelection([]);
+		} else {
+			console.log("Menu item is not slected");
+		}
+	};
+
 	return (
 		<Box>
-			<TableHeader />
+			<TableHeader
+				handleAddItem={handleAddItem}
+				handleRemoveItem={handleRemoveItem}
+			/>
 
 			<EditingCustomTable
 				hasHorizontalPadding={false}
@@ -130,13 +163,21 @@ const MenuTable = () => {
 				}}
 				// hasSelect={true}
 				selection={selection}
-				setSelection={setSelection}
+				setSelection={handleSelectionChange}
 			/>
 		</Box>
 	);
 };
 
-const TableHeader = () => {
+interface TableHeader {
+	handleAddItem: () => void;
+	handleRemoveItem: () => void;
+}
+
+const TableHeader: React.FC<TableHeader> = ({
+	handleAddItem,
+	handleRemoveItem,
+}) => {
 	return (
 		<Box
 			sx={{
@@ -146,7 +187,7 @@ const TableHeader = () => {
 				alignItems: "center",
 				mb: 1,
 			}}>
-			<AnimateOpButton>
+			<AnimateOpButton handleClick={handleAddItem}>
 				<AddIcon />
 			</AnimateOpButton>
 			<Typography
@@ -157,7 +198,7 @@ const TableHeader = () => {
 				Selected Items
 			</Typography>
 
-			<AnimateOpButton>
+			<AnimateOpButton handleClick={handleRemoveItem}>
 				<RemoveIcon />
 			</AnimateOpButton>
 		</Box>
@@ -165,14 +206,19 @@ const TableHeader = () => {
 };
 
 interface AnimateOpButtonProps {
+	handleClick: () => void;
 	children: ReactNode;
 }
 
-const AnimateOpButton: React.FC<AnimateOpButtonProps> = ({ children }) => {
+const AnimateOpButton: React.FC<AnimateOpButtonProps> = ({
+	handleClick,
+	children,
+}) => {
 	const theme = useTheme();
 	return (
 		<AnimateButton>
 			<ButtonBase
+				onClick={handleClick}
 				color="secondary"
 				sx={{
 					height: "2rem",

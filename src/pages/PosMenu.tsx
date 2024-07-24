@@ -1,34 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Grid, Paper } from "@mui/material";
 
-import foodData from "../helpers/fooddata.json";
 import RightMenuSection from "../common/UI-component/PosMenu/RightSection";
 import LeftMenuSection from "../common/UI-component/PosMenu/LeftSection";
-import { FormProvider, useForm } from "react-hook-form";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { PosMenuFormSchema } from "../common/Component-types/posMenu.type";
 import { RootState } from "../store";
 import { useSelector } from "react-redux";
 import { selectTotalAmount } from "../store/slices/posMenuSlice";
-import { useEffect } from "react";
-
-type itemsType = {
-	id: string;
-	description: string;
-	price: number;
-	calories: number;
-};
-
-type foodType = {
-	category: string;
-	items: itemsType[];
-};
-
-type foodDataType = foodType[];
+import { useEffect, useState } from "react";
+import ConfirmationDialog from "../common/ModalComponent/ConfirmationDialog";
+import SearchDrawer from "../common/UI-component/History/SearchDrwer";
 
 const PosMenu = () => {
 	// const theme = useTheme();
 
-	const allFoodData: foodDataType = foodData.categories;
+	// const allFoodData: foodDataType = foodData.categories;
 
 	// const breakfastColor = {
 	// 	Breakfast: theme.palette.breakfast,
@@ -39,15 +26,17 @@ const PosMenu = () => {
 	const totalAmount = useSelector((state: RootState) =>
 		selectTotalAmount(state)
 	);
+	const [open, setOpen] = useState<boolean>(false);
+	const [drawerOpen, setrawerOpen] = useState<boolean>(false);
 
 	const method = useForm<PosMenuFormSchema>({
 		defaultValues: {
 			//carddetail
-			cardNumber: "1234",
-			familyId: "234324324",
-			idNumbar: 10,
+			cardNumber: "",
+			familyId: "",
+			idNumbar: "",
 			dailyLimit: 10,
-			name: "fasd",
+			name: "",
 			gardeLimit: 10,
 
 			//menuTableSchema
@@ -71,7 +60,7 @@ const PosMenu = () => {
 			paidAmount: 0,
 
 			//scanComponent
-			invoiceDate: new Date("15 june 2024"),
+			invoiceDate: new Date(),
 			invoiceNumber: "testing invoice",
 
 			//scanUnit
@@ -79,6 +68,17 @@ const PosMenu = () => {
 			showroom: "",
 			salesPersonCode: "",
 			salesPersonName: "",
+
+			//currency exchange
+			currency: [],
+			rate: 0,
+			exchangePaidAmount: 0,
+			amount: 0,
+
+			//card type
+			cardType: [],
+			cardTypeNumber: 0,
+			cardAmount: 0,
 		},
 		mode: "onChange",
 	});
@@ -99,6 +99,7 @@ const PosMenu = () => {
 
 	const handlePreviousClick = () => {
 		console.log("Previous button clicked");
+		setrawerOpen(true);
 		// Add your custom logic here
 	};
 
@@ -107,21 +108,61 @@ const PosMenu = () => {
 		// Add your custom logic here
 	};
 
-	return (
-		<Paper elevation={4} sx={{ p: 3 }}>
-			<Grid container spacing={2}>
-				<FormProvider {...method}>
-					<LeftMenuSection
-						handleBackClick={handleBackClick}
-						handleCancelClick={handleCancelClick}
-						handlePreviousClick={handlePreviousClick}
-						handleSubmitClick={handleSubmitClick}
-					/>
+	const handleModalConfirm = () => {
+		console.log("Handle confirm");
+	};
 
-					<RightMenuSection data={allFoodData} />
+	const handleModalCancel = () => {
+		console.log("Handle cancel");
+		setOpen(false);
+	};
+
+	const handleCloseDrawer = () => {
+		setrawerOpen(false);
+	};
+
+	const onSubmit: SubmitHandler<PosMenuFormSchema> = (data) => {
+		console.log("Form submitted:", data);
+		setOpen(true);
+	};
+
+	return (
+		<>
+			<Paper elevation={4} sx={{ p: 3 }}>
+				<FormProvider {...method}>
+					<Grid
+						component={"form"}
+						container
+						spacing={2}
+						onSubmit={method.handleSubmit(onSubmit)}>
+						<LeftMenuSection
+							handleBackClick={handleBackClick}
+							handleCancelClick={handleCancelClick}
+							handlePreviousClick={handlePreviousClick}
+							handleSubmitClick={handleSubmitClick}
+						/>
+
+						<RightMenuSection />
+					</Grid>
 				</FormProvider>
-			</Grid>
-		</Paper>
+			</Paper>
+
+			<ConfirmationDialog
+				dialogType="submit"
+				open={open}
+				setOpen={setOpen}
+				title="Confirm Submit"
+				description="Do you want to confirm this order"
+				onConfirm={handleModalConfirm}
+				onCancel={handleModalCancel}
+			/>
+
+			<SearchDrawer
+				open={drawerOpen}
+				onClose={handleCloseDrawer}
+				onOpen={handlePreviousClick}
+			/>
+		</>
 	);
 };
 
