@@ -10,6 +10,8 @@ import {
 import React, { useState } from "react";
 import { Outlet } from "react-router";
 import Header from "./Header";
+import { useAppProvider } from "../../AppProvider";
+import CustomSnackbar from "../../common/UI-component/Notification";
 
 const drawerWidth: number = 150;
 
@@ -44,6 +46,7 @@ const Main = styled("main", {
 }));
 const MainLayout: React.FC = () => {
 	const theme = useTheme();
+	const { notify } = useAppProvider();
 	//  const leftDrawerOpened = useSelector((state) => state.customization.opened);
 	const [leftDrawerOpened, setLeftDrawerOpened] = useState<boolean>(false);
 
@@ -83,6 +86,8 @@ const MainLayout: React.FC = () => {
 
 				<Outlet />
 			</Main>
+
+			{notify && <CustomSnackbar />}
 		</Box>
 	);
 };

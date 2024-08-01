@@ -5,7 +5,7 @@ import PaidAmount from "./PaidAmount";
 import DiscountAmount from "./DiscountAmount";
 import MenuTable from "./Menutable";
 import CardDetail from "./CardDetail";
-import { FC } from "react";
+import { FC, useEffect } from "react";
 // import { SubmitHandler } from "react-hook-form";
 // import { PosMenuFormSchema } from "../../../Component-types/posMenu.type";
 
@@ -24,6 +24,10 @@ const LeftMenuSection: FC<LeftMenuSectionProps> = ({
 	handleBackClick,
 	// onSubmit,
 }) => {
+	useEffect(() => {
+		console.log("left part rendering...");
+	}, []);
+
 	return (
 		<Grid item xs={12} md={6}>
 			<CardDetail />

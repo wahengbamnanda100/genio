@@ -1,17 +1,23 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // import { useForm } from "react-hook-form";
 // import { MenuTableSchema } from "../../../Component-types/posMenu.type";
-import { Box, ButtonBase, Typography, useTheme } from "@mui/material";
+import {
+	Box,
+	ButtonBase,
+	IconButton,
+	Typography,
+	useTheme,
+} from "@mui/material";
 import {
 	Column,
-	EditingCell,
-	EditingState,
-	EditingStateProps,
+	// EditingCell,
+	// EditingState,
+	// EditingStateProps,
 	GridColumnExtension,
 } from "@devexpress/dx-react-grid";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { AppDispatch, RootState } from "../../../../../store";
@@ -19,14 +25,20 @@ import {
 	decrementItemQuantity,
 	incrementItemQuantity,
 	removePosMenu,
+	// removePosMenu,
 	selectMenuTable,
-	updateMenuItem,
+	// updateMenuItem,
 } from "../../../../../store/slices/posMenuSlice";
 import EditingCustomTable from "../../../../CutomTable/EditableTable";
 import AnimateButton from "../../../Extended/AnimateButton";
+import { MenuItem } from "../../../../Component-types/posMenu.type";
+// import CustomTable from "../../../../CutomTable/CustomTable";
+import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
+import ConfirmationDialog from "../../../../ModalComponent/ConfirmationDialog";
 
 const MenuTable = () => {
 	const dispatch: AppDispatch = useDispatch();
+	const [open, setOpen] = useState<boolean>(false);
 	const menuTable = useSelector((state: RootState) => selectMenuTable(state));
 
 	const [columnExtension] = useState<GridColumnExtension[]>([
@@ -40,10 +52,16 @@ const MenuTable = () => {
 		{ columnName: "action", width: "60", align: "center" },
 	]);
 	const [selection, setSelection] = useState<(string | number)[]>([]);
-	const [editingCells, setEditingCells] = useState<EditingCell[]>([]);
-	const [editColumnExtension] = useState<EditingState.ColumnExtension[]>([
-		{ columnName: "sl", editingEnabled: false },
-	]);
+	const [deleteRow, setDeleteRow] = useState<MenuItem>();
+	// const [editingCells, setEditingCells] = useState<EditingCell[]>([]);
+	// const [editColumnExtension] = useState<EditingState.ColumnExtension[]>([
+	// 	{ columnName: "sl", editingEnabled: false },
+	// ]);
+
+	const handleRowDelete = (row: MenuItem) => {
+		setDeleteRow(row);
+		setOpen(true);
+	};
 
 	const column: Column[] = [
 		{
@@ -76,23 +94,27 @@ const MenuTable = () => {
 			title: "Net Amount",
 			name: "netAmount",
 		},
-		// {
-		// 	title: "Action",
-		// 	name: "action",
-		// 	getCellValue: (row: MenuItem) => (
-		// 		<IconButton
-		// 			color="error"
-		// 			onClick={() => handleRowDelete(row)}
-		// 			sx={{ p: 0, alignSelf: "center" }}>
-		// 			<DeleteOutlinedIcon
-		// 				color="error"
-		// 				fontSize="small"
-		// 				sx={{ fontSize: "0.6em", p: 0 }}
-		// 			/>
-		// 		</IconButton>
-		// 	),
-		// },
+		{
+			title: "Action",
+			name: "action",
+			getCellValue: (row: MenuItem) => (
+				<IconButton
+					color="error"
+					onClick={() => handleRowDelete(row)}
+					sx={{ p: 0.1, alignSelf: "center" }}>
+					<DeleteOutlinedIcon
+						color="error"
+						fontSize="small"
+						sx={{ fontSize: "0.7em", p: 0 }}
+					/>
+				</IconButton>
+			),
+		},
 	];
+
+	useEffect(() => {
+		if (menuTable.length === 0) setSelection([]);
+	}, [menuTable]);
 
 	const handleSelectionChange = (newSelection: (string | number)[]) => {
 		if (newSelection.length > 0) {
@@ -103,19 +125,19 @@ const MenuTable = () => {
 		}
 	};
 
-	const commitChanges: EditingStateProps["onCommitChanges"] = ({
-		changed,
-		deleted,
-	}) => {
-		if (changed) {
-			dispatch(updateMenuItem(changed));
-		}
-		if (deleted) {
-			const key = deleted[0];
-			const deleteid = menuTable[key as number].id;
-			dispatch(removePosMenu(deleteid));
-		}
-	};
+	// const commitChanges: EditingStateProps["onCommitChanges"] = ({
+	// 	changed,
+	// 	deleted,
+	// }) => {
+	// 	if (changed) {
+	// 		dispatch(updateMenuItem(changed));
+	// 	}
+	// 	if (deleted) {
+	// 		const key = deleted[0];
+	// 		const deleteid = menuTable[key as number].id;
+	// 		dispatch(removePosMenu(deleteid));
+	// 	}
+	// };
 
 	const handleAddItem = () => {
 		if (selection.length > 0) {
@@ -130,10 +152,21 @@ const MenuTable = () => {
 		if (selection.length > 0) {
 			const _id = menuTable[selection[0] as number].id;
 			dispatch(decrementItemQuantity(_id));
-			setSelection([]);
+			if (menuTable[selection[0] as number].quantity === 1) setSelection([]);
 		} else {
 			console.log("Menu item is not slected");
 		}
+	};
+
+	const handleConfirm = () => {
+		const _id = deleteRow && deleteRow.id;
+		dispatch(removePosMenu(_id!));
+
+		setOpen(false);
+	};
+
+	const handleCancel = () => {
+		setOpen(false);
 	};
 
 	return (
@@ -155,15 +188,25 @@ const MenuTable = () => {
 				table={{
 					columnExtensions: columnExtension,
 				}}
-				editingState={{
-					onCommitChanges: commitChanges,
-					editingCells: editingCells,
-					onEditingCellsChange: setEditingCells,
-					columnExtensions: editColumnExtension,
-				}}
+				// editingState={{
+				// 	onCommitChanges: commitChanges,
+				// 	editingCells: editingCells,
+				// 	onEditingCellsChange: setEditingCells,
+				// 	columnExtensions: editColumnExtension,
+				// }}
 				// hasSelect={true}
 				selection={selection}
 				setSelection={handleSelectionChange}
+			/>
+
+			<ConfirmationDialog
+				dialogType="delete"
+				open={open}
+				setOpen={setOpen}
+				title="Confirm Delete"
+				description="Do you want to delete the item"
+				onConfirm={handleConfirm}
+				onCancel={handleCancel}
 			/>
 		</Box>
 	);

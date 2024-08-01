@@ -1,22 +1,21 @@
-import { ButtonBase } from "@mui/material";
-// import { Link } from "react-router-dom";
-import LogoDevIcon from "@mui/icons-material/LogoDev";
+import { Box, ButtonBase } from "@mui/material";
+import genioLogo from "../../../../../public/staticData/image/genioLogoPng.png";
 
 const LogoSection = () => {
 	// const defaultId = useSelector((state) => state.customization.defaultId);
 	// const dispatch = useDispatch();
 	return (
-		<ButtonBase
-			disableRipple
-			// onClick={() => dispatch({ type: MENU_OPEN, id: defaultId })}
-			onClick={() => {
-				console.log("logo clicked");
-			}}
-			// component={Link}
-			// to={config.defaultPath}
-		>
-			<LogoDevIcon />
-		</ButtonBase>
+		<Box
+			component={ButtonBase}
+			onClick={() => console.log("clicked logo")}
+			sx={{
+				display: "flex",
+				justifyContent: "flex-start",
+				alignItems: "center",
+				cursor: "pointer",
+			}}>
+			<img src={genioLogo} alt="logo" style={{ width: "120px" }} />
+		</Box>
 	);
 };
 

@@ -4,6 +4,7 @@ import {
 	Button,
 	ButtonBaseProps,
 	Grid,
+	Skeleton,
 	Theme,
 	Typography,
 	styled,
@@ -23,6 +24,7 @@ interface CarouselProps {
 	columns: number;
 	label: string;
 	currentPage: number;
+	isLoading?: boolean;
 	setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
 }
 
@@ -46,6 +48,7 @@ const Carousel: React.FC<CarouselProps> = ({
 	columns,
 	label,
 	currentPage,
+	isLoading,
 	setCurrentPage,
 }) => {
 	// const [currentPage, setCurrentPage] = useState(0);
@@ -124,6 +127,8 @@ const Carousel: React.FC<CarouselProps> = ({
 				)}
 			</Grid> */}
 
+			{isLoading && <LoadingItem rows={1} columns={3} />}
+
 			<SwipeableViews
 				index={currentPage}
 				onChangeIndex={(index: number) => setCurrentPage(index)}
@@ -177,6 +182,26 @@ const NaviationButton: FC<NavigationBtnProps> = ({
 				{children}
 			</Button>
 		</AnimateButton>
+	);
+};
+interface LoadingItemProps {
+	rows: number;
+	columns: number;
+}
+
+const LoadingItem: FC<LoadingItemProps> = ({ rows, columns }) => {
+	const itemsPerPage = rows * columns;
+
+	// const totalSlides = Math.ceil(dummyChildren.length / itemsPerPage);
+
+	return (
+		<Grid container spacing={2}>
+			{[...Array(itemsPerPage)].map((_, index) => (
+				<Grid item xs={12 / columns} key={index}>
+					<Skeleton animation="wave" height="120px" />
+				</Grid>
+			))}
+		</Grid>
 	);
 };
 

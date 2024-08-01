@@ -10,12 +10,14 @@ import generateLinearGradient, {
 interface SelectMenuBoxProps {
 	data: object[];
 	category?: boolean;
+	isLoading?: boolean;
 	onClickItem: (item: unknown) => void;
 }
 
 const SelectMenuBox: FC<SelectMenuBoxProps> = ({
 	data,
 	category = false,
+	isLoading = false,
 	onClickItem,
 }) => {
 	const theme = useTheme();
@@ -93,7 +95,9 @@ const SelectMenuBox: FC<SelectMenuBoxProps> = ({
 			columns={3}
 			currentPage={currentPage}
 			setCurrentPage={setCurrentPage}
+			isLoading={isLoading}
 			label={category ? "Select Category" : "Select Item"}>
+			{/* {isLoading && <LoadingItem rows={1} columns={3} />} */}
 			{data.map((item: any, index) =>
 				category ? (
 					<BreakfastItem
@@ -106,6 +110,7 @@ const SelectMenuBox: FC<SelectMenuBoxProps> = ({
 					/>
 				) : (
 					<Item
+						key={item.PartId}
 						label={item.PartDescription}
 						onClick={() => handleItemClick(item)}
 					/>

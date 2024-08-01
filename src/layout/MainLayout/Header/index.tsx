@@ -42,7 +42,11 @@ const Header: React.FC<HeaderProps> = ({ handleLeftDrawerToggle }) => {
 
 			<Box
 				component="span"
-				sx={{ display: { xs: "none", md: "block" }, flexGrow: 1 }}>
+				sx={{
+					display: { xs: "none", md: "block" },
+					flexGrow: 1,
+					marginLeft: 2,
+				}}>
 				<LogoSection />
 			</Box>
 			<Box sx={{ flexGrow: 1 }} />

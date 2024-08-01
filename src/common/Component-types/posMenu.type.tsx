@@ -3,15 +3,29 @@ import { InputAdornment, Theme, alpha } from "@mui/material";
 import { FieldProps } from "../Form-component";
 import { NumericFormatCustom } from "../Form-component/inputField";
 import StudentCard from "../Form-component/StudentListItem";
-import { Student, searchStudentList } from "../../services";
+import {
+	CompoanyUnitList,
+	searchEmployeeList,
+	searchStudentList,
+	ShowroomList,
+} from "../../services";
+import {
+	BussinessUnitItem,
+	BussinessUnitRequestBodiesType,
+	ShowroomItemType,
+	ShowroomRequestBodiesType,
+	Student,
+} from "../../services/aoi.type";
+import { getDropDownValues } from "../../utils/utils";
+import EmployeeListItem from "../Form-component/EmployeeList";
 
 export type cardDetailSchema = {
-	cardNumber: string;
-	familyId: string;
-	idNumbar: string;
-	dailyLimit: number;
-	name: string;
-	gardeLimit: number;
+	cardNumber: unknown;
+	familyId: unknown;
+	idNumbar: unknown;
+	dailyLimit: number | string;
+	name: unknown;
+	gardeLimit: number | string;
 };
 
 export type MenuItem = {
@@ -56,8 +70,8 @@ export type ScanComponentSchema = {
 export type ScanUnitSchema = {
 	cmpName: string;
 	showroom: string;
-	salesPersonCode: string;
-	salesPersonName: string;
+	salesPersonCode: unknown;
+	salesPersonName: unknown;
 };
 
 export type ExchangeRatSchema = {
@@ -86,6 +100,39 @@ export type PosMenuFormSchema =
 	| ExchangeRatSchema
 	| CardPaymentSchema;
 
+const getValuesCompanyUnit = () => {
+	const param: BussinessUnitRequestBodiesType = {
+		Cmp_ID_N: "1",
+		Usr_ID_N: "7",
+	};
+	const { data, isFetched } = CompoanyUnitList(param);
+	const dropDownValues = isFetched
+		? getDropDownValues<BussinessUnitItem>(
+				data?.Data,
+				"BusinessUnitDesc",
+				"BusinessUnitCode"
+			)
+		: [];
+	return dropDownValues;
+};
+
+const getValuesShowroomList = () => {
+	const param: ShowroomRequestBodiesType = {
+		BusinessUnitId: "1",
+		Usr_ID_N: "7",
+	};
+	const { data, isFetched } = ShowroomList(param);
+	const dropDownValues = isFetched
+		? getDropDownValues<ShowroomItemType>(
+				data?.Data,
+				"ShowroomDesc",
+				"ShowroomId"
+			)
+		: [];
+
+	return dropDownValues;
+};
+
 export const cardDetailFields = (): FieldProps[] => {
 	return [
 		{
@@ -103,9 +150,9 @@ export const cardDetailFields = (): FieldProps[] => {
 				/>
 			),
 			hasErrorMessage: true,
-			// rules: {
-			// 	required: "Please enter your card number",
-			// },
+			rules: {
+				required: "Please enter Card Number",
+			},
 			searchApi: async (keyStroke: string) => {
 				const response = await searchStudentList(
 					{
@@ -140,9 +187,10 @@ export const cardDetailFields = (): FieldProps[] => {
 					highlightColor={highlightColor}
 				/>
 			),
-			// rules: {
-			// 	required: "Please enter your family ID",
-			// },
+			hasErrorMessage: true,
+			rules: {
+				required: "Please enter Student Name",
+			},
 			searchApi: (keyStroke: string) => {
 				return searchStudentList(
 					{
@@ -155,7 +203,8 @@ export const cardDetailFields = (): FieldProps[] => {
 					keyStroke && keyStroke !== "" ? true : false
 				);
 			},
-			getOptionLabel: (option: Student) => (option ? `${option.FamilyId}` : ""),
+			getOptionLabel: (option: Student) =>
+				option ? `${option.StudentName}` : "",
 			optionKey: "StudentName",
 			options: (searchData) => searchData ?? [],
 			xs: 6,
@@ -176,9 +225,10 @@ export const cardDetailFields = (): FieldProps[] => {
 					highlightColor={highlightColor}
 				/>
 			),
-			// rules: {
-			// 	required: "Please enter your family ID",
-			// },
+			hasErrorMessage: true,
+			rules: {
+				required: "Please enter ID Number",
+			},
 			searchApi: (keyStroke: string) => {
 				return searchStudentList(
 					{
@@ -191,8 +241,9 @@ export const cardDetailFields = (): FieldProps[] => {
 					keyStroke && keyStroke !== "" ? true : false
 				);
 			},
-			getOptionLabel: (option: Student) => (option ? `${option.FamilyId}` : ""),
-			optionKey: "CardNumber",
+			getOptionLabel: (option: Student) =>
+				option ? `${option.AdmissionNumber}` : "",
+			optionKey: "AdmissionNumber",
 			options: (searchData) => searchData ?? [],
 			xs: 6,
 			md: 4,
@@ -202,13 +253,17 @@ export const cardDetailFields = (): FieldProps[] => {
 			name: "dailyLimit",
 			label: "Daily Limit",
 			size: "small",
-			condition: /^-?\d+$/,
 			hasErrorMessage: true,
-			rules: {
-				required: "Please enter your Daily Limit",
+			condition: /^-?\d*\.?\d{0,2}$/,
+			disabled: true,
+			// rules: {
+			// 	required: "Please enter your Balance Amount",
+			// },
+			InputProps: {
+				inputComponent: NumericFormatCustom as any,
 			},
 			inputProps: {
-				maxLength: 5,
+				maxLength: 15,
 				style: { textAlign: "end" },
 			},
 			xs: 6,
@@ -230,9 +285,9 @@ export const cardDetailFields = (): FieldProps[] => {
 					highlightColor={highlightColor}
 				/>
 			),
-			// rules: {
-			// 	required: "Please enter your family ID",
-			// },
+			rules: {
+				required: "Please enter your family ID",
+			},
 			searchApi: (keyStroke: string) => {
 				return searchStudentList(
 					{
@@ -258,12 +313,13 @@ export const cardDetailFields = (): FieldProps[] => {
 			size: "small",
 			condition: /^-?\d+$/,
 			hasErrorMessage: true,
+			disabled: true,
 			rules: {
 				required: "Please enter your Garde Limit",
 			},
 			inputProps: {
-				maxLength: 5,
-				style: { textAlign: "end" },
+				maxLength: 7,
+				// style: { textAlign: "end" },
 			},
 			xs: 6,
 			md: 2,
@@ -350,7 +406,7 @@ export const discountAmountField = (
 export const netAmountField = (theme: Theme): FieldProps => ({
 	fieldType: "text",
 	name: "netAmount",
-	label: "Net Amount",
+	label: "Net Amount (QAR)",
 	size: "small",
 	disabled: true,
 	hasErrorMessage: true,
@@ -360,16 +416,24 @@ export const netAmountField = (theme: Theme): FieldProps => ({
 	},
 	inputProps: {
 		maxLength: 15,
-		style: { textAlign: "end" },
+		style: {
+			textAlign: "end",
+			WebkitTextFillColor: "white",
+			// "-webkit-text-fill-color": theme.palette.text.secondary,
+			fontSize: "1.4em",
+		},
 	},
 	sx: {
+		color: theme.palette.text.secondary,
 		"& .MuiOutlinedInput-root": {
+			"-webkit-text-fill-color": theme.palette.text.secondary,
 			// background: alpha(theme.palette.secondary.main, 0.2),
 			fontWeight: "bold",
 
 			"& fieldset": {
 				borderColor: theme.palette.secondary.main,
-				color: theme.palette.secondary.dark,
+				color: "white",
+				// color: theme.palette.secondary.dark,
 			},
 			"&:hover fieldset": {
 				borderColor: theme.palette.secondary.main,
@@ -381,22 +445,29 @@ export const netAmountField = (theme: Theme): FieldProps => ({
 				borderWidth: "2px",
 				// outline: 2,
 			},
-			// "&.Mui-disabled fieldset": {
-			// 	borderColor: theme.palette.secondary.dark,
-			// 	borderWidth: "2px",
-			// 	backgroundColor: theme.palette.secondary.light,
-			// 	color: theme.palette.secondary.dark,
-			// 	// outline: 2,
-			// },
+			"&.Mui-disabled": {
+				color: theme.palette.text.secondary,
+			},
+			"&.Mui-disabled fieldset": {
+				borderColor: theme.palette.secondary.dark,
+				// borderColor: theme.palette.text.secondary,
+				// color: theme.palette.text.secondary,
+				"-webkit-text-fill-color": theme.palette.text.secondary,
+				borderWidth: "2px",
+				backgroundColor: theme.palette.secondary.main,
+				// outline: 2,
+			},
 		},
+
 		"& .MuiInputLabel-root": {
 			color: theme.palette.secondary.main,
 			"&.Mui-focused": {
 				color: theme.palette.secondary.dark,
 			},
-			// "&.Mui-disabled": {
-			// 	color: theme.palette.secondary.dark,
-			// },
+			"&.Mui-disabled": {
+				color: theme.palette.secondary.dark,
+				// color: theme.palette.text.secondary,
+			},
 		},
 	},
 	xs: 6,
@@ -408,6 +479,7 @@ export const paidAmountField = (): FieldProps[] => [
 		name: "cashAmount",
 		label: "Cash Amount",
 		size: "small",
+		disabled: true,
 		// hasErrorMessage: true,
 		condition: /^-?\d*\.?\d{0,2}$/,
 		//
@@ -446,6 +518,7 @@ export const paidAmountField = (): FieldProps[] => [
 		name: "balance",
 		label: "Balance",
 		size: "small",
+		disabled: true,
 		// hasErrorMessage: true,
 		condition: /^-?\d*\.?\d{0,2}$/,
 		// rules: {
@@ -468,6 +541,7 @@ export const availableBalancefield = (theme: Theme): FieldProps[] => [
 		name: "availableBalance",
 		label: "Available Balance",
 		size: "small",
+		disabled: true,
 		// hasErrorMessage: true,
 		condition: /^-?\d*\.?\d{0,2}$/,
 		// rules: {
@@ -512,6 +586,7 @@ export const availableBalancefield = (theme: Theme): FieldProps[] => [
 		name: "balanceAmount",
 		label: "Balance Amount",
 		size: "small",
+		disabled: true,
 		// hasErrorMessage: true,
 		condition: /^-?\d*\.?\d{0,2}$/,
 		// rules: {
@@ -546,7 +621,7 @@ export const scanField = (): FieldProps[] => [
 		name: "invoiceNumber",
 		label: "Invoice Number",
 		size: "small",
-		// disabled: true,
+		disabled: true,
 		hasErrorMessage: true,
 		rules: {
 			required: "Please enter your Invoice Number",
@@ -561,7 +636,7 @@ export const scanUnitField = (): FieldProps[] => [
 		name: "cmpName",
 		label: "Company / Business Unit",
 		size: "small",
-		options: [],
+		options: getValuesCompanyUnit(),
 		hasErrorMessage: true,
 		rules: {
 			required: "Please enter your Company Name",
@@ -573,7 +648,7 @@ export const scanUnitField = (): FieldProps[] => [
 		name: "showroom",
 		label: "Showroom",
 		size: "small",
-		options: [],
+		options: getValuesShowroomList(),
 		hasErrorMessage: true,
 		rules: {
 			required: "Please enter your Showroom",
@@ -581,25 +656,66 @@ export const scanUnitField = (): FieldProps[] => [
 		xs: 6,
 	},
 	{
-		fieldType: "text",
+		fieldType: "search",
 		name: "salesPersonCode",
 		label: "Sales Person Code",
 		size: "small",
+		renderItem: ({ option, props, isSelected, highlightColor }) => (
+			<EmployeeListItem
+				// key={option.Emp_ID_N}
+				options={option}
+				props={props}
+				isSelected={isSelected}
+				highlightColor={highlightColor}
+			/>
+		),
 		hasErrorMessage: true,
-		rules: {
-			required: "Please enter your Sales Person Code",
+		searchApi: async (keyStroke: string) => {
+			const response = await searchEmployeeList(
+				{
+					SearchText: keyStroke,
+					Cmp_ID_N: "1",
+				},
+				keyStroke && keyStroke !== "" ? true : false
+			);
+
+			return response;
 		},
+		getOptionLabel: (option) => (option ? `${option.EmployeeCode}` : ""),
+		optionKey: "EmployeeCode",
+		options: (searchData) => searchData ?? [],
 		xs: 4,
 	},
 	{
-		fieldType: "text",
+		fieldType: "search",
 		name: "salesPersonName",
 		label: "Sales Person Name",
 		size: "small",
+		renderItem: ({ option, props, isSelected, highlightColor }) => (
+			<EmployeeListItem
+				// key={option.Emp_ID_N}
+				options={option}
+				props={props}
+				isSelected={isSelected}
+				highlightColor={highlightColor}
+			/>
+		),
 		hasErrorMessage: true,
-		rules: {
-			required: "Please enter your Sales Person Name",
+		searchApi: async (keyStroke: string) => {
+			const response = await searchEmployeeList(
+				{
+					SearchText: keyStroke,
+					Cmp_ID_N: "1",
+				},
+				keyStroke && keyStroke !== "" ? true : false
+			);
+			console.log("emp res", response);
+
+			return response;
 		},
+		getOptionLabel: (option) => (option ? `${option.EmployeeName}` : ""),
+		optionKey: "EmployeeName",
+		options: (searchData) => searchData ?? [],
 		xs: 8,
 	},
 ];
@@ -622,6 +738,7 @@ export const exchangeRateField = (): FieldProps[] => [
 		name: "rate",
 		label: "Exchange Rate",
 		size: "small",
+		disabled: true,
 		// hasErrorMessage: true,
 		condition: /^-?\d*\.?\d{0,2}$/,
 		// rules: {

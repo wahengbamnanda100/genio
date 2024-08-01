@@ -8,6 +8,7 @@ import NavigationScroll from "./layout/NavigationScroll";
 import router from "./routes";
 import CustomThemeProvider from "./theme/CustomThemeProvider";
 import store from "./store";
+import AppProvider from "./AppProvider";
 
 // const AppContent = () => { }
 
@@ -20,12 +21,14 @@ function App() {
 			<QueryClientProvider client={queryClient}>
 				<ReactQueryDevtools initialIsOpen={false} />
 				<StyledEngineProvider injectFirst>
-					<CustomThemeProvider>
-						<CssBaseline />
-						<NavigationScroll>
-							<RouterProvider router={router} />
-						</NavigationScroll>
-					</CustomThemeProvider>
+					<AppProvider>
+						<CustomThemeProvider>
+							<CssBaseline />
+							<NavigationScroll>
+								<RouterProvider router={router} />
+							</NavigationScroll>
+						</CustomThemeProvider>
+					</AppProvider>
 				</StyledEngineProvider>
 			</QueryClientProvider>
 		</Provider>

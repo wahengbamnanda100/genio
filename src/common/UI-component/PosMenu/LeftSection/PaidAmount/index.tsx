@@ -3,14 +3,19 @@ import SwapVertRoundedIcon from "@mui/icons-material/SwapVertRounded";
 
 import {
 	availableBalancefield,
+	AvailableBalanceSchema,
+	cardDetailSchema,
 	cardTypeField,
 	exchangeRateField,
 	paidAmountField,
+	PaidAmountSchema,
 } from "../../../../Component-types/posMenu.type";
 import Field from "../../../../Form-component/field";
-import { FC, ReactNode, useState } from "react";
+import { FC, ReactNode, useEffect, useState } from "react";
 import { MotionProps, motion } from "framer-motion";
 import { FieldProps } from "../../../../Form-component";
+import { useFormContext, useWatch } from "react-hook-form";
+import { Student } from "../../../../../services/aoi.type";
 
 const Face = ({
 	children,
@@ -60,12 +65,23 @@ const AnimateGrid = ({
 const PaidAmount = () => {
 	const theme = useTheme();
 
+	const { control, setValue } = useFormContext<
+		PaidAmountSchema & AvailableBalanceSchema & cardDetailSchema
+	>();
+
 	const [flip, setFlip] = useState<boolean>(false);
+
+	const [cardNubmerWatch] = useWatch({ control, name: ["cardNumber"] });
 
 	const variants = {
 		front: { rotateX: 0 },
 		back: { rotateX: 180 },
 	};
+
+	useEffect(() => {
+		const value = cardNubmerWatch as Student;
+		value && setValue("availableBalance", Number(value.AvailableBalance));
+	}, [cardNubmerWatch]);
 
 	const handleFlip = () => {
 		setFlip((prev) => !prev);

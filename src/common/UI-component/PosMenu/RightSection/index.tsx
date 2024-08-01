@@ -5,33 +5,36 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../../../store";
 import { PosMenuItem, addPosMenu } from "../../../../store/slices/posMenuSlice";
-import { CategoryDetailsType, ItemDetailsType } from "../../../../services";
-import { dummyMenuData } from "../../../Component-types/posMenu.type";
 
-// interface RightMenuProps {
-// 	data: MenuItemDataType;
-// }
+import {
+	CategoryDetailsType,
+	ItemDetailsType,
+	MenuItemResponseType,
+	MenuListRequstBodiesType,
+} from "../../../../services/aoi.type";
+import { MenuList } from "../../../../services";
 
 const RightMenuSection = () => {
 	const dispatch: AppDispatch = useDispatch();
-	const data = dummyMenuData;
 
-	const [foodItems, setFoodItems] = useState<ItemDetailsType[]>([]);
+	const [menuParam, setMenuParam] = useState<MenuListRequstBodiesType>({
+		BusinessUnitId: "1", //todo change it later
+		ShowroomId: "147", //todo change it later
+		CategoryId: "",
+	});
+
+	const { data: menuData, isLoading, isFetched } = MenuList(menuParam);
 
 	const handleCategory = (item: CategoryDetailsType) => {
-		const filteredCategory = data.CategoryDetails.find(
-			(category) => category.CategoryId === item.CategoryId
-		);
+		// const filteredCategory = data.CategoryDetails.find(
+		// 	(category) => category.CategoryId === item.CategoryId
+		// );
 
-		if (filteredCategory) {
-			setFoodItems(data.ItemDetails); // Assuming each item has a CategoryId field
-		} else {
-			setFoodItems([]);
-		}
+		setMenuParam((prev) => ({ ...prev, CategoryId: item.CategoryId }));
 	};
 
 	const handleItem = (item: unknown) => {
-		console.log("item clicked", item);
+		// console.log("item clicked", item);
 		const typedItem = item as ItemDetailsType;
 		const temp: PosMenuItem = {
 			id: typedItem.PartId,
@@ -49,14 +52,29 @@ const RightMenuSection = () => {
 			<ScanComponent />
 
 			<SelectMenuBox
-				data={data.CategoryDetails}
+				data={
+					menuData && (menuData as MenuItemResponseType).status === "1"
+						? (menuData as MenuItemResponseType).Data[0].CategoryDetails
+						: []
+				}
+				isLoading={isLoading}
 				category={true}
 				onClickItem={handleCategory as (item: unknown) => void}
 			/>
 
 			<RightSpacing />
 
-			<SelectMenuBox data={foodItems} onClickItem={handleItem} />
+			<SelectMenuBox
+				isLoading={isLoading}
+				data={
+					isFetched &&
+					menuData &&
+					(menuData as MenuItemResponseType).status === "1"
+						? (menuData as MenuItemResponseType).Data[0].ItemDetails
+						: []
+				}
+				onClickItem={handleItem}
+			/>
 		</Grid>
 	);
 };

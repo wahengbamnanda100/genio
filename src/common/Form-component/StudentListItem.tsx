@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import { Avatar, Grid, Typography, styled } from "@mui/material";
-import { Student } from "../../services";
+import { Student } from "../../services/aoi.type";
 
 export const StyledStudentCard = styled("li")`
 	background: #f7f7f7;
@@ -168,7 +168,7 @@ const StudentCard: React.FC<StudentCardProps> = ({
 					backgroundColor: highlightColor,
 				},
 			}}>
-			<AvatarComponent src={ImageUrl} alt={StudentName} />
+			<AvatarComponent src={`${ImageUrl}`} alt={StudentName} />
 			<DetailsComponent
 				familyId={FamilyId}
 				studentName={StudentName}

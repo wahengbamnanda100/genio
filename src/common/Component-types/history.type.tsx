@@ -1,16 +1,27 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { searchStudentList } from "../../services";
+import {
+	CompoanyUnitList,
+	searchPreviousList,
+	ShowroomList,
+} from "../../services";
+import {
+	BussinessUnitItem,
+	BussinessUnitRequestBodiesType,
+	ShowroomItemType,
+	ShowroomRequestBodiesType,
+} from "../../services/aoi.type";
+import { getDropDownValues } from "../../utils/utils";
 import { FieldProps } from "../Form-component";
 
 export type searchHistorySchema = {
-	invoiceNubmer: string;
-	cardNumber: string;
-	studentName: string;
-	admissionNumber: string;
+	invoiceNubmer: unknown;
+	cardNumber: unknown;
+	studentName: unknown;
+	admissionNumber: unknown;
 	fromDate: Date | null;
 	toDate: Date | null;
-	CompanyBussinessUnit: string;
-	showroom: string;
+	CompanyBussinessUnit: unknown;
+	showroom: unknown;
 };
 
 export type historyTotalDataSchema = {
@@ -21,7 +32,43 @@ export type historyTotalDataSchema = {
 	totalCardAmount: number;
 };
 
-export const searchHistoryFields = (): FieldProps[] => {
+const getValuesCompanyUnit = () => {
+	const param: BussinessUnitRequestBodiesType = {
+		Cmp_ID_N: "1",
+		Usr_ID_N: "7",
+	};
+	const { data, isFetched } = CompoanyUnitList(param);
+	const dropDownValues = isFetched
+		? getDropDownValues<BussinessUnitItem>(
+				data?.Data,
+				"BusinessUnitDesc",
+				"BusinessUnitCode"
+			)
+		: [];
+	return dropDownValues;
+};
+
+const getValuesShowroomList = () => {
+	const param: ShowroomRequestBodiesType = {
+		BusinessUnitId: "1",
+		Usr_ID_N: "7",
+	};
+	const { data, isFetched } = ShowroomList(param);
+	const dropDownValues = isFetched
+		? getDropDownValues<ShowroomItemType>(
+				data?.Data,
+				"ShowroomDesc",
+				"ShowroomId"
+			)
+		: [];
+
+	return dropDownValues;
+};
+
+export const searchHistoryFields = (
+	fromDate: string,
+	toDate: string
+): FieldProps[] => {
 	return [
 		{
 			fieldType: "search",
@@ -33,22 +80,29 @@ export const searchHistoryFields = (): FieldProps[] => {
 			// 	required: "Please enter your card number",
 			// },
 			searchApi: async (keyStroke: string) => {
-				const response = await searchStudentList(
+				const response = await searchPreviousList(
 					{
-						FamilyId: "",
-						CardNumber: keyStroke,
+						InvoiceNumber: keyStroke,
+						CardNumber: "",
 						StudentName: "",
-						ShowroomId: "7",
-						Cmp_ID_N: "1",
+						ShowroomId: "",
+						BussinessUnitId: "",
+						AdmissionNUmber: "",
+						FromDate: fromDate,
+						ToDate: toDate,
+						Cmp_ID_N: "",
 					},
 					keyStroke && keyStroke !== "" ? true : false
 				);
 
 				return response;
 			},
-			getOptionLabel: (option: any) => (option ? `${option.CardNumber}` : ""),
-			optionKey: "CardNumber",
-			options: (searchData: any) => searchData ?? [],
+			getOptionLabel: (option: any) =>
+				option ? `${option.InvoiceNumber}` : "",
+			optionKey: "InvoiceNumber",
+			options: (searchData: any) => {
+				return searchData ?? [];
+			},
 			xs: 3,
 			md: 3,
 		},
@@ -58,20 +112,27 @@ export const searchHistoryFields = (): FieldProps[] => {
 			label: "Card Number",
 			size: "small",
 			hasErrorMessage: true,
-			searchApi: (keyStroke: string) => {
-				return searchStudentList(
+			searchApi: async (keyStroke: string) => {
+				const response = await searchPreviousList(
 					{
-						FamilyId: keyStroke,
-						CardNumber: "",
+						InvoiceNumber: "",
+						CardNumber: keyStroke,
 						StudentName: "",
-						ShowroomId: "7",
-						Cmp_ID_N: "1",
+						ShowroomId: "",
+						BussinessUnitId: "",
+						AdmissionNUmber: "",
+						FromDate: fromDate,
+						ToDate: toDate,
+						Cmp_ID_N: "",
 					},
 					keyStroke && keyStroke !== "" ? true : false
 				);
+
+				return response;
 			},
-			getOptionLabel: (option: any) => (option ? `${option.FamilyId}` : ""),
-			optionKey: "FamilyId",
+			getOptionLabel: (option: any) =>
+				option ? `${option.AdmissionNumber}` : "",
+			optionKey: "AdmissionNumber",
 			options: (searchData: any) => searchData ?? [],
 			xs: 3,
 			md: 3,
@@ -81,20 +142,26 @@ export const searchHistoryFields = (): FieldProps[] => {
 			name: "studentName",
 			label: "Studnet Name",
 			size: "small",
-			searchApi: (keyStroke: string) => {
-				return searchStudentList(
+			searchApi: async (keyStroke: string) => {
+				const response = await searchPreviousList(
 					{
-						FamilyId: keyStroke,
+						InvoiceNumber: "",
 						CardNumber: "",
-						StudentName: "",
-						ShowroomId: "7",
-						Cmp_ID_N: "1",
+						StudentName: keyStroke,
+						ShowroomId: "",
+						BussinessUnitId: "",
+						AdmissionNUmber: "",
+						FromDate: fromDate,
+						ToDate: toDate,
+						Cmp_ID_N: "",
 					},
 					keyStroke && keyStroke !== "" ? true : false
 				);
+
+				return response;
 			},
-			getOptionLabel: (option: any) => (option ? `${option.FamilyId}` : ""),
-			optionKey: "FamilyId",
+			getOptionLabel: (option: any) => (option ? `${option.StudentName}` : ""),
+			optionKey: "StudentName",
 			options: (searchData: any) => searchData ?? [],
 			xs: 3,
 			md: 3,
@@ -104,20 +171,27 @@ export const searchHistoryFields = (): FieldProps[] => {
 			name: "admissionNumber",
 			label: "Admission Nubmer",
 			size: "small",
-			searchApi: (keyStroke: string) => {
-				return searchStudentList(
+			searchApi: async (keyStroke: string) => {
+				const response = await searchPreviousList(
 					{
-						FamilyId: keyStroke,
+						InvoiceNumber: "",
 						CardNumber: "",
 						StudentName: "",
-						ShowroomId: "7",
-						Cmp_ID_N: "1",
+						ShowroomId: "",
+						BussinessUnitId: "",
+						AdmissionNUmber: keyStroke,
+						FromDate: fromDate,
+						ToDate: toDate,
+						Cmp_ID_N: "",
 					},
 					keyStroke && keyStroke !== "" ? true : false
 				);
+
+				return response;
 			},
-			getOptionLabel: (option: any) => (option ? `${option.FamilyId}` : ""),
-			optionKey: "FamilyId",
+			getOptionLabel: (option: any) =>
+				option ? `${option.AdmissionNumber}` : "",
+			optionKey: "AdmissionNumber",
 			options: (searchData: any) => searchData ?? [],
 			xs: 3,
 			md: 3,
@@ -127,6 +201,7 @@ export const searchHistoryFields = (): FieldProps[] => {
 			name: "fromDate",
 			label: "From Date",
 			size: "small",
+			// allowPastDates: true,
 			xs: 3,
 			md: 3,
 		},
@@ -135,6 +210,7 @@ export const searchHistoryFields = (): FieldProps[] => {
 			name: "toDate",
 			label: "To Date",
 			size: "small",
+			// allowPastDates: true,
 			xs: 3,
 			md: 3,
 		},
@@ -144,7 +220,7 @@ export const searchHistoryFields = (): FieldProps[] => {
 			name: "CompanyBussinessUnit",
 			label: "Company / Business Unit",
 			size: "small",
-			options: [],
+			options: getValuesCompanyUnit(),
 			xs: 3,
 			md: 3,
 		},
@@ -154,7 +230,7 @@ export const searchHistoryFields = (): FieldProps[] => {
 			name: "showroom",
 			label: "Showroom",
 			size: "small",
-			options: [],
+			options: getValuesShowroomList(),
 			xs: 3,
 			md: 3,
 		},

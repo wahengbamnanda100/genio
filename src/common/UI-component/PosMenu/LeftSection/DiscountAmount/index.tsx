@@ -19,7 +19,8 @@ import {
 	selectDiscountPercent,
 	selectDiscountDisable,
 } from "../../../../../store/slices/posMenuSlice";
-import { FC, useEffect } from "react";
+import { FC, useEffect, useState } from "react";
+import { Student } from "../../../../Form-component/formField.type";
 
 interface DiscountAmountProps {
 	// onSubmit: (data: unknown) => void;
@@ -29,6 +30,7 @@ const DiscountAmount: FC<DiscountAmountProps> = () => {
 	const theme = useTheme();
 	const dispatch: AppDispatch = useDispatch();
 	const { watch, setValue } = useFormContext<PosMenuFormSchema>();
+	const [balanceAmount, setBalanceAmount] = useState<number>(0);
 
 	const totalAmount = useSelector((state: RootState) =>
 		selectTotalAmount(state)
@@ -51,6 +53,19 @@ const DiscountAmount: FC<DiscountAmountProps> = () => {
 
 	const changeDiscountPercentAmount = watch("discount");
 	const changeDiscountAmount = watch("discountAmount");
+	const changeCardNumberAmount = watch("cardNumber");
+
+	useEffect(() => {
+		if (changeCardNumberAmount) {
+			const value = changeCardNumberAmount as Student;
+			const availableBalance = Number(value.AvailableBalance);
+
+			if (!isNaN(availableBalance)) {
+				const balance = availableBalance - netTotalAmount;
+				setBalanceAmount(balance);
+			}
+		}
+	}, [changeCardNumberAmount, netTotalAmount]);
 
 	useEffect(() => {
 		setValue("total", totalAmount);
@@ -58,7 +73,9 @@ const DiscountAmount: FC<DiscountAmountProps> = () => {
 
 	useEffect(() => {
 		setValue("netAmount", netTotalAmount);
-	}, [netTotalAmount]);
+		setValue("paidAmount", netTotalAmount);
+		setValue("balanceAmount", balanceAmount);
+	}, [netTotalAmount, balanceAmount]);
 
 	useEffect(() => {
 		setValue("discountAmount", discountAmount);
@@ -119,6 +136,7 @@ const DiscountAmount: FC<DiscountAmountProps> = () => {
 									variant="contained"
 									color="secondary"
 									fullWidth
+									sx={{ p: 1.4 }}
 									// onClick={handleSubmit(onSubmit)}
 								>
 									Submit

@@ -5,27 +5,11 @@ import RightMenuSection from "../common/UI-component/PosMenu/RightSection";
 import LeftMenuSection from "../common/UI-component/PosMenu/LeftSection";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { PosMenuFormSchema } from "../common/Component-types/posMenu.type";
-import { RootState } from "../store";
-import { useSelector } from "react-redux";
-import { selectTotalAmount } from "../store/slices/posMenuSlice";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ConfirmationDialog from "../common/ModalComponent/ConfirmationDialog";
 import SearchDrawer from "../common/UI-component/History/SearchDrwer";
 
 const PosMenu = () => {
-	// const theme = useTheme();
-
-	// const allFoodData: foodDataType = foodData.categories;
-
-	// const breakfastColor = {
-	// 	Breakfast: theme.palette.breakfast,
-	// 	"Hot Food": theme.palette.breakfast,
-	// 	"Grab and Go": "",
-	// };
-
-	const totalAmount = useSelector((state: RootState) =>
-		selectTotalAmount(state)
-	);
 	const [open, setOpen] = useState<boolean>(false);
 	const [drawerOpen, setrawerOpen] = useState<boolean>(false);
 
@@ -82,10 +66,6 @@ const PosMenu = () => {
 		},
 		mode: "onChange",
 	});
-
-	useEffect(() => {
-		method.setValue("total", totalAmount as number);
-	}, [totalAmount]);
 
 	const handleSubmitClick = () => {
 		console.log("Submit button clicked");

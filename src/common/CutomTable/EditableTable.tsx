@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import Paper from "@mui/material/Paper";
-import { Getter } from "@devexpress/dx-react-core";
+// import { Getter } from "@devexpress/dx-react-core";
 import {
 	EditingState,
 	IntegratedSelection,
@@ -13,21 +13,21 @@ import {
 	TableHeaderRow,
 	// TableEditColumn,
 	TableSelection,
-	TableInlineCellEditing,
+	// TableInlineCellEditing,
 	// TableEditRow,
-	TableEditColumn,
+	// TableEditColumn,
 	// TableEditRow,
 } from "@devexpress/dx-react-grid-material-ui";
 
 import {
-	Command,
+	// Command,
 	// CustomTableRow,
 	FocusableCell,
 	HeadComponent,
-	StyledCommandCell,
+	// StyledCommandCell,
 	TableComponent,
 } from "./components/customComponent";
-import StyledEditCell from "./components/EditCell";
+// import StyledEditCell from "./components/EditCell";
 import { EditTableProps } from "./CustomTable.types";
 // import { CustomSelectCell } from "./components/SelectionCell";
 
@@ -80,11 +80,11 @@ const MyGridComponent: React.FC<EditTableProps> = ({
 					{...table}
 				/>
 				<TableHeaderRow />
-				<TableInlineCellEditing
+				{/* <TableInlineCellEditing
 					// cellComponent={EditCell}
 					selectTextOnEditStart={false}
 					cellComponent={StyledEditCell}
-				/>
+				/> */}
 
 				<TableSelection
 					selectByRowClick
@@ -93,13 +93,13 @@ const MyGridComponent: React.FC<EditTableProps> = ({
 					// cellComponent={CustomSelectCell as any}
 				/>
 
-				<TableEditColumn
+				{/* <TableEditColumn
 					width={50}
 					showDeleteCommand
 					commandComponent={Command}
 					cellComponent={StyledCommandCell}
-				/>
-
+				/> */}
+				{/* 
 				<Getter
 					name="tableColumns"
 					computed={({ tableColumns }) => {
@@ -114,7 +114,7 @@ const MyGridComponent: React.FC<EditTableProps> = ({
 
 						return [...columns, ...actionCommand];
 					}}
-				/>
+				/> */}
 			</Grid>
 		</Paper>
 	);

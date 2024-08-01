@@ -10,16 +10,24 @@ import {
 	Tooltip,
 	Typography,
 } from "@mui/material";
-import { FC, ReactNode, useState } from "react";
+import { FC, ReactNode, useEffect, useMemo, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import DownloadIcon from "@mui/icons-material/Download";
 import ArticleIcon from "@mui/icons-material/Article";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import SearchHistory from "./SearchHistory";
 import CustomTable from "../../CutomTable/CustomTable";
-import { Column } from "@devexpress/dx-react-grid";
+import { Column, GridColumnExtension } from "@devexpress/dx-react-grid";
 import { RightSpacing } from "../PosMenu/RightSection";
 import TotalVlaue from "./TotalVlaue";
+import { FormProvider, useForm } from "react-hook-form";
+import { searchHistorySchema } from "../../Component-types/history.type";
+import { PreviousList } from "../../../services";
+import moment from "moment";
+import {
+	PreviousSaleListItemType,
+	PreviousSaleRequestBodiesType,
+} from "../../../services/aoi.type";
 
 interface SearchDrawerProps extends SwipeableDrawerProps {}
 
@@ -101,103 +109,135 @@ const SearchDrawer: FC<SearchDrawerProps> = ({ open, onClose, onOpen }) => {
 	const [leftColumns] = useState(["index", "invoiceNo"]);
 	const [rightColumns] = useState(["action"]);
 
-	const [defaultColumnWidths] = useState<
-		{ columnName: string; width: number }[]
-	>([
+	const [enable, setEnable] = useState<boolean>(false);
+
+	const [search, setSearch] = useState<PreviousSaleRequestBodiesType>();
+
+	const method = useForm<searchHistorySchema>({
+		defaultValues: {
+			invoiceNubmer: "",
+			cardNumber: "",
+			studentName: "",
+			admissionNumber: "",
+			fromDate: new Date(),
+			toDate: new Date(),
+			CompanyBussinessUnit: "",
+			showroom: "",
+		},
+	});
+
+	const [columnExtension] = useState<GridColumnExtension[]>([
 		{
-			columnName: "index",
+			columnName: "rowIndex",
 			width: 60,
 		},
 		{
-			columnName: "invoiceNo",
-			width: 100,
+			columnName: "InvoiceNumber",
+			width: 140,
 		},
 		{
-			columnName: "invoiceDate",
-			width: 100,
+			columnName: "InvoiceDate",
+			width: 150,
 		},
 		{
-			columnName: "studentName",
-			width: 100,
+			columnName: "StudentName",
+			width: 140,
 		},
 		{
-			columnName: "admissionNumber",
-			width: 100,
+			columnName: "AdmissionNumber",
+			width: 180,
 		},
 		{
-			columnName: "discountAmount",
-			width: 100,
+			columnName: "DiscountAmount",
+			width: 160,
 		},
 		{
-			columnName: "totalAmount",
-			width: 100,
+			columnName: "TotalAmount",
+			width: 140,
 		},
 		{
-			columnName: "netAmount",
-			width: 100,
+			columnName: "NetAmount",
+			width: 140,
 		},
 		{
-			columnName: "cashAmount",
-			width: 100,
+			columnName: "CashAmount",
+			width: 140,
 		},
 		{
-			columnName: "cardAmount",
-			width: 100,
+			columnName: "CardAmount",
+			width: 140,
 		},
 		{
-			columnName: "cardSwipe",
-			width: 100,
+			columnName: "CardSwipe",
+			width: 120,
+			align: "center",
 		},
 		{
 			columnName: "action",
-			width: 80,
+			width: 120,
+			align: "center",
 		},
 	]);
 
 	const columns: Column[] = [
 		{
-			title: "Sl No.",
-			name: "index",
+			title: "Sl",
+			name: "rowIndex",
+			getCellValue: (row) => {
+				if (isFetched && data && data.Data) {
+					return (
+						data.Data.findIndex(
+							(dataRow: PreviousSaleListItemType) =>
+								dataRow.OrderId === row.OrderId
+						) + 1
+					); // +1 if you want the index to start from 1
+				}
+				return "";
+			},
 		},
 		{
 			title: "Invoice Nubmer",
-			name: "invoiceNo",
+			name: "InvoiceNumber",
 		},
 		{
 			title: "Invoic Date",
-			name: "invoiceDate",
+			name: "InvoiceDate",
+			getCellValue: (row) =>
+				moment(row.InvoiceDate, "M/D/YYYY h:mm:ss A").format(
+					"D MMM YY - hh:mm A"
+				),
 		},
 		{
 			title: "Student Name",
-			name: "studentName",
+			name: "StudentName",
 		},
 		{
 			title: "Admission Number",
-			name: "admissionNumber",
+			name: "AdmissionNumber",
 		},
 		{
 			title: "Discount Amount",
-			name: "discountAmount",
+			name: "DiscountAmount",
 		},
 		{
 			title: "Total Amount",
-			name: "totalAmount",
+			name: "TotalAmount",
 		},
 		{
 			title: "Net Amount",
-			name: "netAmount",
+			name: "NetAmount",
 		},
 		{
 			title: "Cash Amount",
-			name: "cashAmount",
+			name: "CashAmount",
 		},
 		{
 			title: "Card Amount",
-			name: "cardAmount",
+			name: "CardAmount",
 		},
 		{
 			title: "Card Swipe",
-			name: "cardSwipe",
+			name: "CardSwipe",
 		},
 		{
 			title: "Action",
@@ -206,21 +246,41 @@ const SearchDrawer: FC<SearchDrawerProps> = ({ open, onClose, onOpen }) => {
 		},
 	];
 
-	const rows = [
-		{
-			index: 1,
-			invoiceNo: 123456,
-			invoiceDate: "15 may 2024",
-			studentName: "John Doe",
-			admissionNumber: "ABC123",
-			discountAmount: 100,
-			totalAmount: 2000,
-			netAmount: 1900,
-			cashAmount: 1500,
-			cardAmount: 500,
-			cardSwipe: "1234 5678 9012 3456",
-		},
-	];
+	const onSearch = (data: any) => {
+		console.log("search data", data);
+		const searchData: PreviousSaleRequestBodiesType = {
+			InvoiceNumber: data?.invoiceNubmer?.InvoiceNumber || "",
+			CardNumber: data?.cardNumber?.AdmissionNumber || "",
+			StudentName: data?.studentName?.StudentName || "",
+			ShowroomId: data?.showroom || "",
+			BussinessUnitId: data?.CompanyBussinessUnit || "",
+			AdmissionNUmber: data?.admissionNumber?.AdmissionNumber || "",
+			FromDate: moment(data.fromDate).format("DD-MMM-YYYY"),
+			ToDate: moment(data.toDate).format("DD-MMM-YYYY"),
+			Cmp_ID_N: "1", //todo add later
+		};
+
+		setSearch(searchData);
+		setEnable(true);
+
+		console.log("backend search data", searchData);
+	};
+
+	const { data, isLoading, isFetched } = PreviousList(search!, enable);
+
+	const currentPageData = useMemo(() => {
+		if (!isFetched) return [];
+		const startIndex = (searchQuery.PageNo - 1) * searchQuery.Rows;
+		const endIndex = startIndex + searchQuery.Rows;
+		return data?.Data.slice(startIndex, endIndex);
+	}, [data, searchQuery]);
+
+	useEffect(() => {
+		if (isFetched) {
+			setEnable(false);
+			console.log("Data item ", data);
+		}
+	}, [isFetched]);
 
 	return (
 		<SwipeableDrawer
@@ -239,88 +299,91 @@ const SearchDrawer: FC<SearchDrawerProps> = ({ open, onClose, onOpen }) => {
 					},
 				},
 			}}>
-			<StyledDrawerContainer>
-				<Toolbar />
-				<TitleBar onClose={onClose} />
-				<SearchHistory />
-				<RightSpacing />
-				<CustomTable
-					hasBoxShadow
-					isLoading={false}
-					grid={{
-						columns,
-						rows,
-					}}
-					table={{
-						columnExtensions: [],
-						// rowComponent: EmployeeAllowanceListTableRowComponent,
-					}}
-					pagingState={{
-						currentPage: searchQuery?.PageNo - 1,
-						onCurrentPageChange: (currentPage) =>
-							setSearchQuery({
-								...searchQuery,
-								PageNo: currentPage + 1,
-							}),
-						pageSize: searchQuery.Rows,
-						onPageSizeChange: (pageSize) =>
-							setSearchQuery({
-								...searchQuery,
-								PageNo: 1,
-								Rows: pageSize,
-							}),
-					}}
-					customPaging={{ totalCount: 0 }} //todo change total count
-					tableFilterRow={
-						{
-							// cellComponent: EmployeeAllowanceListFilterCellComponent,
-						}
-					}
-					defaultColumnWidths={defaultColumnWidths}
-					tableColumnVisibility={{
-						columnExtensions: [
-							{ columnName: "RowIndex", togglingEnabled: false },
-							{ columnName: "Action", togglingEnabled: false },
-						],
-					}}
-					groupingState={{
-						columnExtensions: [
-							{ columnName: "RowIndex", groupingEnabled: false },
-							{ columnName: "Action", groupingEnabled: false },
-						],
-					}}
-					filteringState={{
-						columnExtensions: [
-							{ columnName: "RowIndex", filteringEnabled: false },
-							{ columnName: "Action", filteringEnabled: false },
-						],
-					}}
-					integratedFiltering={{
-						columnExtensions: [
-							{
-								columnName: "Status",
-								predicate: (value, filter) =>
-									Number(filter.value) === Number(value),
-							},
-						],
-					}}
-					sortingState={{
-						columnExtensions: [{ columnName: "Action", sortingEnabled: false }],
-					}}
-					rightColumns={rightColumns}
-					leftColumns={leftColumns}
-					hasExport
-					hasPaging
-					hasSearch
-					hasSort
-					hasFilter
-					hasGrouping
-					hasToggleVisibility
-				/>
+			<FormProvider {...method}>
+				<StyledDrawerContainer>
+					<Toolbar />
+					<TitleBar onClose={onClose} />
+					<SearchHistory onSearch={method.handleSubmit(onSearch)} />
+					<RightSpacing />
+					<CustomTable
+						hasBoxShadow
+						isLoading={isLoading}
+						grid={{
+							columns,
+							rows: currentPageData,
+						}}
+						table={{
+							columnExtensions: columnExtension,
+							// rowComponent: EmployeeAllowanceListTableRowComponent,
+						}}
+						pagingState={{
+							currentPage: searchQuery?.PageNo - 1,
+							onCurrentPageChange: (currentPage) =>
+								setSearchQuery({
+									...searchQuery,
+									PageNo: currentPage + 1,
+								}),
+							pageSize: searchQuery.Rows,
+							onPageSizeChange: (pageSize) =>
+								setSearchQuery({
+									...searchQuery,
+									PageNo: 1,
+									Rows: pageSize,
+								}),
+						}}
+						customPaging={{ totalCount: isFetched ? data?.Data.length : 0 }} //todo change total count
+						// tableFilterRow={
+						// 	{
+						// 		// cellComponent: EmployeeAllowanceListFilterCellComponent,
+						// 	}
+						// }
+						tableColumnVisibility={{
+							columnExtensions: [
+								{ columnName: "RowIndex", togglingEnabled: false },
+								{ columnName: "Action", togglingEnabled: false },
+							],
+						}}
+						groupingState={{
+							columnExtensions: [
+								{ columnName: "RowIndex", groupingEnabled: false },
+								{ columnName: "Action", groupingEnabled: false },
+							],
+						}}
+						filteringState={{
+							columnExtensions: [
+								{ columnName: "RowIndex", filteringEnabled: false },
+								{ columnName: "Action", filteringEnabled: false },
+							],
+						}}
+						integratedFiltering={{
+							columnExtensions: [
+								{
+									columnName: "Status",
+									predicate: (value, filter) =>
+										Number(filter.value) === Number(value),
+								},
+							],
+						}}
+						sortingState={{
+							columnExtensions: [
+								{ columnName: "Action", sortingEnabled: false },
+							],
+						}}
+						rightColumns={rightColumns}
+						leftColumns={leftColumns}
+						hasExport
+						hasPaging
+						hasSearch
+						hasSort
+						hasFilter
+						hasGrouping
+						hasToggleVisibility
+					/>
 
-				<RightSpacing />
-				<TotalVlaue />
-			</StyledDrawerContainer>
+					<RightSpacing />
+					<TotalVlaue />
+				</StyledDrawerContainer>
+			</FormProvider>
 		</SwipeableDrawer>
 	);
 };

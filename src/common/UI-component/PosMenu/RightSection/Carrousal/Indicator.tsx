@@ -4,17 +4,17 @@ import { Box, styled, useTheme } from "@mui/material";
 interface DotIndicatorProps {
 	total: number; // Total number of dots
 	activeIndex: number; // Index of the active dot (zero-based)
-	dotSize?: number; // Size of each dot (default is 10)
+	dotsize?: number; // Size of each dot (default is 10)
 }
 
-const Dot = styled(Box)<{ isActive: boolean; dotSize: number }>(
-	({ isActive, dotSize }) => ({
-		width: dotSize,
-		height: dotSize,
+const Dot = styled(Box)<{ isactive: "true" | "false"; dotsize: number }>(
+	({ isactive, dotsize }) => ({
+		width: dotsize,
+		height: dotsize,
 		borderRadius: "50%",
-		backgroundColor: isActive ? "currentColor" : "transparent",
-		border: `2px solid ${isActive ? "transparent" : "currentColor"}`,
-		margin: `0 ${dotSize / 2}px`,
+		backgroundColor: isactive === "true" ? "currentColor" : "transparent",
+		border: `2px solid ${isactive === "true" ? "transparent" : "currentColor"}`,
+		margin: `0 ${dotsize / 2}px`,
 		transition: "background-color 0.3s ease, border-color 0.3s ease",
 		cursor: "pointer",
 		"&:hover": {
@@ -27,7 +27,7 @@ const Dot = styled(Box)<{ isActive: boolean; dotSize: number }>(
 const DotIndicator: React.FC<DotIndicatorProps> = ({
 	total,
 	activeIndex,
-	dotSize = 10,
+	dotsize = 10,
 }) => {
 	const theme = useTheme();
 
@@ -36,8 +36,8 @@ const DotIndicator: React.FC<DotIndicatorProps> = ({
 			{Array.from({ length: total }).map((_, index) => (
 				<Dot
 					key={index}
-					isActive={index === activeIndex}
-					dotSize={dotSize}
+					isactive={index === activeIndex ? "true" : "false"}
+					dotsize={dotsize}
 					style={{
 						backgroundColor:
 							index === activeIndex

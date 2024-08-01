@@ -52,7 +52,7 @@ const ConfirmationDialog: FC<ConfirmationDialogProps> = ({
 				<LoadingButton
 					variant="contained"
 					loadingPosition="start"
-					color="secondary"
+					color={dialogType === "submit" ? "secondary" : "error"}
 					onClick={onConfirm}>
 					{dialogType === "submit" ? "Submit" : "Delete"}
 				</LoadingButton>

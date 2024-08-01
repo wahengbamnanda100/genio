@@ -98,7 +98,7 @@ export const defaultPalette: PaletteOptions = {
 		contrastText: "#000",
 	},
 	gradientColor: {
-		main: `linear-gradient(90deg, #13692F 0%, #0D7ABF 100%)`,
+		main: `#00a14a`,
 		light: "#00a14a",
 		dark: "#000",
 		contrastText: "#000",

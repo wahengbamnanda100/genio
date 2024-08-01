@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
-import { Controller } from "react-hook-form";
+import { Controller, useFormContext, useFormState } from "react-hook-form";
 import {
 	Autocomplete,
 	CircularProgress,
@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import _ from "lodash";
 import { AsyncSearchFieldProps } from "./formField.type";
+import { ErrorContainer } from "./ErrorContainer";
 // import { Student } from "../../services";
 
 const StyledPoper = (props: any) => {
@@ -83,6 +84,10 @@ const AsyncSearchField = ({
 	const [selectedValue, setSelectedValue] = useState<any>(null);
 	const [loading, setLoading] = useState(false);
 	const [searchData, setSearchData] = useState<any[]>([]);
+	const [isFocused, setIsFocused] = useState(false);
+
+	const { control } = useFormContext();
+	const { errors } = useFormState({ control });
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -96,7 +101,7 @@ const AsyncSearchField = ({
 
 		const debouncedFetchData = _.debounce(fetchData, 500);
 
-		if (keyStroke) {
+		if (keyStroke !== "" && isFocused) {
 			debouncedFetchData();
 		} else {
 			setSearchData([]);
@@ -107,7 +112,7 @@ const AsyncSearchField = ({
 		return () => {
 			debouncedFetchData.cancel();
 		};
-	}, [keyStroke, searchApi]);
+	}, [keyStroke, isFocused, searchApi]);
 
 	return (
 		<Grid item xs={xs} md={md} sm={sm} className={className} style={style}>
@@ -164,46 +169,55 @@ const AsyncSearchField = ({
 												})}
 										</>
 									) : (
-										<li
-											{...props}
-											style={{
-												backgroundColor: isSelected
-													? highlightColor
-													: "inherit",
-											}}>
-											{option}
-										</li>
+										<li {...props}>{option[`${optionKey}`]}</li>
 									)}
 								</React.Fragment>
 							);
 						}}
 						noOptionsText={loading ? "Loading..." : "No options"}
-						renderInput={(params: any) => (
-							<TextField
-								{...params}
-								{...restProps}
-								inputRef={ref}
-								placeholder={placeholder}
-								label={label}
-								variant={variant}
-								size={size}
-								InputProps={{
-									...params.InputProps,
-									endAdornment: (
-										<React.Fragment>
-											{loading && (
-												<CircularProgress color="inherit" size={20} />
-											)}
-											{params.InputProps.endAdornment}
-										</React.Fragment>
-									),
-								}}
-							/>
-						)}
+						renderInput={(params: any) => {
+							// console.log("pram auto", params);
+							// console.log("restProps auto", restProps);
+
+							return (
+								<TextField
+									{...params}
+									{...restProps}
+									inputRef={ref}
+									placeholder={placeholder}
+									label={label}
+									variant={variant}
+									size={size}
+									error={_.get(errors, name)}
+									onFocus={() => setIsFocused(true)} // Set focus state to true
+									onBlur={() => setIsFocused(false)} // Set focus state to false on blur
+									InputProps={{
+										...params.InputProps,
+										endAdornment: (
+											<React.Fragment>
+												{loading && (
+													<CircularProgress color="inherit" size={20} />
+												)}
+												{params.InputProps.endAdornment}
+											</React.Fragment>
+										),
+									}}
+								/>
+							);
+						}}
 					/>
 				)}
 				rules={rules}
 			/>
+			{hasErrorMessage && _.get(errors, name) && (
+				<ErrorContainer>
+					{
+						(_.get(errors, name)
+							? _.get(errors, `${name}.message`)
+							: null) as React.ReactNode
+					}
+				</ErrorContainer>
+			)}
 		</Grid>
 	);
 };

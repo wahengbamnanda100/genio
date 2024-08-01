@@ -1,4 +1,4 @@
-import { Components, Palette } from "@mui/material";
+import { alpha, Components, Palette } from "@mui/material";
 
 export const overridesOutlinedInput = (
 	palette: Palette
@@ -8,6 +8,11 @@ export const overridesOutlinedInput = (
 			root: {
 				"&:hover .MuiOutlinedInput-notchedOutline": {
 					borderColor: palette.primary.main,
+				},
+				"&.Mui-disabled": {
+					color: palette.secondary.dark,
+					borer: palette.secondary.main,
+					backgroundColor: alpha(palette.secondary.light, 0.4),
 				},
 			},
 			notchedOutline: {
@@ -24,11 +29,11 @@ export const overridesOutlinedInput = (
 						"background-color 5000s ease-in-out 0s, color 5000s ease-in-out 0s",
 				},
 			},
-			disabled: {
-				color: palette.secondary.dark,
-				borer: palette.secondary.dark,
-				backgroundColor: "white",
-			},
+			// disabled: {
+			// 	color: palette.secondary.dark,
+			// 	borer: palette.secondary.dark,
+			// 	backgroundColor: "white",
+			// },
 		},
 	},
 });

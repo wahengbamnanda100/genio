@@ -191,6 +191,7 @@ type DateFieldProps = {
 	inputFormat?: string;
 	minDate?: Date;
 	maxDate?: Date;
+	allowPastDates?: boolean;
 	view?: ("day" | "month" | "year")[];
 	InputAdornmentProps?: Partial<InputAdornmentProps<"div", {}>>;
 } & common_type &
