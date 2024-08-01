@@ -15,6 +15,7 @@ import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined
 interface ConfirmationDialogProps extends DialogProps {
 	title: string;
 	description: string;
+	loading?: boolean;
 	dialogType: "submit" | "delete";
 	setOpen: Dispatch<SetStateAction<boolean>>;
 	onConfirm: () => void;
@@ -25,6 +26,7 @@ const ConfirmationDialog: FC<ConfirmationDialogProps> = ({
 	title,
 	description,
 	open,
+	loading = false,
 	dialogType,
 	setOpen,
 	onConfirm,
@@ -50,6 +52,7 @@ const ConfirmationDialog: FC<ConfirmationDialogProps> = ({
 			<DialogContentStyled>{description}</DialogContentStyled>
 			<DialogActionsStyled dialogType={dialogType || "submit"}>
 				<LoadingButton
+					loading={loading}
 					variant="contained"
 					loadingPosition="start"
 					color={dialogType === "submit" ? "secondary" : "error"}

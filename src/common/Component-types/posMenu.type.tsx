@@ -87,18 +87,17 @@ export type CardPaymentSchema = {
 	cardAmount: number;
 };
 
-export type PosMenuFormSchema =
-	| cardDetailSchema
-	| MenuItem
-	| MenuTableSchema
-	| DiscountAmountSchema
-	| NetAmountSchema
-	| PaidAmountSchema
-	| AvailableBalanceSchema
-	| ScanComponentSchema
-	| ScanUnitSchema
-	| ExchangeRatSchema
-	| CardPaymentSchema;
+export type PosMenuFormSchema = cardDetailSchema &
+	MenuItem &
+	MenuTableSchema &
+	DiscountAmountSchema &
+	NetAmountSchema &
+	PaidAmountSchema &
+	AvailableBalanceSchema &
+	ScanComponentSchema &
+	ScanUnitSchema &
+	ExchangeRatSchema &
+	CardPaymentSchema;
 
 const getValuesCompanyUnit = () => {
 	const param: BussinessUnitRequestBodiesType = {

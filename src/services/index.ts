@@ -61,21 +61,12 @@ export const getMenuList = async (
 	}
 };
 
-export const mutatePosMenu = async (
+//!_____________POS SAVE____________
+
+export const mutatePosMenu = (
 	requestBody: PosSaveRequsetBodiesType
-): Promise<PosSaveResponseType> => {
-	const response = await axiosInstance.post(
-		"API/GenioReactPOSSaveAPI",
-		requestBody
-	);
-
-	// console.log("🔥🔥🔥Pos save", response);
-
-	if (response.statusText === "OK") {
-		return response.data;
-	} else {
-		throw new Error("Failed to fetch menu list"); //todo add later sanckbar
-	}
+): Promise<AxiosResponse<PosSaveResponseType>> => {
+	return axiosInstance.post("API/GenioReactPOSSaveAPI", requestBody);
 };
 
 export const getPreviousSale = async (
