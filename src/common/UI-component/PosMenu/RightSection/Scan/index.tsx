@@ -2,20 +2,43 @@ import { Button, ButtonBase, Collapse, Grid } from "@mui/material";
 import {
 	ScanComponentSchema,
 	scanField,
+	ScanUnitSchema,
 } from "../../../../Component-types/posMenu.type";
 import Field from "../../../../Form-component/field";
 import AnimateButton from "../../../Extended/AnimateButton";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
-import { useFormContext } from "react-hook-form";
+import { useFormContext, useFormState } from "react-hook-form";
+import _ from "lodash";
+
 import ScanUnitComponent from "./ScanUnitComponent";
 
 const ScanComponent = () => {
 	const [checked, setChecked] = useState(false);
 
-	const { control } = useFormContext<ScanComponentSchema>();
+	const { control } = useFormContext<ScanComponentSchema | ScanUnitSchema>();
+	const { errors } = useFormState({ control });
+
+	const checkField: Array<keyof ScanUnitSchema> = [
+		"cmpName",
+		"showroom",
+		"salesPersonCode",
+		"salesPersonName",
+	];
+
+	useEffect(() => {
+		const hasAnyKey = _.some(checkField, (key) => _.has(errors, key));
+		// console.log("====================================");
+		// console.log(errors, hasAnyKey);
+		// console.log("====================================");
+
+		if (hasAnyKey) {
+			console.log("error in this page", hasAnyKey);
+			setChecked(true);
+		}
+	}, [errors, checkField]);
 
 	const handleSubmitCLick = () => {
 		console.log("Clicked submit scan");
@@ -29,7 +52,7 @@ const ScanComponent = () => {
 	return (
 		<Grid container spacing={2}>
 			<Grid item xs={3}>
-				<AddToggleBtn handleAdd={handleAddScan} />
+				<AddToggleBtn toggled={checked} handleAdd={handleAddScan} />
 			</Grid>
 			<Grid item xs={3}>
 				<SubmitBtn handleSubmit={handleSubmitCLick} />
@@ -69,13 +92,14 @@ const SubmitBtn: FC<SubmitBtnProps> = ({ handleSubmit }) => {
 
 interface AddBtnProps {
 	handleAdd: () => void;
+	toggled: boolean;
 }
 
-const AddToggleBtn: FC<AddBtnProps> = ({ handleAdd }) => {
-	const [isToggled, setIsToggled] = useState(false);
+const AddToggleBtn: FC<AddBtnProps> = ({ handleAdd, toggled }) => {
+	// const [isToggled, setIsToggled] = useState(false);
 
 	const handleClick = () => {
-		setIsToggled(!isToggled);
+		// setIsToggled(!isToggled);
 		handleAdd();
 	};
 	return (
@@ -83,7 +107,7 @@ const AddToggleBtn: FC<AddBtnProps> = ({ handleAdd }) => {
 			<ButtonBase
 				color="secondary"
 				sx={{
-					bgcolor: isToggled ? "secondary.dark" : "secondary.main",
+					bgcolor: toggled ? "secondary.dark" : "secondary.main",
 					maxWidth: "40px",
 					maxHeight: "40px",
 					borderRadius: 1,
@@ -94,7 +118,7 @@ const AddToggleBtn: FC<AddBtnProps> = ({ handleAdd }) => {
 					},
 				}}
 				onClick={handleClick}>
-				{isToggled ? <RemoveIcon /> : <AddIcon />}
+				{toggled ? <RemoveIcon /> : <AddIcon />}
 			</ButtonBase>
 		</AnimateButton>
 	);

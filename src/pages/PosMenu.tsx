@@ -5,28 +5,45 @@ import RightMenuSection from "../common/UI-component/PosMenu/RightSection";
 import LeftMenuSection from "../common/UI-component/PosMenu/LeftSection";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { PosMenuFormSchema } from "../common/Component-types/posMenu.type";
-import { useState } from "react";
+import { FC, useState } from "react";
 import ConfirmationDialog from "../common/ModalComponent/ConfirmationDialog";
 import SearchDrawer from "../common/UI-component/History/SearchDrwer";
 import { useMutation } from "@tanstack/react-query";
 import { mutatePosMenu } from "../services";
 import { useAppProvider } from "../AppProvider";
 import {
+	EmployeeItem,
 	ItemsType,
 	PosSaveRequsetBodiesType,
 	Student,
 } from "../services/aoi.type";
-import { useSelector } from "react-redux";
-import { PosMenuItem, selectMenuTable } from "../store/slices/posMenuSlice";
-import { RootState } from "../store";
+import { useDispatch, useSelector } from "react-redux";
+import {
+	PosMenuItem,
+	resetPosMenu,
+	selectMenuTable,
+	selectNetTotalAmount,
+} from "../store/slices/posMenuSlice";
+import { AppDispatch, RootState } from "../store";
 import moment from "moment";
 
-const PosMenu = () => {
+interface PosMenuProps {
+	data: any[] | any;
+}
+
+const FormContainer: FC<PosMenuProps> = ({ data }) => {
 	const { setNotify } = useAppProvider();
+	const dispatch: AppDispatch = useDispatch();
 	const [open, setOpen] = useState<boolean>(false);
+	const [openClear, setOpenClear] = useState<boolean>(false);
 	const [drawerOpen, setrawerOpen] = useState<boolean>(false);
 
 	const menuTable = useSelector((state: RootState) => selectMenuTable(state));
+	const netTotalAmount = useSelector((state: RootState) =>
+		selectNetTotalAmount(state)
+	);
+
+	console.log("data", data);
 
 	const method = useForm<PosMenuFormSchema>({
 		defaultValues: {
@@ -34,9 +51,9 @@ const PosMenu = () => {
 			cardNumber: "",
 			familyId: "",
 			idNumbar: "",
-			dailyLimit: 10,
+			dailyLimit: "",
 			name: "",
-			gardeLimit: 10,
+			gardeLimit: 0,
 
 			//menuTableSchema
 
@@ -60,7 +77,7 @@ const PosMenu = () => {
 
 			//scanComponent
 			invoiceDate: new Date(),
-			invoiceNumber: "testing invoice",
+			invoiceNumber: "",
 
 			//scanUnit
 			cmpName: "",
@@ -72,7 +89,7 @@ const PosMenu = () => {
 			currency: [],
 			rate: 0,
 			exchangePaidAmount: 0,
-			amount: 0,
+			exchangeAmount: 0,
 
 			//card type
 			cardType: [],
@@ -111,8 +128,7 @@ const PosMenu = () => {
 	};
 
 	const handleCancelClick = () => {
-		console.log("Cancel button clicked");
-		// Add your custom logic here
+		setOpenClear(true);
 	};
 
 	const handlePreviousClick = () => {
@@ -126,14 +142,41 @@ const PosMenu = () => {
 		// Add your custom logic here
 	};
 
-	const onSubmit: SubmitHandler<PosMenuFormSchema> = (data) => {
-		console.log("Form submitted:", data);
+	const validateForm = () => {
+		const { dailyLimit, netAmount, availableBalance, paidAmount, totalPaid } =
+			method.getValues();
+
 		if (menuTable.length === 0)
 			return setNotify({
-				severity: "warning",
+				severity: "error",
 				message: "Select a menu item to submit",
 			});
+
+		if (Number(dailyLimit) < netAmount) {
+			return setNotify({
+				severity: "error",
+				message: "Amount cannot be graetr than Daily limit",
+			});
+		}
+		if (paidAmount + totalPaid !== netTotalAmount) {
+			return setNotify({
+				severity: "error",
+				message: "Paid amount should be equal to Net Amount",
+			});
+		}
+		if (netAmount > availableBalance) {
+			return setNotify({
+				severity: "error",
+				message: "Available balance is insufficient",
+			});
+		}
+
 		setOpen(true);
+	};
+
+	const onSubmit: SubmitHandler<PosMenuFormSchema> = (data) => {
+		console.log("Form submitted:", data);
+		validateForm();
 	};
 
 	const transformMenuTableToItems = (menuTable: PosMenuItem[]): ItemsType[] => {
@@ -165,6 +208,7 @@ const PosMenu = () => {
 			Sih_ID_N: "",
 			StudentId: (formData.name as Student)?.StudentId || "",
 			Usr_ID_N: "1",
+			Emp_ID_N: (formData.name as EmployeeItem)?.Emp_ID_N || "",
 		};
 		console.log("Handle confirm", formData);
 		console.log("backend data", backendData);
@@ -179,6 +223,16 @@ const PosMenu = () => {
 
 	const handleCloseDrawer = () => {
 		setrawerOpen(false);
+	};
+
+	const handleModalClearCancel = () => {
+		setOpenClear(false);
+	};
+
+	const handleModalClearConfirm = () => {
+		method.reset();
+		dispatch(resetPosMenu());
+		setOpenClear(false);
 	};
 
 	return (
@@ -213,11 +267,51 @@ const PosMenu = () => {
 				onCancel={handleModalCancel}
 			/>
 
+			<ConfirmationDialog
+				dialogType="cancel"
+				open={openClear}
+				// loading={isPending}
+				setOpen={setOpenClear}
+				title="Reset all"
+				description="Do you want to clear all menu"
+				onConfirm={handleModalClearConfirm}
+				onCancel={handleModalClearCancel}
+			/>
+
 			<SearchDrawer
 				open={drawerOpen}
 				onClose={handleCloseDrawer}
 				onOpen={handlePreviousClick}
 			/>
+		</>
+	);
+};
+
+// const FullScreenLoader: React.FC = () => {
+// 	return (
+// 		<Box
+// 			sx={{
+// 				position: "fixed",
+// 				top: 0,
+// 				left: 0,
+// 				width: "100vw",
+// 				height: "100vh",
+// 				display: "flex",
+// 				justifyContent: "center",
+// 				alignItems: "center",
+// 				backgroundColor: "rgba(255, 255, 255, 0.8)", // Slightly transparent background
+// 				zIndex: 9999, // High z-index to ensure it appears above all content
+// 			}}>
+// 			<CircularProgress />
+// 		</Box>
+// 	);
+// };
+
+const PosMenu = () => {
+	return (
+		<>
+			{/* <FullScreenLoader /> */}
+			<FormContainer data={[]} />
 		</>
 	);
 };

@@ -11,12 +11,13 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import DoneAllIcon from "@mui/icons-material/DoneAll";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import RotateLeftIcon from "@mui/icons-material/RotateLeft";
 
 interface ConfirmationDialogProps extends DialogProps {
 	title: string;
 	description: string;
 	loading?: boolean;
-	dialogType: "submit" | "delete";
+	dialogType: "submit" | "delete" | "cancel";
 	setOpen: Dispatch<SetStateAction<boolean>>;
 	onConfirm: () => void;
 	onCancel: () => void;
@@ -47,6 +48,7 @@ const ConfirmationDialog: FC<ConfirmationDialogProps> = ({
 			<DialogTitleStyled dialogType={dialogType || "submit"}>
 				{dialogType === "submit" && <DoneAllIcon color="secondary" />}
 				{dialogType === "delete" && <DeleteOutlineOutlinedIcon color="error" />}
+				{dialogType === "cancel" && <RotateLeftIcon color="primary" />}
 				{title}
 			</DialogTitleStyled>
 			<DialogContentStyled>{description}</DialogContentStyled>
@@ -55,9 +57,19 @@ const ConfirmationDialog: FC<ConfirmationDialogProps> = ({
 					loading={loading}
 					variant="contained"
 					loadingPosition="start"
-					color={dialogType === "submit" ? "secondary" : "error"}
+					color={
+						dialogType === "submit"
+							? "secondary"
+							: dialogType === "cancel"
+								? "primary"
+								: "error"
+					}
 					onClick={onConfirm}>
-					{dialogType === "submit" ? "Submit" : "Delete"}
+					{dialogType === "submit"
+						? "Submit"
+						: dialogType === "cancel"
+							? "Clear all"
+							: "Delete"}
 				</LoadingButton>
 				<Button variant="outlined" onClick={onCancel}>
 					Cancel

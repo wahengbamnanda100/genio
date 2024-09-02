@@ -5,11 +5,32 @@ import {
 } from "../../Component-types/history.type";
 import Field from "../../Form-component/field";
 import { FormProvider, useForm } from "react-hook-form";
+import { FC, useEffect } from "react";
 
-const TotalVlaue = () => {
+interface TotalVlaueProps {
+	data: historyTotalDataSchema | null;
+}
+
+const TotalVlaue: FC<TotalVlaueProps> = ({ data }) => {
 	const method = useForm<historyTotalDataSchema>({
-		defaultValues: {},
+		defaultValues: {
+			totalAmount: 0,
+			discountAmount: 0,
+			netAmount: 0,
+			totalCashAmount: 0,
+			totalCardAmount: 0,
+		},
 	});
+
+	useEffect(() => {
+		if (data) {
+			method.setValue("discountAmount", data.discountAmount);
+			method.setValue("netAmount", data.netAmount);
+			method.setValue("totalAmount", data.totalAmount);
+			method.setValue("totalCardAmount", data.totalCardAmount);
+			method.setValue("totalCashAmount", data.totalCashAmount);
+		}
+	}, [data]);
 
 	return (
 		<FormProvider {...method}>

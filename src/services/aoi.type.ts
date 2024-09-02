@@ -80,6 +80,7 @@ export interface PosSaveRequsetBodiesType {
 	NetAmount: string;
 	Usr_ID_N: string;
 	Sih_ID_N: string;
+	Emp_ID_N: string;
 	Items: ItemsType[];
 }
 
@@ -178,5 +179,88 @@ export interface EmployeeItem {
 export interface EmployeeResponseType {
 	Status: string;
 	Data: EmployeeItem[] | [];
+	Message: string;
+}
+
+//!____________EXCHANGE CURRENCY CARD______________
+
+export interface ExchangeRequestBodies {
+	CurrencyId: string;
+	Date: string;
+}
+
+export interface CurrencyType {
+	CurrencyId: string;
+	CurrencyDesc: string;
+	CurrencyCode: string;
+	CurrencySymbol: string;
+}
+
+export interface ExchangeType {
+	ExchangeRate: string;
+	CurrencyCode: string;
+	Decimal: string;
+}
+
+export interface ExchangeResponseType {
+	Status: string;
+	Data: ExchangeType[] | [];
+	Message: string;
+}
+
+export interface CurrencyResponseType {
+	Status: string;
+	Data: CurrencyType[] | [];
+	Message: string;
+}
+
+export interface CardDetailsParamType {
+	FillData: 1;
+}
+
+export interface CardDetailRequestBodiesType {
+	Table: "Gen_General_Mst";
+	DisplayMember: "Gem_Desc_V";
+	ValueMember: "Gem_ID_N";
+	FilterString: "Gem_TypeID_N=74";
+}
+
+export interface CardDetailType {
+	strDisplayMember: string;
+	strValueMember: string;
+	Gem_Default_N: string;
+}
+
+export interface CardDetailsResponseType {
+	Status: string;
+	Data: CardDetailType[] | [];
+	Message: string;
+}
+
+export interface CategoryListingTypeRequestBodiesType {
+	BusinessUnitId: string | "1";
+	ShowroomId: string | "147";
+}
+
+export interface CategoryListingItem {
+	CategoryId: string;
+	CategoryDescription: string;
+}
+
+export interface CategoryListingTypeResponseType {
+	status: string;
+	Data: CategoryListingItem[] | [];
+	Message: string;
+}
+
+export interface ItemListingRequestBodiesType {
+	BusinessUnitId: string | "1";
+	ShowroomId: string | "147";
+	CategoryId: string;
+}
+
+export interface ItemListingResponseType {
+	status: string;
+	Data: ItemDetailsType[] | [];
 	Message: string;
 }

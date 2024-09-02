@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Grid, Stack, alpha, useTheme } from "@mui/material";
 import {
-	PosMenuFormSchema,
+	AvailableBalanceSchema,
+	DiscountAmountSchema,
+	NetAmountSchema,
+	cardDetailSchema,
 	discountAmountField,
 	netAmountField,
 } from "../../../../Component-types/posMenu.type";
@@ -29,7 +32,12 @@ interface DiscountAmountProps {
 const DiscountAmount: FC<DiscountAmountProps> = () => {
 	const theme = useTheme();
 	const dispatch: AppDispatch = useDispatch();
-	const { watch, setValue } = useFormContext<PosMenuFormSchema>();
+	const { watch, setValue } = useFormContext<
+		| DiscountAmountSchema
+		| AvailableBalanceSchema
+		| cardDetailSchema
+		| NetAmountSchema
+	>();
 	const [balanceAmount, setBalanceAmount] = useState<number>(0);
 
 	const totalAmount = useSelector((state: RootState) =>
@@ -73,8 +81,8 @@ const DiscountAmount: FC<DiscountAmountProps> = () => {
 
 	useEffect(() => {
 		setValue("netAmount", netTotalAmount);
-		setValue("paidAmount", netTotalAmount);
-		setValue("balanceAmount", balanceAmount);
+		// setValue("paidAmount", netTotalAmount);
+		// setValue("balanceAmount", balanceAmount);
 	}, [netTotalAmount, balanceAmount]);
 
 	useEffect(() => {
@@ -123,12 +131,12 @@ const DiscountAmount: FC<DiscountAmountProps> = () => {
 						borderRadius={1}
 						gap={2}
 						p={2}
-						py={3}
+						py={1.5}
 						// justifyContent="center"
-						// alignItems="center"
+						alignItems="flex-end"
 						boxShadow={theme.shadows[4]}
 						bgcolor={alpha(theme.palette.secondary.main, 0.3)}>
-						<Field {...netAmountField(theme)} />
+						<Field {...netAmountField()} />
 						<Grid item xs={6}>
 							<AnimateButton>
 								<Button

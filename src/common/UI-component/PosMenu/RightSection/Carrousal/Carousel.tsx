@@ -84,14 +84,14 @@ const Carousel: React.FC<CarouselProps> = ({
 					sx={{
 						display: "flex",
 						flexDirection: "column",
-						justifyContent: "space-between",
 						alignItems: "center",
-						gap: 2,
+						flex: 1, // Allow the content to use up available space
+						overflow: "hidden",
 					}}>
 					<Typography
 						variant="h6"
-						fontWeight={"medium"}
-						textTransform={"capitalize"}>
+						fontWeight="medium"
+						textTransform="capitalize">
 						{label}
 					</Typography>
 					<DotIndicator total={totalSlides} activeIndex={currentPage} />
@@ -103,29 +103,6 @@ const Carousel: React.FC<CarouselProps> = ({
 					<ArrowForwardIcon />
 				</NaviationButton>
 			</Box>
-
-			{/* <Grid container spacing={2} ref={carouselRef}>
-				{visibleItemsOnPage.length > 0 ? (
-					visibleItemsOnPage.map((item, index) => (
-						<Grid item xs={12 / columns} key={index}>
-							{item}
-						</Grid>
-					))
-				) : (
-					<Box
-						sx={{
-							padding: 2,
-							width: "100%",
-							display: "flex",
-							justifyContent: "center",
-							alignItems: "center",
-						}}>
-						<Typography variant="h6" fontWeight={"medium"} color="grey.500">
-							No Item found
-						</Typography>
-					</Box>
-				)}
-			</Grid> */}
 
 			{isLoading && <LoadingItem rows={1} columns={3} />}
 

@@ -86,7 +86,7 @@ const AsyncSearchField = ({
 	const [searchData, setSearchData] = useState<any[]>([]);
 	const [isFocused, setIsFocused] = useState(false);
 
-	const { control } = useFormContext();
+	const { control, clearErrors } = useFormContext();
 	const { errors } = useFormState({ control });
 
 	useEffect(() => {
@@ -130,6 +130,7 @@ const AsyncSearchField = ({
 							setSelectedValue(value);
 							setValue && setValue(name, value);
 							changes && changes(name, value);
+							clearErrors(name);
 							if (!freeSolo) {
 								onChange(value);
 								return;

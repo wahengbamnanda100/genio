@@ -5,6 +5,7 @@ import AsyncSearchField from "./AsyncSearchField";
 // import DropZoneField from "./DropZoneField";
 import DateField from "./DatePickerField";
 import SelectField from "./selectField";
+import BootstrapInputField from "./BootstrapInput";
 // import ReactDropZoneField from "./ReactDropZoneField";
 
 const Field = (props: FieldProps) => {
@@ -20,6 +21,8 @@ const Field = (props: FieldProps) => {
 		<DateField {..._.omit(props, ["fieldType"])} />
 	) : fieldType === "select" ? (
 		<SelectField {..._.omit(props, ["fieldType"])} />
+	) : fieldType === "boot-text" ? (
+		<BootstrapInputField {..._.omit(props, ["fieldType"])} />
 	) : // fieldType === "reactdropzone" ? (
 	//<ReactDropZoneField {..._.omit(props, ["fieldType"])} />
 	//) :  ) : fieldType === "dropzone" ? (

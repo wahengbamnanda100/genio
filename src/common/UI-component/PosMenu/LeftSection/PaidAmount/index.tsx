@@ -1,149 +1,159 @@
-import { Box, Grid, IconButton, alpha, useTheme } from "@mui/material";
-import SwapVertRoundedIcon from "@mui/icons-material/SwapVertRounded";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Grid, alpha, useTheme } from "@mui/material";
+// import SwapVertRoundedIcon from "@mui/icons-material/SwapVertRounded";
 
 import {
 	availableBalancefield,
 	AvailableBalanceSchema,
 	cardDetailSchema,
+	CardPaymentSchema,
 	cardTypeField,
-	exchangeRateField,
+	// exchangeRateField,
+	ExchangeRatSchema,
 	paidAmountField,
 	PaidAmountSchema,
 } from "../../../../Component-types/posMenu.type";
 import Field from "../../../../Form-component/field";
-import { FC, ReactNode, useEffect, useState } from "react";
-import { MotionProps, motion } from "framer-motion";
+import { useEffect, useState } from "react";
+// import { MotionProps, motion } from "framer-motion";
 import { FieldProps } from "../../../../Form-component";
 import { useFormContext, useWatch } from "react-hook-form";
 import { Student } from "../../../../../services/aoi.type";
 
-const Face = ({
-	children,
-	rotation,
-}: {
-	children: ReactNode;
-	rotation: number;
-}) => (
-	<Box
-		sx={{
-			position: "absolute",
-			width: "100%",
-			height: "100%",
-			backfaceVisibility: "hidden",
-			transform: `rotateX(${rotation}deg)`,
-		}}>
-		{children}
-	</Box>
-);
-
-const AnimateGrid = ({
-	flip,
-	variants,
-	children,
-}: {
-	flip: boolean;
-	variants: MotionProps["variants"];
-	children: ReactNode;
-}) => (
-	<motion.div
-		initial="front"
-		animate={flip ? "back" : "front"}
-		variants={variants}
-		transition={{ duration: 0.5 }}
-		style={{
-			width: "100%",
-			height: "100%",
-			minHeight: "160px",
-			transformStyle: "preserve-3d",
-			perspective: "1000px",
-			position: "relative",
-		}}>
-		{children}
-	</motion.div>
-);
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../../store";
+import { selectNetTotalAmount } from "../../../../../store/slices/posMenuSlice";
 
 const PaidAmount = () => {
 	const theme = useTheme();
 
 	const { control, setValue } = useFormContext<
-		PaidAmountSchema & AvailableBalanceSchema & cardDetailSchema
+		PaidAmountSchema &
+			AvailableBalanceSchema &
+			cardDetailSchema &
+			ExchangeRatSchema &
+			CardPaymentSchema
 	>();
 
-	const [flip, setFlip] = useState<boolean>(false);
+	// const [flip, setFlip] = useState<boolean>(false);
+	const netTotalAmount = useSelector((state: RootState) =>
+		selectNetTotalAmount(state)
+	);
 
-	const [cardNubmerWatch] = useWatch({ control, name: ["cardNumber"] });
+	const [availBal, setAvailBal] = useState<number>(0);
+	const [disableAvalBal, setDisableAvalBal] = useState<boolean>(false);
+	const [disableCashAmt, setDisableCashAmt] = useState<boolean>(false);
+	const [tempTotalAmount, setTempTotalAmount] =
+		useState<number>(netTotalAmount);
 
-	const variants = {
-		front: { rotateX: 0 },
-		back: { rotateX: 180 },
-	};
+	const [
+		cardNubmerWatch,
+		exchangePaidWatch,
+		rateWatch,
+		paidAmountWatch,
+		cashAmountWatch,
+		totalPaidWatch,
+		// cardTypeWatch,
+		// balanceAmountWatch,
+	] = useWatch({
+		control,
+		name: [
+			"cardNumber",
+			"exchangePaidAmount",
+			"rate",
+			"paidAmount",
+			"cashAmount",
+			"totalPaid",
+			// "cardType",
+			// "balanceAmount",
+		],
+	});
 
 	useEffect(() => {
+		if (netTotalAmount !== tempTotalAmount) {
+			setTempTotalAmount(netTotalAmount);
+		}
+	}, [netTotalAmount]);
+
+	useEffect(() => {
+		if (disableAvalBal) {
+			setValue("paidAmount", 0);
+		} else {
+			setValue("paidAmount", tempTotalAmount);
+		}
+	}, [tempTotalAmount, disableAvalBal]);
+
+	useEffect(() => {
+		const remainBalance = availBal - paidAmountWatch;
+		console.log("remain balnance", remainBalance, availBal, netTotalAmount);
+		setValue("balanceAmount", remainBalance);
+		console.log("watch paid amount", Number(paidAmountWatch));
+		if (Number(paidAmountWatch) === 0 && netTotalAmount !== 0) {
+			console.log("set this to cash amount", netTotalAmount);
+
+			setValue("cashAmount", netTotalAmount);
+		}
+		if (Number(paidAmountWatch) > 0 && Number(cashAmountWatch) > 0) {
+			const partialAmount = cashAmountWatch - paidAmountWatch;
+
+			setValue("cashAmount", partialAmount);
+		}
+
+		const remainingPaidAmt = netTotalAmount - paidAmountWatch;
+
+		if (remainingPaidAmt > 0) {
+			setValue("cashAmount", remainingPaidAmt);
+		}
+	}, [paidAmountWatch]);
+
+	useEffect(() => {
+		const remainiingBalance = cashAmountWatch - totalPaidWatch;
+		console.log("cash remaining balance", remainiingBalance);
+		setValue("balance", remainiingBalance);
+	}, [totalPaidWatch]);
+
+	useEffect(() => {
+		if (cashAmountWatch < 0) {
+			setValue("totalPaid", 0);
+			setDisableCashAmt(true);
+		} else {
+			setDisableCashAmt(false);
+		}
+	}, [cashAmountWatch]);
+
+	useEffect(() => {
+		//* avail balance effect
 		const value = cardNubmerWatch as Student;
-		value && setValue("availableBalance", Number(value.AvailableBalance));
-	}, [cardNubmerWatch]);
+		const avalbal = value ? Number(value.AvailableBalance) : 0;
+		setValue("availableBalance", avalbal);
+		setAvailBal(avalbal);
+		console.log("avail is", avalbal);
+	}, [(cardNubmerWatch as Student).AvailableBalance]);
 
-	const handleFlip = () => {
-		setFlip((prev) => !prev);
-	};
+	useEffect(() => {
+		if (Number((cardNubmerWatch as Student)?.AvailableBalance) > 0) {
+			console.log("avail is more than 0");
 
-	// const paidAMount = (
-	// 	<Stack
-	// 		gap={1}
-	// 		flexDirection={"column"}
-	// 		padding={1}
-	// 		width={"100%"}
-	// 		borderRadius={2}
-	// 		bgcolor={alpha(theme.palette.secondary.light, 0.1)}>
-	// 		{paidAmountField().map((field) => (
-	// 			<Field key={field.name} {...field} />
-	// 		))}
-	// 	</Stack>
-	// );
+			setDisableAvalBal(false);
+		} else {
+			console.log("avail is less than 0");
+			setValue("cashAmount", tempTotalAmount);
+			setDisableAvalBal(true);
+		}
+	}, [(cardNubmerWatch as Student).AvailableBalance]);
 
-	// const availableBalance = (
-	// 	<Stack
-	// 		gap={1}
-	// 		flexDirection={"column"}
-	// 		padding={1}
-	// 		width={"100%"}
-	// 		borderRadius={2}
-	// 		bgcolor={alpha(theme.palette.primary.light, 0.1)}>
-	// 		{availableBalancefield(theme).map((field) => (
-	// 			<Field key={field.name} {...field} />
-	// 		))}
-	// 	</Stack>
-	// );
+	// useEffect(() => {
+	// 	console.log("balance amount", balanceAmountWatch);
+	// 	if (Number(balanceAmountWatch) > 0) {
+	// 		setValue("cashAmount", Math.abs(Number(balanceAmountWatch)));
+	// 	}
+	// }, [balanceAmountWatch]);
 
-	// const exchangeRate = (
-	// 	<Grid
-	// 		item
-	// 		container
-	// 		gap={2}
-	// 		padding={1}
-	// 		width={"100%"}
-	// 		borderRadius={2}
-	// 		bgcolor={alpha(theme.palette.breakfast.light, 0.1)}>
-	// 		{exchangeRateField().map((field) => (
-	// 			<Field key={field.name} {...field} />
-	// 		))}
-	// 	</Grid>
-	// );
-
-	// const cardType = (
-	// 	<Grid
-	// 		item
-	// 		container
-	// 		gap={2}
-	// 		padding={1}
-	// 		width={"100%"}
-	// 		borderRadius={2}
-	// 		bgcolor={alpha(theme.palette.hotfood.light, 0.1)}>
-	// 		{cardTypeField().map((field) => (
-	// 			<Field key={field.name} {...field} />
-	// 		))}
-	// 	</Grid>
-	// );
+	useEffect(() => {
+		if (exchangePaidWatch !== 0) {
+			setValue("exchangeAmount", exchangePaidWatch * rateWatch);
+		}
+	}, [exchangePaidWatch, rateWatch]);
 
 	const renderFields = (fields: FieldProps[], bgColor: string) => (
 		<Grid
@@ -161,89 +171,23 @@ const PaidAmount = () => {
 	);
 
 	return (
-		<Grid container spacing={2} position={"relative"} sx={{}}>
-			<Grid item container xs={12} md={6} position="relative">
-				<AnimateGrid flip={flip} variants={variants}>
-					{!flip && (
-						<Face rotation={0}>
-							{renderFields(paidAmountField(), theme.palette.secondary.light)}
-						</Face>
-					)}
-					{flip && (
-						<Face rotation={180}>
-							{renderFields(exchangeRateField(), theme.palette.breakfast.light)}
-						</Face>
-					)}
-				</AnimateGrid>
+		<Grid container spacing={1} position={"relative"} sx={{}}>
+			<Grid item container xs={12} md={4} position="relative">
+				{renderFields(cardTypeField(), theme.palette.hotfood.light)}
 			</Grid>
-			<Grid item container xs={12} md={6} position="relative">
-				<AnimateGrid flip={flip} variants={variants}>
-					{!flip && (
-						<Face rotation={0}>
-							{renderFields(
-								availableBalancefield(theme),
-								theme.palette.primary.light
-							)}
-						</Face>
-					)}
-					{flip && (
-						<Face rotation={180}>
-							{renderFields(cardTypeField(), theme.palette.hotfood.light)}
-						</Face>
-					)}
-				</AnimateGrid>
+			<Grid item container xs={12} md={4} position="relative">
+				{renderFields(
+					paidAmountField(disableCashAmt),
+					theme.palette.secondary.light
+				)}
 			</Grid>
-
-			<SwitchButton flip={flip} handleFlip={handleFlip} />
+			<Grid item container xs={12} md={4} position="relative">
+				{renderFields(
+					availableBalancefield(theme, disableAvalBal),
+					theme.palette.primary.light
+				)}
+			</Grid>
 		</Grid>
-	);
-};
-
-interface FlipButtonProps {
-	flip: boolean;
-	handleFlip: () => void;
-}
-
-const SwitchButton: FC<FlipButtonProps> = ({ flip, handleFlip }) => {
-	const theme = useTheme();
-
-	return (
-		<IconButton
-			onClick={handleFlip}
-			sx={{
-				position: "absolute",
-				top: "10%",
-				left: "99%",
-				width: "30px", // Adjust size as needed
-				height: "30px", // Adjust size as needed
-				transform: "translate(-50%, -50%)",
-				boxShadow: theme.shadows[5],
-				transition: "all 0.2s ease-in-out",
-				bgcolor: alpha(theme.palette.secondary.main, 0.9),
-				"&:hover": {
-					bgcolor: alpha(theme.palette.secondary.dark, 0.8),
-					width: "40px", // Adjust size as needed
-					height: "40px", // Adjust size as needed
-				},
-			}}>
-			<Box
-				sx={{
-					display: "flex",
-					transform: flip ? "rotateX(180deg)" : "rotateX(0deg)",
-					padding: 1,
-					transition: "transform 0.6s",
-					transformStyle: "preserve-3d",
-					perspective: "1000px",
-				}}>
-				<SwapVertRoundedIcon
-					sx={{
-						fontSize: "1.1em",
-						fontWeight: "bold",
-						color: theme.palette.text.secondary,
-					}}
-				/>
-			</Box>
-		</IconButton>
 	);
 };
 

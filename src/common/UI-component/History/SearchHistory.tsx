@@ -17,7 +17,7 @@ import AnimateButton from "../Extended/AnimateButton";
 import SearchIcon from "@mui/icons-material/Search";
 import ClearIcon from "@mui/icons-material/Clear";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { FC, useEffect, useRef } from "react";
+import { Dispatch, FC, SetStateAction, useEffect, useRef } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
 import {
 	searchHistoryFields,
@@ -40,6 +40,8 @@ interface SeachButtonProps {
 
 interface SearchHistoryProps {
 	onSearch: any;
+	expanded: boolean;
+	setExpanded: Dispatch<SetStateAction<boolean>>;
 }
 
 const ActionButton: FC<ActionButtonProps> = ({ varient, onClick }) => {
@@ -74,32 +76,15 @@ const SearchButtonGroup: FC<SeachButtonProps> = ({ onSearch, onCancel }) => {
 	);
 };
 
-const SearchHistory: FC<SearchHistoryProps> = ({ onSearch }) => {
+const SearchHistory: FC<SearchHistoryProps> = ({
+	onSearch,
+	expanded,
+	setExpanded,
+}) => {
 	const theme = useTheme();
 
 	const { setValue, reset, control } = useFormContext<searchHistorySchema>();
 	const previousValuesRef = useRef<Partial<searchHistorySchema>>({});
-
-	// const onSearch = (data: any) => {
-	// 	console.log("search data", data);
-	// 	const serachData = {
-	// 		InvoiceNumber: data?.invoiceNubmer?.InvoiceNumber || "",
-	// 		CardNumber: data?.cardNumber?.AdmissionNumber || "",
-	// 		StudentName: data?.studentName?.StudentName || "",
-	// 		ShowroomId: data?.showroom || "",
-	// 		BussinessUnitId: data?.CompanyBussinessUnit || "",
-	// 		AdmissionNUmber: data?.admissionNumber?.AdmissionNumber || "",
-	// 		FromDate: moment(data.fromDate).format("DD-MMM-YYYY"),
-	// 		ToDate: moment(data.toDate).format("DD-MMM-YYYY"),
-	// 		Cmp_ID_N: "1", //todo add later
-	// 	};
-
-	// 	console.log("backend search data", serachData);
-	// };
-
-	const onCancel = () => {
-		reset();
-	};
 
 	const [fromDate] = useWatch({ control, name: ["fromDate"] });
 	const [toDate] = useWatch({ control, name: ["toDate"] });
@@ -152,6 +137,10 @@ const SearchHistory: FC<SearchHistoryProps> = ({ onSearch }) => {
 		}
 	};
 
+	const onCancel = () => {
+		reset();
+	};
+
 	useEffect(() => {
 		const value = invoiceWatch as PreviousSaleListItemType;
 		updateValue("invoiceNubmer", value);
@@ -182,6 +171,8 @@ const SearchHistory: FC<SearchHistoryProps> = ({ onSearch }) => {
 			}}>
 			<Accordion
 				component={"form"}
+				expanded={expanded}
+				onChange={() => setExpanded(!expanded)}
 				sx={{
 					backgroundColor: alpha(theme.palette.secondary.main, 0.1),
 					boxShadow: theme.shadows[4],

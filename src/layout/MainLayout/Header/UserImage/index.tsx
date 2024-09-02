@@ -1,23 +1,12 @@
 import React from "react";
-import { Avatar } from "@mui/material";
-// import { styled } from "@mui/system";
-// import placeholderImg from "../../../../../public/staticData/image/imagePlaceholder.png";
-
-// const PlaceholderContainer = styled("div")(({ theme }) => ({
-// 	width: "100%",
-// 	height: "100%",
-// 	display: "flex",
-// 	alignItems: "center",
-// 	justifyContent: "center",
-// 	backgroundColor: theme.palette.grey[200],
-// 	color: theme.palette.text.secondary,
-// }));
+import { Avatar, Box, CircularProgress } from "@mui/material";
 
 interface ImageComponentProps {
 	src?: string;
 	alt?: string;
 	width?: number | string;
 	height?: number | string;
+	appBar?: boolean; // New boolean prop
 }
 
 const placeholderUrl =
@@ -28,21 +17,52 @@ const UserImageAvatar: React.FC<ImageComponentProps> = ({
 	alt = "image",
 	width = "30",
 	height = "30",
+	appBar = false, // Default value is false
 }) => {
-	const [imgSrc] = React.useState<string>(src || "");
+	const [imgSrc, setImgSrc] = React.useState<string>(
+		appBar ? placeholderUrl : src || ""
+	);
+	const [loading, setLoading] = React.useState<boolean>(!appBar);
 
-	// const handleError = () => {
-	// 	setImgSrc("");
-	// };
+	const handleLoad = () => {
+		setLoading(false);
+	};
 
-	return imgSrc ? (
-		<Avatar alt={alt} src={imgSrc} sx={{ width: width, height: height }} />
-	) : (
-		<Avatar
-			src={placeholderUrl}
-			alt="placeholder"
-			sx={{ width: width, height: height }}
-		/>
+	const handleError = () => {
+		setLoading(false);
+		setImgSrc(placeholderUrl);
+	};
+
+	React.useEffect(() => {
+		src && src !== "" && setImgSrc(src);
+		setLoading(true);
+	}, [src, appBar]);
+
+	return (
+		<Box
+			position="relative"
+			display="inline-flex"
+			width={width}
+			height={height}>
+			{loading && (
+				<CircularProgress
+					size={width}
+					sx={{
+						position: "absolute",
+						top: 0,
+						left: 0,
+						zIndex: 1,
+					}}
+				/>
+			)}
+			<Avatar
+				alt={alt}
+				src={imgSrc}
+				sx={{ width: width, height: height, opacity: loading ? 0 : 1 }}
+				onLoad={handleLoad}
+				onError={handleError}
+			/>
+		</Box>
 	);
 };
 

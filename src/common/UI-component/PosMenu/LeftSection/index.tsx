@@ -38,7 +38,8 @@ const LeftMenuSection: FC<LeftMenuSectionProps> = ({
 			{/* <LeftSpacing />
 			<LeftSpacing /> */}
 			<PaidAmount />
-			{/* <LeftSpacing /> */}
+			<LeftSpacing />
+			<LeftSpacing />
 			<ButtonGroup
 				handleSubmitClick={handleSubmitClick}
 				handleCancelClick={handleCancelClick}

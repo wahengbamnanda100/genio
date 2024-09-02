@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { InputAdornment, Theme, alpha } from "@mui/material";
+import { CircularProgress, InputAdornment, Theme, alpha } from "@mui/material";
 import { FieldProps } from "../Form-component";
 import { NumericFormatCustom } from "../Form-component/inputField";
 import StudentCard from "../Form-component/StudentListItem";
 import {
+	CardTypeList,
 	CompoanyUnitList,
 	searchEmployeeList,
 	searchStudentList,
@@ -12,6 +13,9 @@ import {
 import {
 	BussinessUnitItem,
 	BussinessUnitRequestBodiesType,
+	CardDetailRequestBodiesType,
+	CardDetailsParamType,
+	CardDetailType,
 	ShowroomItemType,
 	ShowroomRequestBodiesType,
 	Student,
@@ -23,7 +27,7 @@ export type cardDetailSchema = {
 	cardNumber: unknown;
 	familyId: unknown;
 	idNumbar: unknown;
-	dailyLimit: number | string;
+	dailyLimit: string;
 	name: unknown;
 	gardeLimit: number | string;
 };
@@ -78,7 +82,7 @@ export type ExchangeRatSchema = {
 	currency: any[];
 	rate: number;
 	exchangePaidAmount: number;
-	amount: number;
+	exchangeAmount: number;
 };
 
 export type CardPaymentSchema = {
@@ -130,6 +134,36 @@ const getValuesShowroomList = () => {
 		: [];
 
 	return dropDownValues;
+};
+
+const getCardTypeValues = () => {
+	const param: CardDetailsParamType = {
+		FillData: 1,
+	};
+	const req: CardDetailRequestBodiesType = {
+		Table: "Gen_General_Mst",
+		DisplayMember: "Gem_Desc_V",
+		FilterString: "Gem_TypeID_N=74",
+		ValueMember: "Gem_ID_N",
+	};
+
+	const {
+		data: cardData,
+		isFetched: CardTypeIsFetched,
+	}: { data: any; isFetched: boolean } = CardTypeList(param, req, {
+		enabled: true,
+	});
+
+	const cardTypeListData =
+		CardTypeIsFetched && cardData?.Data
+			? getDropDownValues<CardDetailType>(
+					cardData?.Data,
+					"strDisplayMember",
+					"strValueMember"
+				)
+			: [];
+
+	return cardTypeListData;
 };
 
 export const cardDetailFields = (): FieldProps[] => {
@@ -274,7 +308,7 @@ export const cardDetailFields = (): FieldProps[] => {
 			name: "familyId",
 			label: "Family ID",
 			size: "small",
-			hasErrorMessage: true,
+
 			renderItem: ({ option, props, isSelected, highlightColor }) => (
 				<StudentCard
 					key={option.StudentId}
@@ -284,6 +318,7 @@ export const cardDetailFields = (): FieldProps[] => {
 					highlightColor={highlightColor}
 				/>
 			),
+			hasErrorMessage: true,
 			rules: {
 				required: "Please enter your family ID",
 			},
@@ -311,11 +346,11 @@ export const cardDetailFields = (): FieldProps[] => {
 			label: "Garde Limit",
 			size: "small",
 			condition: /^-?\d+$/,
-			hasErrorMessage: true,
 			disabled: true,
-			rules: {
-				required: "Please enter your Garde Limit",
-			},
+			// hasErrorMessage: true,
+			// rules: {
+			// 	required: "Please enter your Garde Limit",
+			// },
 			inputProps: {
 				maxLength: 7,
 				// style: { textAlign: "end" },
@@ -402,17 +437,17 @@ export const discountAmountField = (
 	},
 ];
 
-export const netAmountField = (theme: Theme): FieldProps => ({
-	fieldType: "text",
+export const netAmountField = (): FieldProps => ({
+	fieldType: "boot-text",
 	name: "netAmount",
 	label: "Net Amount (QAR)",
 	size: "small",
 	disabled: true,
 	hasErrorMessage: true,
 	condition: /^-?\d*\.?\d{0,2}$/,
-	InputProps: {
-		inputComponent: NumericFormatCustom as any,
-	},
+	// InputProps: {
+	// 	inputComponent: NumericFormatCustom as any,
+	// },
 	inputProps: {
 		maxLength: 15,
 		style: {
@@ -420,59 +455,62 @@ export const netAmountField = (theme: Theme): FieldProps => ({
 			WebkitTextFillColor: "white",
 			// "-webkit-text-fill-color": theme.palette.text.secondary,
 			fontSize: "1.4em",
+			fontWeight: "500",
 		},
 	},
-	sx: {
-		color: theme.palette.text.secondary,
-		"& .MuiOutlinedInput-root": {
-			"-webkit-text-fill-color": theme.palette.text.secondary,
-			// background: alpha(theme.palette.secondary.main, 0.2),
-			fontWeight: "bold",
+	// sx: {
+	// 	color: theme.palette.text.secondary,
+	// 	"& .MuiOutlinedInput-root": {
+	// 		"-webkit-text-fill-color": theme.palette.text.secondary,
+	// 		// background: alpha(theme.palette.secondary.main, 0.2),
+	// 		fontWeight: "bold",
 
-			"& fieldset": {
-				borderColor: theme.palette.secondary.main,
-				color: "white",
-				// color: theme.palette.secondary.dark,
-			},
-			"&:hover fieldset": {
-				borderColor: theme.palette.secondary.main,
-				borderWidth: 2,
-				// outline: 2,
-			},
-			"&.Mui-focused fieldset": {
-				borderColor: theme.palette.secondary.main,
-				borderWidth: "2px",
-				// outline: 2,
-			},
-			"&.Mui-disabled": {
-				color: theme.palette.text.secondary,
-			},
-			"&.Mui-disabled fieldset": {
-				borderColor: theme.palette.secondary.dark,
-				// borderColor: theme.palette.text.secondary,
-				// color: theme.palette.text.secondary,
-				"-webkit-text-fill-color": theme.palette.text.secondary,
-				borderWidth: "2px",
-				backgroundColor: theme.palette.secondary.main,
-				// outline: 2,
-			},
-		},
+	// 		"& fieldset": {
+	// 			borderColor: theme.palette.secondary.main,
+	// 			color: "white",
+	// 			// color: theme.palette.secondary.dark,
+	// 		},
+	// 		"&:hover fieldset": {
+	// 			borderColor: theme.palette.secondary.main,
+	// 			borderWidth: 2,
+	// 			// outline: 2,
+	// 		},
+	// 		"&.Mui-focused fieldset": {
+	// 			borderColor: theme.palette.secondary.main,
+	// 			borderWidth: "2px",
+	// 			// outline: 2,
+	// 		},
+	// 		"&.Mui-disabled": {
+	// 			color: theme.palette.text.secondary,
+	// 		},
+	// 		"&.Mui-disabled fieldset": {
+	// 			borderColor: theme.palette.secondary.dark,
+	// 			// borderColor: theme.palette.text.secondary,
+	// 			// color: theme.palette.text.secondary,
+	// 			"-webkit-text-fill-color": theme.palette.text.primary,
+	// 			borderWidth: "2px",
+	// 			backgroundColor: theme.palette.secondary.main,
+	// 			// outline: 2,
+	// 		},
+	// 	},
 
-		"& .MuiInputLabel-root": {
-			color: theme.palette.secondary.main,
-			"&.Mui-focused": {
-				color: theme.palette.secondary.dark,
-			},
-			"&.Mui-disabled": {
-				color: theme.palette.secondary.dark,
-				// color: theme.palette.text.secondary,
-			},
-		},
-	},
+	// 	"& .MuiInputLabel-root": {
+	// 		color: theme.palette.text.secondary,
+	// 		"&.Mui-focused": {
+	// 			color: theme.palette.secondary.dark,
+	// 		},
+	// 		"&.Mui-disabled": {
+	// 			color: theme.palette.text.primary,
+	// 			fontSize: "1em",
+	// 			mb: 1,
+	// 			// color: theme.palette.text.secondary,
+	// 		},
+	// 	},
+	// },
 	xs: 6,
 });
 
-export const paidAmountField = (): FieldProps[] => [
+export const paidAmountField = (disabled: boolean): FieldProps[] => [
 	{
 		fieldType: "text",
 		name: "cashAmount",
@@ -498,6 +536,7 @@ export const paidAmountField = (): FieldProps[] => [
 		name: "totalPaid",
 		label: "Total Paid",
 		size: "small",
+		disabled,
 		// hasErrorMessage: true,
 		condition: /^-?\d*\.?\d{0,2}$/,
 		// rules: {
@@ -534,7 +573,10 @@ export const paidAmountField = (): FieldProps[] => [
 	},
 ];
 
-export const availableBalancefield = (theme: Theme): FieldProps[] => [
+export const availableBalancefield = (
+	theme: Theme,
+	disabled: boolean
+): FieldProps[] => [
 	{
 		fieldType: "text",
 		name: "availableBalance",
@@ -566,6 +608,7 @@ export const availableBalancefield = (theme: Theme): FieldProps[] => [
 		name: "paidAmount",
 		label: "Paid Amount",
 		size: "small",
+		disabled,
 		// hasErrorMessage: true,
 		condition: /^-?\d*\.?\d{0,2}$/,
 		// rules: {
@@ -621,10 +664,10 @@ export const scanField = (): FieldProps[] => [
 		label: "Invoice Number",
 		size: "small",
 		disabled: true,
-		hasErrorMessage: true,
-		rules: {
-			required: "Please enter your Invoice Number",
-		},
+		// hasErrorMessage: true,
+		// rules: {
+		// 	required: "Please enter your Invoice Number",
+		// },
 		xs: 6,
 	},
 ];
@@ -638,7 +681,7 @@ export const scanUnitField = (): FieldProps[] => [
 		options: getValuesCompanyUnit(),
 		hasErrorMessage: true,
 		rules: {
-			required: "Please enter your Company Name",
+			required: "Please select your Company Name",
 		},
 		xs: 6,
 	},
@@ -650,7 +693,7 @@ export const scanUnitField = (): FieldProps[] => [
 		options: getValuesShowroomList(),
 		hasErrorMessage: true,
 		rules: {
-			required: "Please enter your Showroom",
+			required: "Please select your Showroom",
 		},
 		xs: 6,
 	},
@@ -669,6 +712,9 @@ export const scanUnitField = (): FieldProps[] => [
 			/>
 		),
 		hasErrorMessage: true,
+		rules: {
+			required: "Please select Sales Person Code",
+		},
 		searchApi: async (keyStroke: string) => {
 			const response = await searchEmployeeList(
 				{
@@ -700,6 +746,9 @@ export const scanUnitField = (): FieldProps[] => [
 			/>
 		),
 		hasErrorMessage: true,
+		rules: {
+			required: "Please select Sales Person Name",
+		},
 		searchApi: async (keyStroke: string) => {
 			const response = await searchEmployeeList(
 				{
@@ -719,13 +768,17 @@ export const scanUnitField = (): FieldProps[] => [
 	},
 ];
 
-export const exchangeRateField = (): FieldProps[] => [
+export const exchangeRateField = (
+	currencyCode: string,
+	currencyList: any[],
+	isPending: boolean
+): FieldProps[] => [
 	{
 		fieldType: "select",
 		name: "currency",
 		label: "Foreign Currency",
 		size: "small",
-		options: [],
+		options: currencyList,
 		// hasErrorMessage: true,
 		// rules: {
 		// 	required: "Please enter your Currency",
@@ -745,6 +798,7 @@ export const exchangeRateField = (): FieldProps[] => [
 		// },
 		InputProps: {
 			inputComponent: NumericFormatCustom as any,
+			endAdornment: isPending && <CircularProgress size={20} />,
 		},
 		inputProps: {
 			maxLength: 15,
@@ -755,7 +809,7 @@ export const exchangeRateField = (): FieldProps[] => [
 	{
 		fieldType: "text",
 		name: "exchangePaidAmount",
-		label: "Paid Amount (QAR)",
+		label: `Paid Amount (${currencyCode})`,
 		size: "small",
 		// hasErrorMessage: true,
 		condition: /^-?\d*\.?\d{0,2}$/,
@@ -773,7 +827,7 @@ export const exchangeRateField = (): FieldProps[] => [
 	},
 	{
 		fieldType: "text",
-		name: "amount",
+		name: "exchangeAmount",
 		label: "Amount (QAR)",
 		size: "small",
 		// hasErrorMessage: true,
@@ -798,7 +852,8 @@ export const cardTypeField = (): FieldProps[] => [
 		name: "cardType",
 		label: "Card Type",
 		size: "small",
-		options: [],
+		// options: cardTypeList,
+		options: getCardTypeValues(),
 		// hasErrorMessage: true,
 		// rules: {
 		// 	required: "Please enter your Currency",

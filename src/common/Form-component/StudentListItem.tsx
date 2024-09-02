@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
-import { Avatar, Grid, Typography, styled } from "@mui/material";
+import { Grid, Typography, styled } from "@mui/material";
 import { Student } from "../../services/aoi.type";
+import UserImageAvatar from "../../layout/MainLayout/Header/UserImage";
 
 export const StyledStudentCard = styled("li")`
 	background: #f7f7f7;
@@ -61,7 +62,8 @@ const AvatarComponent: React.FC<AvatarComponentProps> = ({ src, alt }) => (
 			justifyContent: "center",
 			alignItems: "center",
 		}}>
-		<Avatar alt={alt} src={src} sx={{ margin: "auto" }} />
+		{/* <Avatar alt={alt} src={src} sx={{ margin: "auto" }} /> */}
+		<UserImageAvatar src={src} alt={alt} />
 	</Grid>
 );
 
@@ -122,7 +124,7 @@ const BalanceComponent: React.FC<BalanceComponentProps> = ({ balance }) => (
 		}}>
 		<ResponsiveTypography
 			sx={{ fontSize: "12px", margin: "auto", fontWeight: "bold" }}>
-			{balance}
+			{Number(balance).toFixed(2)}
 		</ResponsiveTypography>
 	</Grid>
 );
@@ -150,6 +152,8 @@ const StudentCard: React.FC<StudentCardProps> = ({
 		ImageUrl,
 	} = options;
 
+	const imgUrl = import.meta.env.VITE_API_URL + ImageUrl;
+
 	return (
 		<Grid
 			component={StyledStudentCard}
@@ -168,7 +172,7 @@ const StudentCard: React.FC<StudentCardProps> = ({
 					backgroundColor: highlightColor,
 				},
 			}}>
-			<AvatarComponent src={`${ImageUrl}`} alt={StudentName} />
+			<AvatarComponent src={`${imgUrl}`} alt={StudentName} />
 			<DetailsComponent
 				familyId={FamilyId}
 				studentName={StudentName}

@@ -8,14 +8,21 @@ import { PosMenuItem, addPosMenu } from "../../../../store/slices/posMenuSlice";
 
 import {
 	CategoryDetailsType,
+	CategoryListingTypeRequestBodiesType,
+	CategoryListingTypeResponseType,
 	ItemDetailsType,
-	MenuItemResponseType,
+	ItemListingResponseType,
 	MenuListRequstBodiesType,
 } from "../../../../services/aoi.type";
-import { MenuList } from "../../../../services";
+import { GetCetagoryListing, GetItemListing } from "../../../../services";
 
 const RightMenuSection = () => {
 	const dispatch: AppDispatch = useDispatch();
+
+	const [cetagoryListParam] = useState<CategoryListingTypeRequestBodiesType>({
+		BusinessUnitId: "1",
+		ShowroomId: "147",
+	});
 
 	const [menuParam, setMenuParam] = useState<MenuListRequstBodiesType>({
 		BusinessUnitId: "1", //todo change it later
@@ -23,13 +30,23 @@ const RightMenuSection = () => {
 		CategoryId: "",
 	});
 
-	const { data: menuData, isLoading, isFetched } = MenuList(menuParam);
+	const {
+		data: caetgoryData,
+		isLoading: cetagoryIsLoading,
+		isFetched: cetegoryIsFetch,
+	} = GetCetagoryListing(cetagoryListParam, {
+		enabled: true,
+	});
+
+	const {
+		data: menuItemData,
+		isLoading: menuItemIsLoading,
+		isFetched: menuItemIsFetched,
+	} = GetItemListing(menuParam, {
+		enabled: true,
+	});
 
 	const handleCategory = (item: CategoryDetailsType) => {
-		// const filteredCategory = data.CategoryDetails.find(
-		// 	(category) => category.CategoryId === item.CategoryId
-		// );
-
 		setMenuParam((prev) => ({ ...prev, CategoryId: item.CategoryId }));
 	};
 
@@ -53,11 +70,13 @@ const RightMenuSection = () => {
 
 			<SelectMenuBox
 				data={
-					menuData && (menuData as MenuItemResponseType).status === "1"
-						? (menuData as MenuItemResponseType).Data[0].CategoryDetails
+					cetegoryIsFetch &&
+					caetgoryData &&
+					(caetgoryData as CategoryListingTypeResponseType).status === "1"
+						? (caetgoryData as CategoryListingTypeResponseType).Data
 						: []
 				}
-				isLoading={isLoading}
+				isLoading={cetagoryIsLoading}
 				category={true}
 				onClickItem={handleCategory as (item: unknown) => void}
 			/>
@@ -65,12 +84,12 @@ const RightMenuSection = () => {
 			<RightSpacing />
 
 			<SelectMenuBox
-				isLoading={isLoading}
+				isLoading={menuItemIsLoading}
 				data={
-					isFetched &&
-					menuData &&
-					(menuData as MenuItemResponseType).status === "1"
-						? (menuData as MenuItemResponseType).Data[0].ItemDetails
+					menuItemIsFetched &&
+					menuItemData &&
+					(menuItemData as ItemListingResponseType).status === "1"
+						? (menuItemData as ItemListingResponseType).Data
 						: []
 				}
 				onClickItem={handleItem}

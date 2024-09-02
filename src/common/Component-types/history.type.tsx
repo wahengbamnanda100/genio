@@ -244,6 +244,11 @@ export const historyTotalField = (): FieldProps[] => [
 		label: "Total Amount",
 		size: "small",
 		disabled: true,
+		condition: /^-?\d*\.?\d{0,2}$/,
+		inputProps: {
+			maxLength: 7,
+			style: { textAlign: "end" },
+		},
 		xs: 2.4,
 	},
 	{
@@ -252,6 +257,11 @@ export const historyTotalField = (): FieldProps[] => [
 		label: "Discount Amount",
 		size: "small",
 		disabled: true,
+		condition: /^-?\d*\.?\d{0,2}$/,
+		inputProps: {
+			maxLength: 7,
+			style: { textAlign: "end" },
+		},
 		xs: 2.4,
 	},
 	{
@@ -260,6 +270,11 @@ export const historyTotalField = (): FieldProps[] => [
 		label: "Net Amount",
 		size: "small",
 		disabled: true,
+		condition: /^-?\d*\.?\d{0,2}$/,
+		inputProps: {
+			maxLength: 7,
+			style: { textAlign: "end" },
+		},
 		xs: 2.4,
 	},
 	{
@@ -268,6 +283,11 @@ export const historyTotalField = (): FieldProps[] => [
 		label: "Total Cash Amount",
 		size: "small",
 		disabled: true,
+		condition: /^-?\d*\.?\d{0,2}$/,
+		inputProps: {
+			maxLength: 7,
+			style: { textAlign: "end" },
+		},
 		xs: 2.4,
 	},
 	{
@@ -276,6 +296,11 @@ export const historyTotalField = (): FieldProps[] => [
 		label: "Total Card Amount",
 		size: "small",
 		disabled: true,
+		condition: /^-?\d*\.?\d{0,2}$/,
+		inputProps: {
+			maxLength: 7,
+			style: { textAlign: "end" },
+		},
 		xs: 2.4,
 	},
 ];

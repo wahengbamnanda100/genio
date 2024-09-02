@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axiosInstance from "../utils/axiosInstance";
 import {
 	UseMutationResult,
+	UseQueryOptions,
 	useMutation,
 	useQuery,
 } from "@tanstack/react-query";
@@ -8,9 +10,17 @@ import {
 	// BussinessUnitItem,
 	BussinessUnitRequestBodiesType,
 	BussinessUnitResponse,
+	CardDetailRequestBodiesType,
+	CardDetailsParamType,
+	CategoryListingTypeRequestBodiesType,
+	CategoryListingTypeResponseType,
+	// CategoryListingTypeResponseType,
 	EmployeeItem,
 	EmployeeRequestBodiesType,
 	EmployeeResponseType,
+	ExchangeRequestBodies,
+	ItemListingRequestBodiesType,
+	ItemListingResponseType,
 	MenuItemResponseType,
 	MenuListRequstBodiesType,
 	PosSaveRequsetBodiesType,
@@ -314,3 +324,78 @@ export const PreviousList = (
 				.then((res: AxiosResponse) => res.data),
 		enabled,
 	});
+
+export const CurrencyList = () =>
+	useQuery({
+		queryKey: ["currency-list"],
+		queryFn: async () =>
+			axiosInstance
+				.get("/API/GenioCurrencyListingAPI")
+				.then((res: AxiosResponse) => res.data),
+		refetchOnMount: true,
+		// ...queryOptions,
+	});
+
+export const ExchangeRate = (
+	param: ExchangeRequestBodies,
+	queryOptions?: Partial<UseQueryOptions>
+) =>
+	useQuery({
+		queryKey: ["exchange-rate", param],
+		queryFn: async () =>
+			axiosInstance
+				.post("/API/GenioExchangeRateAPI", param)
+				.then((res: AxiosResponse) => res.data),
+		...queryOptions,
+	});
+
+export const CardTypeList = (
+	param: CardDetailsParamType,
+	data: CardDetailRequestBodiesType,
+	queryOptions?: Partial<UseQueryOptions>
+) => {
+	// Convert param object to query string
+	const queryString = new URLSearchParams(param as any).toString();
+
+	return useQuery({
+		queryKey: ["pos-save", param, data],
+		queryFn: async () =>
+			axiosInstance
+				.post(
+					`/api/CommonControllerMobApi/FillTableCombobox?${queryString}`,
+					data
+				)
+				.then((res: AxiosResponse) => res.data),
+		...queryOptions,
+	});
+};
+
+export const GetCetagoryListing = (
+	data: CategoryListingTypeRequestBodiesType,
+	queryOptions?: Partial<UseQueryOptions>
+) => {
+	return useQuery({
+		queryKey: ["category-list", data],
+		queryFn: async () =>
+			axiosInstance
+				.post("/API/GenioCategoryListingAPI", data)
+				.then(
+					(res: AxiosResponse<CategoryListingTypeResponseType>) => res.data
+				),
+		...queryOptions,
+	});
+};
+
+export const GetItemListing = (
+	data: ItemListingRequestBodiesType,
+	queryOptions?: Partial<UseQueryOptions>
+) => {
+	return useQuery({
+		queryKey: ["item-list", data],
+		queryFn: async () =>
+			axiosInstance
+				.post("/API/GenioCategoryItemListingAPI", data)
+				.then((res: AxiosResponse<ItemListingResponseType>) => res.data),
+		...queryOptions,
+	});
+};

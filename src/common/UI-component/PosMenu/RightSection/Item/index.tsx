@@ -11,29 +11,53 @@ export const Item: FC<ItemProps> = ({ label, onClick }) => {
 	const theme = useTheme();
 	return (
 		<AnimateButton>
-			<Box
-				component={Button}
-				onClick={onClick}
-				sx={{
-					display: "flex",
-					justifyContent: "center",
-					alignItems: "center",
-					width: "100%",
-					height: "4rem",
-					py: "2rem",
-					bgcolor: theme.palette.itemButton.main,
-					boxShadow: theme.shadows[4],
-					borderRadius: "10px",
-					padding: "10px",
-					cursor: "pointer",
-					color: "white",
-					"&:hover": {
-						backgroundColor: theme.palette.itemButton.dark,
-						color: "white",
+			<Tooltip
+				title={label}
+				arrow
+				slotProps={{
+					tooltip: {
+						style: {
+							padding: "0.6rem",
+							fontSize: "0.8em",
+							backgroundColor: theme.palette.grey[800],
+						},
 					},
 				}}>
-				<Typography>{label}</Typography>
-			</Box>
+				<Box
+					component={Button}
+					onClick={onClick}
+					sx={{
+						display: "flex",
+						justifyContent: "center",
+						alignItems: "center",
+						width: "100%",
+						height: "4rem",
+						py: "2rem",
+						bgcolor: theme.palette.itemButton.main,
+						boxShadow: theme.shadows[4],
+						borderRadius: "10px",
+						padding: "10px",
+						cursor: "pointer",
+						color: "white",
+						"&:hover": {
+							backgroundColor: theme.palette.itemButton.dark,
+							color: "white",
+						},
+					}}>
+					<Typography
+						sx={{
+							display: "-webkit-box",
+							WebkitBoxOrient: "vertical",
+							overflow: "hidden",
+							WebkitLineClamp: 2,
+							textOverflow: "ellipsis",
+							whiteSpace: "normal",
+							maxWidth: "100%",
+						}}>
+						{label}
+					</Typography>
+				</Box>
+			</Tooltip>
 		</AnimateButton>
 	);
 };

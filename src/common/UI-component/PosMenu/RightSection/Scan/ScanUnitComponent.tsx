@@ -29,13 +29,19 @@ const ScanUnitComponent = () => {
 				selectedKay !== "salesPersonCode" &&
 				previousValuesRef.current.salesPersonCode !== selectedValue.EmployeeCode
 			) {
-				setValue("salesPersonCode", selectedValue);
+				setValue("salesPersonCode", selectedValue, {
+					shouldValidate: true,
+					shouldDirty: true,
+				});
 			}
 			if (
 				selectedKay !== "salesPersonName" &&
 				previousValuesRef.current.salesPersonName !== selectedValue.EmployeeName
 			) {
-				setValue("salesPersonName", selectedValue);
+				setValue("salesPersonName", selectedValue, {
+					shouldValidate: true,
+					shouldDirty: true,
+				});
 			}
 
 			previousValuesRef.current = {

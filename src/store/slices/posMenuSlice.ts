@@ -267,6 +267,9 @@ const posMenuSlice = createSlice({
 				state.discountPercentage
 			);
 		},
+		resetPosMenu: () => {
+			return initialState;
+		},
 	},
 });
 
@@ -293,6 +296,7 @@ export const {
 	setNetTotalAmount,
 	setDiscountPercentage,
 	updateMenuItem,
+	resetPosMenu,
 } = posMenuSlice.actions;
 
 export default posMenuSlice.reducer;

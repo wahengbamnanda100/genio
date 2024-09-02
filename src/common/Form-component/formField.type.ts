@@ -4,6 +4,7 @@ import {
 	FilledInputProps,
 	InputAdornmentProps,
 	InputBaseComponentProps,
+	InputBaseProps,
 	InputProps,
 	OutlinedInputProps,
 	SxProps,
@@ -95,7 +96,9 @@ type InputFieldProps = {
 	minRows?: string | number;
 	maxRows?: string | number;
 	rows?: string | number;
-	InputProps?: Partial<OutlinedInputProps | FilledInputProps | InputProps>;
+	InputProps?: Partial<
+		OutlinedInputProps | FilledInputProps | InputProps | InputBaseProps
+	>;
 	condition?: RegExp;
 	thousandSeparator?: boolean;
 	maxChars?: number;
@@ -104,6 +107,9 @@ type InputFieldProps = {
 } & common_type;
 
 export type InputFieldType = { fieldType: "text" } & InputFieldProps;
+export type BootstrapInputFieldType = {
+	fieldType: "boot-text";
+} & InputFieldProps;
 
 type CheckBoxFieldProps = {
 	title?: string;
@@ -230,6 +236,7 @@ export type ReactDropzoneFieldType = {
 
 type FieldProps =
 	| InputFieldType
+	| BootstrapInputFieldType
 	| AsyncSearchFieldType
 	| DateFieldType
 	| DateTimeFieldType

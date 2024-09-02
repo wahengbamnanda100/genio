@@ -6,13 +6,29 @@ declare module "@mui/material/Button" {
 		login: true;
 		common: true;
 	}
-
 	interface ButtonPropsColorOverrides {
 		previousSale: true;
 		breakfast: true;
 		grab: true;
 		hotfood: true;
 		itemButton: true;
+	}
+}
+
+declare module "@mui/material/styles" {
+	interface Palette {
+		previousSale: Palette["primary"];
+		breakfast: Palette["primary"];
+		grab: Palette["primary"];
+		hotfood: Palette["primary"];
+		itemButton: Palette["primary"];
+	}
+	interface PaletteOptions {
+		previousSale?: PaletteOptions["primary"];
+		breakfast?: PaletteOptions["primary"];
+		grab?: PaletteOptions["primary"];
+		hotfood?: PaletteOptions["primary"];
+		itemButton?: PaletteOptions["primary"];
 	}
 }
 

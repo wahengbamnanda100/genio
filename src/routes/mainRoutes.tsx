@@ -11,20 +11,28 @@ const PosMenu = Loadable(lazy(() => import("../pages/PosMenu")));
 const MainRoutes: RouteObject = {
 	path: "/",
 	element: <MainLayout />,
-	errorElement: <ErrorElement />,
+
 	children: [
 		{
 			path: "/",
 			element: <Dashboard />,
+			errorElement: <ErrorElement />,
 		},
 		{
 			index: true,
 			path: "dashboard",
 			element: <Dashboard />,
+			errorElement: <ErrorElement />,
 		},
 		{
 			path: "pos-menu",
 			element: <PosMenu />,
+			errorElement: <ErrorElement />,
+		},
+		{
+			path: "pos-menu/view/:id",
+			element: <PosMenu />,
+			errorElement: <ErrorElement />,
 		},
 		{
 			path: "*",
