@@ -18,7 +18,7 @@ import {
 	selectTotalAmount,
 	setNetTotalAmount,
 	selectDiscountAmount,
-	setDiscountPercentage,
+	// setDiscountPercentage,
 	selectDiscountPercent,
 	selectDiscountDisable,
 } from "../../../../../store/slices/posMenuSlice";
@@ -28,6 +28,17 @@ import { Student } from "../../../../Form-component/formField.type";
 interface DiscountAmountProps {
 	// onSubmit: (data: unknown) => void;
 }
+
+const calculateDiscountPercentage = (
+	discountAmount: number,
+	totalAmount: number
+): number => {
+	if (totalAmount === 0) {
+		return 0; // Prevent division by zero
+	}
+	const discountPercentage = (discountAmount / totalAmount) * 100;
+	return parseFloat(discountPercentage.toFixed(2)); // Limit to two decimal places
+};
 
 const DiscountAmount: FC<DiscountAmountProps> = () => {
 	const theme = useTheme();
@@ -100,11 +111,16 @@ const DiscountAmount: FC<DiscountAmountProps> = () => {
 	}, [changeDiscountPercentAmount]);
 
 	useEffect(() => {
-		if (changeDiscountAmount && changeDiscountAmount !== 0)
-			dispatch(setDiscountPercentage(changeDiscountAmount));
-		else if (changeDiscountAmount && changeDiscountAmount > totalAmount)
-			dispatch(setDiscountPercentage(totalAmount));
-		else dispatch(setDiscountPercentage(0));
+		if (changeDiscountAmount && changeDiscountAmount !== 0) {
+			const percentage = calculateDiscountPercentage(
+				changeDiscountAmount,
+				totalAmount
+			);
+			dispatch(setNetTotalAmount(percentage));
+			setValue("discount", percentage);
+		} else if (changeDiscountAmount && changeDiscountAmount > totalAmount)
+			setValue("discountAmount", totalAmount);
+		else setValue("discountAmount", 0);
 	}, [changeDiscountAmount]);
 
 	// const onSubmit: SubmitHandler<PosMenuFormSchema> = (data) => {

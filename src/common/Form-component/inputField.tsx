@@ -8,7 +8,11 @@ import { ChangeEvent, forwardRef } from "react";
 import { InputFieldProps } from "./formField.type";
 import { ErrorContainer } from "./ErrorContainer";
 // import { IMaskInput } from "react-imask";
-import { NumericFormat, NumericFormatProps } from "react-number-format";
+import {
+	NumericFormat,
+	NumericFormatProps,
+	PatternFormat,
+} from "react-number-format";
 
 const InputField = ({
 	name,
@@ -134,5 +138,29 @@ const NumericFormatCustom = forwardRef<NumericFormatProps, CustomProps>(
 	}
 );
 
+const CeditCardNubmer = forwardRef<NumericFormatProps, CustomProps>(
+	function NumericFormatCustom(props, ref) {
+		const { onChange, ...other } = props;
+
+		return (
+			<PatternFormat
+				{...other}
+				getInputRef={ref}
+				onValueChange={(values) => {
+					onChange({
+						target: {
+							name: props.name,
+							value: values.value,
+						},
+					});
+				}}
+				format="#### #### #### ####"
+				mask="_" // Mask for incomplete input
+				// allowEmptyFormatting
+			/>
+		);
+	}
+);
+
 export default InputField;
-export { NumericFormatCustom };
+export { NumericFormatCustom, CeditCardNubmer };

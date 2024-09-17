@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { CircularProgress, InputAdornment, Theme, alpha } from "@mui/material";
 import { FieldProps } from "../Form-component";
-import { NumericFormatCustom } from "../Form-component/inputField";
+import {
+	CeditCardNubmer,
+	NumericFormatCustom,
+} from "../Form-component/inputField";
 import StudentCard from "../Form-component/StudentListItem";
 import {
 	CardTypeList,
@@ -168,44 +171,44 @@ const getCardTypeValues = () => {
 
 export const cardDetailFields = (): FieldProps[] => {
 	return [
-		{
-			fieldType: "search",
-			name: "cardNumber",
-			label: "Card Number",
-			size: "small",
-			renderItem: ({ option, props, isSelected, highlightColor }) => (
-				<StudentCard
-					key={option.StudentId}
-					options={option}
-					props={props}
-					isSelected={isSelected}
-					highlightColor={highlightColor}
-				/>
-			),
-			hasErrorMessage: true,
-			rules: {
-				required: "Please enter Card Number",
-			},
-			searchApi: async (keyStroke: string) => {
-				const response = await searchStudentList(
-					{
-						FamilyId: "",
-						CardNumber: keyStroke,
-						StudentName: "",
-						ShowroomId: "7",
-						Cmp_ID_N: "1",
-					},
-					keyStroke && keyStroke !== "" ? true : false
-				);
+		// {
+		// 	fieldType: "search",
+		// 	name: "cardNumber",
+		// 	label: "Card Number",
+		// 	size: "small",
+		// 	renderItem: ({ option, props, isSelected, highlightColor }) => (
+		// 		<StudentCard
+		// 			key={option.StudentId}
+		// 			options={option}
+		// 			props={props}
+		// 			isSelected={isSelected}
+		// 			highlightColor={highlightColor}
+		// 		/>
+		// 	),
+		// 	hasErrorMessage: true,
+		// 	rules: {
+		// 		required: "Please enter Card Number",
+		// 	},
+		// 	searchApi: async (keyStroke: string) => {
+		// 		const response = await searchStudentList(
+		// 			{
+		// 				FamilyId: "",
+		// 				CardNumber: keyStroke,
+		// 				StudentName: "",
+		// 				ShowroomId: "7",
+		// 				Cmp_ID_N: "1",
+		// 			},
+		// 			keyStroke && keyStroke !== "" ? true : false
+		// 		);
 
-				return response;
-			},
-			getOptionLabel: (option) => (option ? `${option.CardNumber}` : ""),
-			optionKey: "CardNumber",
-			options: (searchData) => searchData ?? [],
-			xs: 12,
-			md: 6,
-		},
+		// 		return response;
+		// 	},
+		// 	getOptionLabel: (option) => (option ? `${option.CardNumber}` : ""),
+		// 	optionKey: "CardNumber",
+		// 	options: (searchData) => searchData ?? [],
+		// 	xs: 12,
+		// 	md: 6,
+		// },
 		{
 			fieldType: "search",
 			name: "name",
@@ -240,14 +243,14 @@ export const cardDetailFields = (): FieldProps[] => {
 				option ? `${option.StudentName}` : "",
 			optionKey: "StudentName",
 			options: (searchData) => searchData ?? [],
-			xs: 6,
-			md: 6,
+			xs: 12,
+			md: 12,
 		},
 
 		{
 			fieldType: "search",
 			name: "idNumbar",
-			label: "ID Number",
+			label: "Admission Number",
 			size: "small",
 			renderItem: ({ option, props, isSelected, highlightColor }) => (
 				<StudentCard
@@ -853,7 +856,10 @@ export const cardTypeField = (): FieldProps[] => [
 		label: "Card Type",
 		size: "small",
 		// options: cardTypeList,
-		options: getCardTypeValues(),
+		options: [
+			{ label: "Select a card Type", value: "" },
+			...getCardTypeValues(),
+		],
 		// hasErrorMessage: true,
 		// rules: {
 		// 	required: "Please enter your Currency",
@@ -866,15 +872,15 @@ export const cardTypeField = (): FieldProps[] => [
 		label: "Card Number",
 		size: "small",
 		// hasErrorMessage: true,
-		condition: /^-?\d*\.?\d{0,2}$/,
+		// condition: /^-?\d*\.?\d{0,2}$/,
 		// rules: {
 		// 	required: "Please enter your Balance Amount",
 		// },
 		InputProps: {
-			inputComponent: NumericFormatCustom as any,
+			inputComponent: CeditCardNubmer as any,
 		},
 		inputProps: {
-			maxLength: 15,
+			// maxLength: 15,
 			style: { textAlign: "end" },
 		},
 		xs: 12,

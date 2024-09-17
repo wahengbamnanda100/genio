@@ -1,5 +1,7 @@
+//!_________NEW__________
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction, createSelector } from "@reduxjs/toolkit";
 import { RootState } from "..";
 
 export interface PosMenuItem {
@@ -30,17 +32,6 @@ const initialState: PosMenu = {
 	discountDisable: false,
 };
 
-// const hasDiscount = (updates: {
-// 	[key: number]: Partial<PosMenuItem>;
-// }): boolean => {
-// 	for (const key in updates) {
-// 		if (updates[key].discount !== undefined) {
-// 			return true;
-// 		}
-// 	}
-// 	return false;
-// };
-
 const calculateTotalAmount = (menuTable: PosMenuItem[]): number => {
 	return parseFloat(
 		menuTable.reduce((total, item) => total + item.netAmount, 0).toFixed(2)
@@ -50,21 +41,20 @@ const calculateTotalAmount = (menuTable: PosMenuItem[]): number => {
 const calculateDiscountAmount = (
 	totalAmount: number,
 	discountPercentage: number
-) => {
+): number => {
 	return parseFloat((totalAmount * (discountPercentage / 100)).toFixed(2));
 };
 
-const calculateDiscountPercentage = (
-	discountAmount: number,
-	totalAmount: number
-): number => {
-	if (totalAmount === 0) {
-		return 0; // Handle division by zero edge case
-	}
-
-	const discountPercentage = (discountAmount / totalAmount) * 100;
-	return parseFloat(discountPercentage.toFixed(2));
-};
+// const calculateDiscountPercentage = (
+// 	discountAmount: number,
+// 	totalAmount: number
+// ): number => {
+// 	if (totalAmount === 0) {
+// 		return 0;
+// 	}
+// 	const discountPercentage = (discountAmount / totalAmount) * 100;
+// 	return parseFloat(discountPercentage.toFixed(2));
+// };
 
 const calculateNetTotalAmount = (
 	totalAmount: number,
@@ -72,6 +62,18 @@ const calculateNetTotalAmount = (
 ): number => {
 	const discount = totalAmount * (discountPercentage / 100);
 	return parseFloat((totalAmount - discount).toFixed(2));
+};
+
+const recalculateTotals = (state: PosMenu) => {
+	state.totalAmount = calculateTotalAmount(state.menuTable);
+	state.discountAmount = calculateDiscountAmount(
+		state.totalAmount,
+		state.discountPercentage
+	);
+	state.netTotal = calculateNetTotalAmount(
+		state.totalAmount,
+		state.discountPercentage
+	);
 };
 
 const posMenuSlice = createSlice({
@@ -82,8 +84,9 @@ const posMenuSlice = createSlice({
 			const existingItem = state.menuTable.find(
 				(item) => item.id === action.payload.id
 			);
+			console.log("call add item");
+
 			if (existingItem) {
-				// Increment the quantity and update amount and netAmount
 				existingItem.quantity += action.payload.quantity;
 				existingItem.amount = parseFloat(
 					(existingItem.unitPrice * existingItem.quantity).toFixed(2)
@@ -92,7 +95,6 @@ const posMenuSlice = createSlice({
 					(existingItem.amount - existingItem.discount).toFixed(2)
 				);
 			} else {
-				// Add new item if it doesn't exist
 				const newItem = {
 					...action.payload,
 					amount: parseFloat(action.payload.amount.toFixed(2)),
@@ -100,30 +102,14 @@ const posMenuSlice = createSlice({
 				};
 				state.menuTable.push(newItem);
 			}
-
-			state.totalAmount = calculateTotalAmount(state.menuTable);
-			state.netTotal = calculateNetTotalAmount(
-				state.totalAmount,
-				state.discountPercentage
-			);
-			state.discountAmount = calculateDiscountAmount(
-				state.totalAmount,
-				state.discountPercentage
-			);
+			// Call recalculateTotals once instead of repeating logic
+			recalculateTotals(state);
 		},
 		removePosMenu: (state, action: PayloadAction<string>) => {
 			state.menuTable = state.menuTable.filter(
 				(item) => item.id !== action.payload
 			);
-			state.totalAmount = calculateTotalAmount(state.menuTable);
-			state.netTotal = calculateNetTotalAmount(
-				state.totalAmount,
-				state.discountPercentage
-			);
-			state.discountAmount = calculateDiscountAmount(
-				state.totalAmount,
-				state.discountPercentage
-			);
+			recalculateTotals(state); // Recalculate after removal
 		},
 		incrementItemQuantity: (state, action: PayloadAction<string>) => {
 			const item = state.menuTable.find((item) => item.id === action.payload);
@@ -132,15 +118,7 @@ const posMenuSlice = createSlice({
 				item.amount = parseFloat((item.unitPrice * item.quantity).toFixed(2));
 				item.netAmount = parseFloat((item.amount - item.discount).toFixed(2));
 			}
-			state.totalAmount = calculateTotalAmount(state.menuTable);
-			state.netTotal = calculateNetTotalAmount(
-				state.totalAmount,
-				state.discountPercentage
-			);
-			state.discountAmount = calculateDiscountAmount(
-				state.totalAmount,
-				state.discountPercentage
-			);
+			recalculateTotals(state); // Recalculate after increment
 		},
 		decrementItemQuantity: (state, action: PayloadAction<string>) => {
 			const item = state.menuTable.find((item) => item.id === action.payload);
@@ -155,118 +133,70 @@ const posMenuSlice = createSlice({
 					item.netAmount = parseFloat((item.amount - item.discount).toFixed(2));
 				}
 			}
-
-			state.totalAmount = calculateTotalAmount(state.menuTable);
-			state.netTotal = calculateNetTotalAmount(
-				state.totalAmount,
-				state.discountPercentage
-			);
-			state.discountAmount = calculateDiscountAmount(
-				state.totalAmount,
-				state.discountPercentage
-			);
+			recalculateTotals(state); // Recalculate after decrement
 		},
-		editMenuItem: (state, action: PayloadAction<PosMenuItem>) => {
-			const index = state.menuTable.findIndex(
-				(item) => item.id === action.payload.id
-			);
-			if (index !== -1) {
-				const updatedItem = {
-					...action.payload,
-					amount: parseFloat(action.payload.amount.toFixed(2)),
-					netAmount: parseFloat(action.payload.netAmount.toFixed(2)),
-				};
-				state.menuTable[index] = updatedItem;
-			}
-
-			state.totalAmount = calculateTotalAmount(state.menuTable);
-			state.netTotal = calculateNetTotalAmount(
-				state.totalAmount,
-				state.discountPercentage
-			);
-			state.discountAmount = calculateDiscountAmount(
-				state.totalAmount,
-				state.discountPercentage
-			);
-		},
+		// editMenuItem: (state, action: PayloadAction<PosMenuItem>) => {
+		// 	const index = state.menuTable.findIndex(
+		// 		(item) => item.id === action.payload.id
+		// 	);
+		// 	if (index !== -1) {
+		// 		const updatedItem = {
+		// 			...action.payload,
+		// 			amount: parseFloat(action.payload.amount.toFixed(2)),
+		// 			netAmount: parseFloat(action.payload.netAmount.toFixed(2)),
+		// 		};
+		// 		state.menuTable[index] = updatedItem;
+		// 	}
+		// 	recalculateTotals(state); // Recalculate after edit
+		// },
 		setMenuItems: (state, action: PayloadAction<PosMenuItem[]>) => {
 			state.menuTable = action.payload.map((item) => ({
 				...item,
 				amount: parseFloat(item.amount.toFixed(2)),
 				netAmount: parseFloat(item.netAmount.toFixed(2)),
 			}));
-			state.totalAmount = calculateTotalAmount(state.menuTable);
-			state.netTotal = calculateNetTotalAmount(
-				state.totalAmount,
-				state.discountPercentage
-			);
+			recalculateTotals(state); // Recalculate after setting items
 		},
 		setNetTotalAmount: (state, action: PayloadAction<number>) => {
-			state.discountAmount = calculateDiscountAmount(
-				state.totalAmount,
-				state.discountPercentage
-			);
 			state.discountPercentage = action.payload;
-			state.discountAmount = calculateDiscountAmount(
-				state.totalAmount,
-				state.discountPercentage
-			);
-			state.netTotal = calculateNetTotalAmount(
-				state.totalAmount,
-				state.discountPercentage
-			);
+			recalculateTotals(state); // Recalculate after net total change
 		},
-		setDiscountPercentage: (state, action: PayloadAction<number>) => {
-			state.discountAmount = action.payload;
-			state.discountPercentage = calculateDiscountPercentage(
-				state.discountAmount,
-				state.totalAmount
-			);
-			state.netTotal = parseFloat(
-				(state.totalAmount - state.discountAmount).toFixed(2)
-			);
-		},
-		updateMenuItem: (
-			state,
-			action: PayloadAction<{ [key: number]: Partial<PosMenuItem> }>
-		) => {
-			const updates = action.payload;
-			// const check = hasDiscount(action.payload);
-			// state.discountDisable = check;
-			for (const index in updates) {
-				const itemIndex = parseInt(index);
-				if (!isNaN(itemIndex) && state.menuTable[itemIndex]) {
-					const itemUpdates: any = updates[itemIndex];
-					for (const key in itemUpdates) {
-						if (
-							itemUpdates[key] !== undefined &&
-							key in state.menuTable[itemIndex]
-						) {
-							(state.menuTable[itemIndex][key as keyof PosMenuItem] as any) =
-								itemUpdates[key];
-						}
-					}
+		// setDiscountPercentage: (state, action: PayloadAction<number>) => {
+		// 	state.discountAmount = action.payload;
+		// 	state.discountPercentage = calculateDiscountPercentage(
+		// 		state.discountAmount,
+		// 		state.totalAmount
+		// 	);
+		// 	state.netTotal = parseFloat(
+		// 		(state.totalAmount - state.discountAmount).toFixed(2)
+		// 	);
+		// },
+		// updateMenuItem: (
+		// 	state,
+		// 	action: PayloadAction<{ [key: number]: Partial<PosMenuItem> }>
+		// ) => {
+		// 	const updates = action.payload;
+		// 	for (const index in updates) {
+		// 		const itemIndex = parseInt(index);
+		// 		if (!isNaN(itemIndex) && state.menuTable[itemIndex]) {
+		// 			const itemUpdates: any = updates[itemIndex];
+		// 			for (const key in itemUpdates) {
+		// 				if (
+		// 					itemUpdates[key] !== undefined &&
+		// 					key in state.menuTable[itemIndex]
+		// 				) {
+		// 					(state.menuTable[itemIndex][key as keyof PosMenuItem] as any) =
+		// 						itemUpdates[key];
+		// 				}
+		// 			}
 
-					// Update amount and netAmount according to the quantity and discount
-					const item = state.menuTable[itemIndex];
-					item.amount = parseFloat((item.unitPrice * item.quantity).toFixed(2));
-					item.netAmount = parseFloat((item.amount - item.discount).toFixed(2));
-				}
-			}
-			state.totalAmount = calculateTotalAmount(state.menuTable);
-			state.discountAmount = calculateDiscountAmount(
-				state.totalAmount,
-				state.discountPercentage
-			);
-			state.discountPercentage = calculateDiscountPercentage(
-				state.discountAmount,
-				state.totalAmount
-			);
-			state.netTotal = calculateNetTotalAmount(
-				state.totalAmount,
-				state.discountPercentage
-			);
-		},
+		// 			const item = state.menuTable[itemIndex];
+		// 			item.amount = parseFloat((item.unitPrice * item.quantity).toFixed(2));
+		// 			item.netAmount = parseFloat((item.amount - item.discount).toFixed(2));
+		// 		}
+		// 	}
+		// 	recalculateTotals(state); // Recalculate after update
+		// },
 		resetPosMenu: () => {
 			return initialState;
 		},
@@ -275,14 +205,29 @@ const posMenuSlice = createSlice({
 
 export const selectMenuTable = (state: RootState) =>
 	state.posMenuTable.menuTable;
-export const selectTotalAmount = (state: RootState) =>
-	state.posMenuTable.totalAmount;
-export const selectDiscountAmount = (state: RootState) =>
-	state.posMenuTable.discountAmount;
-export const selectNetTotalAmount = (state: RootState) =>
-	state.posMenuTable.netTotal;
+
+export const selectTotalAmount = createSelector(
+	(state: RootState) => state.posMenuTable.menuTable,
+	(menuTable) => calculateTotalAmount(menuTable)
+);
+
+export const selectDiscountAmount = createSelector(
+	(state: RootState) => state.posMenuTable.totalAmount,
+	(state: RootState) => state.posMenuTable.discountPercentage,
+	(totalAmount, discountPercentage) =>
+		calculateDiscountAmount(totalAmount, discountPercentage)
+);
+
+export const selectNetTotalAmount = createSelector(
+	(state: RootState) => state.posMenuTable.totalAmount,
+	(state: RootState) => state.posMenuTable.discountPercentage,
+	(totalAmount, discountPercentage) =>
+		calculateNetTotalAmount(totalAmount, discountPercentage)
+);
+
 export const selectDiscountPercent = (state: RootState) =>
 	state.posMenuTable.discountPercentage;
+
 export const selectDiscountDisable = (state: RootState) =>
 	state.posMenuTable.discountDisable;
 
@@ -291,11 +236,11 @@ export const {
 	removePosMenu,
 	incrementItemQuantity,
 	decrementItemQuantity,
-	editMenuItem,
+	// editMenuItem,
 	setMenuItems,
 	setNetTotalAmount,
-	setDiscountPercentage,
-	updateMenuItem,
+	// setDiscountPercentage,
+	// updateMenuItem,
 	resetPosMenu,
 } = posMenuSlice.actions;
 

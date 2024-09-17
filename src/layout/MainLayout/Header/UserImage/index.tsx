@@ -1,4 +1,4 @@
-import React from "react";
+import React, { CSSProperties } from "react";
 import { Avatar, Box, CircularProgress } from "@mui/material";
 
 interface ImageComponentProps {
@@ -7,6 +7,7 @@ interface ImageComponentProps {
 	width?: number | string;
 	height?: number | string;
 	appBar?: boolean; // New boolean prop
+	sxProps?: CSSProperties;
 }
 
 const placeholderUrl =
@@ -18,6 +19,7 @@ const UserImageAvatar: React.FC<ImageComponentProps> = ({
 	width = "30",
 	height = "30",
 	appBar = false, // Default value is false
+	sxProps,
 }) => {
 	const [imgSrc, setImgSrc] = React.useState<string>(
 		appBar ? placeholderUrl : src || ""
@@ -58,7 +60,66 @@ const UserImageAvatar: React.FC<ImageComponentProps> = ({
 			<Avatar
 				alt={alt}
 				src={imgSrc}
-				sx={{ width: width, height: height, opacity: loading ? 0 : 1 }}
+				sx={{
+					...sxProps,
+					width: width,
+					height: height,
+					opacity: loading ? 0 : 1,
+				}}
+				onLoad={handleLoad}
+				onError={handleError}
+			/>
+		</Box>
+	);
+};
+
+export const StudentImage: React.FC<ImageComponentProps> = ({
+	src,
+	alt = "image",
+	width = "30",
+	height = "30",
+	appBar = false, // Default value is false
+	sxProps,
+}) => {
+	const [imgSrc, setImgSrc] = React.useState<string>(
+		appBar ? placeholderUrl : src || ""
+	);
+	const [loading, setLoading] = React.useState<boolean>(!appBar);
+
+	const handleLoad = () => {
+		setLoading(false);
+	};
+
+	const handleError = () => {
+		setLoading(false);
+		setImgSrc(placeholderUrl);
+	};
+	return (
+		<Box
+			position="relative"
+			display="inline-flex"
+			width={width}
+			height={height}>
+			{loading && (
+				<CircularProgress
+					size={width}
+					sx={{
+						position: "absolute",
+						top: 0,
+						left: 0,
+						zIndex: 1,
+					}}
+				/>
+			)}
+			<img
+				alt={alt}
+				src={imgSrc}
+				style={{
+					...sxProps,
+					width: width,
+					height: height,
+					opacity: loading ? 0 : 1,
+				}}
 				onLoad={handleLoad}
 				onError={handleError}
 			/>

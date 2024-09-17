@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Grid, Paper } from "@mui/material";
 
@@ -43,7 +44,7 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 		selectNetTotalAmount(state)
 	);
 
-	console.log("data", data);
+	// console.log("data", data);
 
 	const method = useForm<PosMenuFormSchema>({
 		defaultValues: {
@@ -143,8 +144,14 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 	};
 
 	const validateForm = () => {
-		const { dailyLimit, netAmount, availableBalance, paidAmount, totalPaid } =
-			method.getValues();
+		const {
+			dailyLimit,
+			netAmount,
+			availableBalance,
+			paidAmount,
+			totalPaid,
+			cashAmount,
+		} = method.getValues();
 
 		if (menuTable.length === 0)
 			return setNotify({
@@ -158,17 +165,24 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 				message: "Amount cannot be graetr than Daily limit",
 			});
 		}
-		if (paidAmount + totalPaid !== netTotalAmount) {
+		if (Number(paidAmount) + Number(totalPaid) !== netTotalAmount) {
+			console.log(
+				"paidAmount + totalPaid",
+				Number(paidAmount) + Number(totalPaid)
+			);
+
 			return setNotify({
 				severity: "error",
 				message: "Paid amount should be equal to Net Amount",
 			});
 		}
-		if (netAmount > availableBalance) {
-			return setNotify({
-				severity: "error",
-				message: "Available balance is insufficient",
-			});
+		if (cashAmount !== netTotalAmount) {
+			if (netAmount > availableBalance) {
+				return setNotify({
+					severity: "error",
+					message: "Available balance is insufficient",
+				});
+			}
 		}
 
 		setOpen(true);
