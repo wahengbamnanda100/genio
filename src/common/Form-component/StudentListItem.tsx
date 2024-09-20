@@ -55,7 +55,7 @@ const AvatarComponent: React.FC<AvatarComponentProps> = ({ src, alt }) => (
 	<Grid
 		component={StyledStudentImageContainer}
 		item
-		xs={2}
+		xs={1}
 		sx={{
 			// border: "1px solid",
 			display: "flex",
@@ -73,6 +73,7 @@ interface DetailsComponentProps {
 	grade: string;
 	cardNo: string;
 	admissionNo: string;
+	Class: string;
 }
 
 const DetailsComponent: React.FC<DetailsComponentProps> = ({
@@ -82,26 +83,49 @@ const DetailsComponent: React.FC<DetailsComponentProps> = ({
 	cardNo,
 	admissionNo,
 }) => (
-	<Grid item container rowSpacing={1} columnSpacing={1} xs={8} sx={{ px: 1 }}>
-		<Grid item xs={12}>
+	<Grid
+		item
+		container
+		rowSpacing={1}
+		columnSpacing={1}
+		justifyContent={"center"}
+		alignItems={"center"}
+		xs={9}
+		sx={{
+			px: 1,
+			// border: "1px solid",
+		}}>
+		{/* <Grid item xs={12}>
 			<Typography sx={{ fontSize: "10px", fontWeight: "medium" }}>
 				{" "}
 				{familyId}
+				{grade}
 			</Typography>
-		</Grid>
-		<Grid item xs={8}>
+		</Grid> */}
+		<Grid item xs={12}>
 			<Typography sx={{ fontSize: "14px", fontWeight: 600 }}>
 				{studentName}
 			</Typography>
 		</Grid>
-		<Grid item xs={4}>
-			<Typography sx={{ fontSize: "12px" }}>{grade}</Typography>
+		<Grid item xs={6}>
+			<Typography sx={{ fontSize: "12px", fontWeight: "medium" }}>
+				Class/Grade: {grade}
+			</Typography>
 		</Grid>
 		<Grid item xs={6}>
-			<Typography sx={{ fontSize: "12px" }}>{cardNo}</Typography>
+			<Typography sx={{ fontSize: "12px", fontWeight: "medium" }}>
+				Card Number: {cardNo}
+			</Typography>
 		</Grid>
 		<Grid item xs={6}>
-			<Typography sx={{ fontSize: "12px" }}>{admissionNo}</Typography>
+			<Typography sx={{ fontSize: "12px", fontWeight: "medium" }}>
+				Admission Number: {admissionNo}
+			</Typography>
+		</Grid>
+		<Grid item xs={6}>
+			<Typography sx={{ fontSize: "12px", fontWeight: "medium" }}>
+				Family ID: {familyId}
+			</Typography>
 		</Grid>
 	</Grid>
 );
@@ -124,7 +148,7 @@ const BalanceComponent: React.FC<BalanceComponentProps> = ({ balance }) => (
 		}}>
 		<ResponsiveTypography
 			sx={{ fontSize: "12px", margin: "auto", fontWeight: "bold" }}>
-			{Number(balance).toFixed(2)}
+			bal: {Number(balance).toFixed(2)}
 		</ResponsiveTypography>
 	</Grid>
 );
@@ -150,7 +174,10 @@ const StudentCard: React.FC<StudentCardProps> = ({
 		AvailableBalance,
 		Grade,
 		ImageUrl,
+		Class,
 	} = options;
+
+	console.log("Student data", options);
 
 	const imgUrl = import.meta.env.VITE_API_URL + ImageUrl;
 
@@ -163,6 +190,7 @@ const StudentCard: React.FC<StudentCardProps> = ({
 				// p: 1,
 				px: 0,
 				// border: "1px solid",
+				maxWidth: "600px",
 				display: "flex",
 				justifyContent: "center",
 				alignItems: "center",
@@ -179,6 +207,7 @@ const StudentCard: React.FC<StudentCardProps> = ({
 				grade={Grade}
 				cardNo={CardNumber}
 				admissionNo={AdmissionNumber}
+				Class={Class || ""}
 			/>
 			<BalanceComponent balance={AvailableBalance} />
 		</Grid>

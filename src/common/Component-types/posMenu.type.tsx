@@ -90,7 +90,7 @@ export type ExchangeRatSchema = {
 
 export type CardPaymentSchema = {
 	cardType: any[];
-	cardTypeNumber: number;
+	cardTypeNumber: string;
 	cardAmount: number;
 };
 
@@ -168,6 +168,46 @@ const getCardTypeValues = () => {
 
 	return cardTypeListData;
 };
+
+export const cardNumberField = (): FieldProps => ({
+	fieldType: "search",
+	name: "cardNumber",
+	// label: "Card Number",
+	placeholder: "Select a Student",
+	size: "small",
+	renderItem: ({ option, props, isSelected, highlightColor }) => (
+		<StudentCard
+			key={option.StudentId}
+			options={option}
+			props={props}
+			isSelected={isSelected}
+			highlightColor={highlightColor}
+		/>
+	),
+	hasErrorMessage: true,
+	rules: {
+		required: "Please enter Card Number",
+	},
+	searchApi: async (keyStroke: string) => {
+		const response = await searchStudentList(
+			{
+				FamilyId: "",
+				CardNumber: keyStroke,
+				StudentName: "",
+				ShowroomId: "7",
+				Cmp_ID_N: "1",
+			},
+			keyStroke && keyStroke !== "" ? true : false
+		);
+
+		return response;
+	},
+	getOptionLabel: (option) => (option ? `${option.CardNumber}` : ""),
+	optionKey: "CardNumber",
+	options: (searchData) => searchData ?? [],
+	xs: 12,
+	// md: 6,
+});
 
 export const cardDetailFields = (): FieldProps[] => {
 	return [
@@ -457,7 +497,7 @@ export const netAmountField = (): FieldProps => ({
 			textAlign: "end",
 			WebkitTextFillColor: "white",
 			// "-webkit-text-fill-color": theme.palette.text.secondary,
-			fontSize: "1.4em",
+			fontSize: "1.2em",
 			fontWeight: "500",
 		},
 	},
@@ -849,12 +889,13 @@ export const exchangeRateField = (
 	},
 ];
 
-export const cardTypeField = (): FieldProps[] => [
+export const cardTypeField = (disabled: boolean): FieldProps[] => [
 	{
 		fieldType: "select",
 		name: "cardType",
 		label: "Card Type",
 		size: "small",
+		disabled,
 		// options: cardTypeList,
 		options: [
 			{ label: "Select a card Type", value: "" },
@@ -871,6 +912,7 @@ export const cardTypeField = (): FieldProps[] => [
 		name: "cardTypeNumber",
 		label: "Card Number",
 		size: "small",
+		disabled,
 		// hasErrorMessage: true,
 		// condition: /^-?\d*\.?\d{0,2}$/,
 		// rules: {
@@ -890,6 +932,7 @@ export const cardTypeField = (): FieldProps[] => [
 		name: "cardAmount",
 		label: "Card Amount",
 		size: "small",
+		disabled,
 		// hasErrorMessage: true,
 		condition: /^-?\d*\.?\d{0,2}$/,
 		// rules: {

@@ -3,6 +3,7 @@ import { useFormContext, useWatch } from "react-hook-form";
 import {
 	cardDetailFields,
 	cardDetailSchema,
+	cardNumberField,
 } from "../../../../Component-types/posMenu.type";
 import Field from "../../../../Form-component/field";
 import { useEffect, useRef, useCallback } from "react";
@@ -152,8 +153,8 @@ const CardDetail = () => {
 						direction={"row"}
 						alignItems={"center"}
 						sx={{
-							border: "1px solid",
-							borderColor: theme.palette.grey[400],
+							// border: "1px solid",
+							// borderColor: theme.palette.grey[400],
 							borderRadius: 1,
 							mb: 0.4,
 						}}>
@@ -164,6 +165,7 @@ const CardDetail = () => {
 								borderColor: theme.palette.grey[400],
 								bgcolor: theme.palette.primary.main,
 								borderRadius: 1,
+								height: "100%",
 								boxShadow: theme.shadows[2],
 							}}>
 							<Typography
@@ -177,7 +179,7 @@ const CardDetail = () => {
 							</Typography>
 						</Box>
 						<Box sx={{ flex: 2 }}>
-							<Typography
+							{/* <Typography
 								variant="subtitle2"
 								fontWeight={"medium"}
 								textAlign={"start"}
@@ -187,7 +189,8 @@ const CardDetail = () => {
 								{(cardNumberWatch as Student)
 									? (cardNumberWatch as Student).CardNumber
 									: "Select a student"}
-							</Typography>
+							</Typography> */}
+							<Field {...cardNumberField()} {...control} />
 						</Box>
 					</Stack>
 				</Grid>
@@ -202,6 +205,7 @@ const CardDetail = () => {
 							import.meta.env.VITE_API_URL +
 							(cardNumberWatch as Student)?.ImageUrl
 						}
+						// src="https://images.pexels.com/photos/28172953/pexels-photo-28172953/free-photo-of-a-woman-with-a-scarf-on-her-head-in-a-wheat-field.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
 						alt={(cardNumberWatch as Student).StudentName}
 						width={"100%"}
 						height={"100%"}

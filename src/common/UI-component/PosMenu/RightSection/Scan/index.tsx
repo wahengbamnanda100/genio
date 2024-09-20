@@ -11,6 +11,7 @@ import { FC, useEffect, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { useFormContext, useFormState } from "react-hook-form";
+import { IoScanOutline } from "react-icons/io5";
 import _ from "lodash";
 
 import ScanUnitComponent from "./ScanUnitComponent";
@@ -50,14 +51,14 @@ const ScanComponent = () => {
 	};
 
 	return (
-		<Grid container spacing={2}>
+		<Grid container spacing={2} justifyContent={"center"} alignItems={"center"}>
 			<Grid item xs={3}>
 				<AddToggleBtn toggled={checked} handleAdd={handleAddScan} />
 			</Grid>
 			<Grid item xs={3}>
 				<SubmitBtn handleSubmit={handleSubmitCLick} />
 			</Grid>
-			<Grid item container xs={6} spacing={2}>
+			<Grid item container xs={6} spacing={2} justifyContent={"center"}>
 				{scanField().map((field) => (
 					<Field key={field.name} {...field} {...control} />
 				))}
@@ -83,6 +84,7 @@ const SubmitBtn: FC<SubmitBtnProps> = ({ handleSubmit }) => {
 				variant="contained"
 				color="secondary"
 				fullWidth
+				startIcon={<IoScanOutline />}
 				onClick={handleSubmit}>
 				Scan
 			</Button>

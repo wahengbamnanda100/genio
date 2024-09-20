@@ -34,6 +34,7 @@ const Main = styled("main", {
 	minHeight: "100vh",
 	width: `calc(100% - ${open ? drawerWidth : 0}px)`,
 	padding: "16px",
+	paddingTop: "8px",
 	[theme.breakpoints.down("md")]: {
 		marginLeft: open ? 20 : 0,
 		width: `calc(100% - ${open ? drawerWidth : 0}px)`,

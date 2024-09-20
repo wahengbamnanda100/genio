@@ -18,6 +18,7 @@ export interface Student {
 	AvailableBalance: string;
 	ImageUrl: string;
 	DailyLimit: string;
+	Class?: string;
 }
 
 export interface StudentListResponse {

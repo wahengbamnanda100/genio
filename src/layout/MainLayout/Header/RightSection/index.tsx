@@ -20,7 +20,8 @@ const RightSection = () => {
 	return (
 		<Box
 			sx={{ display: "flex", flexGrow: 1, justifyContent: "flex-end", gap: 2 }}>
-			<UserImageAvatar src={imgUrl} appBar={true} />
+			{/* //todo add url with user data */}
+			<UserImageAvatar src={""} appBar={true} />
 			<ButtonBase sx={{ borderRadius: "12px", overflow: "hidden" }}>
 				<Avatar
 					variant="rounded"

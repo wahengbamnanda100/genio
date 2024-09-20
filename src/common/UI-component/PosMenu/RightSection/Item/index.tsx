@@ -1,6 +1,15 @@
-import { Box, Button, Tooltip, Typography, useTheme } from "@mui/material";
+import {
+	Box,
+	Button,
+	Tooltip,
+	Typography,
+	useTheme,
+	alpha,
+	// lighten,
+} from "@mui/material";
 import { FC } from "react";
 import AnimateButton from "../../../Extended/AnimateButton";
+import { useAppProvider } from "../../../../../AppProvider";
 
 interface ItemProps {
 	label: string;
@@ -9,6 +18,8 @@ interface ItemProps {
 
 export const Item: FC<ItemProps> = ({ label, onClick }) => {
 	const theme = useTheme();
+	const { itemColor } = useAppProvider();
+
 	return (
 		<AnimateButton>
 			<Tooltip
@@ -31,16 +42,19 @@ export const Item: FC<ItemProps> = ({ label, onClick }) => {
 						justifyContent: "center",
 						alignItems: "center",
 						width: "100%",
-						height: "4rem",
-						py: "2rem",
-						bgcolor: theme.palette.itemButton.main,
+						// height: "4rem",
+						py: "1.2rem",
+						// bgcolor: theme.palette.itemButton.main,
+						background: alpha(itemColor, 2),
+						// background: lighten(itemColor, 0.2),
 						boxShadow: theme.shadows[4],
 						borderRadius: "10px",
-						padding: "10px",
+						// padding: "10px",
 						cursor: "pointer",
 						color: "white",
 						"&:hover": {
-							backgroundColor: theme.palette.itemButton.dark,
+							background: alpha(itemColor, 0.8),
+							filter: "brightness(80%)",
 							color: "white",
 						},
 					}}>
@@ -102,12 +116,12 @@ export const BreakfastItem: FC<BreakfastItemProps> = ({
 						justifyContent: "center",
 						alignItems: "center",
 						width: "100%",
-						height: "4.2rem",
-						py: "2rem",
+						// height: "4.2rem",
+						py: "1rem",
 						background: isActive ? hoverColor : color,
 						boxShadow: isActive ? theme.shadows[12] : theme.shadows[4],
 						borderRadius: "10px",
-						padding: "10px",
+						// padding: "10px",
 						cursor: "pointer",
 						color: "white",
 

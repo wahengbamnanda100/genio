@@ -7,6 +7,7 @@ import { BreakfastItem, Item } from "../Item";
 import generateLinearGradient, {
 	Colors,
 } from "../../../../../utils/gradientColor";
+import { useAppProvider } from "../../../../../AppProvider";
 
 interface SelectMenuBoxProps {
 	data: object[];
@@ -23,6 +24,7 @@ const SelectMenuBox: FC<SelectMenuBoxProps> = ({
 }) => {
 	// const ITEM_SIZE = 24;
 	const theme = useTheme();
+	const { setItemColor } = useAppProvider();
 	const [currentPage, setCurrentPage] = useState<number>(0);
 	const [activeItem, setActiveItem] = useState<number | undefined>(undefined);
 	const [gradientColors, setGradientColors] = useState<string[]>([]);
@@ -35,23 +37,35 @@ const SelectMenuBox: FC<SelectMenuBoxProps> = ({
 				light: theme.palette.breakfast.main,
 				dark: theme.palette.breakfast.dark,
 			},
-			{ light: theme.palette.hotfood.main, dark: theme.palette.hotfood.dark },
-			{ light: theme.palette.grab.main, dark: theme.palette.grab.dark },
+			{
+				light: theme.palette.hotfood.main,
+				dark: theme.palette.hotfood.dark,
+			},
+			{
+				light: theme.palette.grab.main,
+				dark: theme.palette.grab.dark,
+			},
 			{
 				light: theme.palette.secondary.main,
 				dark: theme.palette.secondary.dark,
 			},
-			{ light: theme.palette.error.main, dark: theme.palette.error.dark },
-			{ light: theme.palette.primary.main, dark: theme.palette.primary.dark }, // Optional 6th gradient
+			{
+				light: theme.palette.error.main,
+				dark: theme.palette.error.dark,
+			},
+			{
+				light: theme.palette.primary.main,
+				dark: theme.palette.primary.dark,
+			}, // Optional 6th gradient
 		];
 
 		const darkColors = [
-			theme.palette.breakfast.light,
-			theme.palette.hotfood.light,
-			theme.palette.grab.light,
-			theme.palette.secondary.light,
-			theme.palette.error.light,
-			theme.palette.primary.light,
+			theme.palette.breakfast.dark,
+			theme.palette.hotfood.dark,
+			theme.palette.grab.dark,
+			theme.palette.secondary.dark,
+			theme.palette.error.dark,
+			theme.palette.primary.dark,
 		];
 
 		// Generate gradient colors based on the defined linearGradients
@@ -77,10 +91,12 @@ const SelectMenuBox: FC<SelectMenuBoxProps> = ({
 			setActiveItem(0);
 		}
 	}, [category]);
-
 	const handleCategoryClick = (index: number, item: unknown) => {
 		setActiveItem(index);
 		onClickItem(item);
+
+		const colorToStore = darkColor[index % darkColor.length];
+		setItemColor(colorToStore);
 	};
 
 	const handleItemClick = (item: unknown) => {

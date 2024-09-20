@@ -16,7 +16,7 @@ import { NumericFormatCustom } from "./inputField";
 
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
 	"label + &": {
-		marginTop: theme.spacing(2),
+		marginTop: theme.spacing(4),
 		color: theme.palette.secondary.main,
 	},
 	"& .MuiInputBase-input": {
@@ -25,9 +25,10 @@ const BootstrapInput = styled(InputBase)(({ theme }) => ({
 		backgroundColor: theme.palette.secondary.main,
 		border: "1px solid",
 		// borderColor: theme.palette.mode === "light" ? "#E0E3E7" : "#2D3843",
-		fontSize: 16,
+		fontSize: 12,
+		marginTop: -10,
 		// width: "auto",
-		padding: "6px 12px",
+		padding: "6px 10px",
 		transition: theme.transitions.create([
 			"border-color",
 			"background-color",

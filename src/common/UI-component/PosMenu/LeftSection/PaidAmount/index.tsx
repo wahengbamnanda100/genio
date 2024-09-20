@@ -1,212 +1,19 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // /* eslint-disable @typescript-eslint/no-explicit-any */
-// import { Grid, alpha, useTheme } from "@mui/material";
-// // import SwapVertRoundedIcon from "@mui/icons-material/SwapVertRounded";
 
-// import {
-// 	availableBalancefield,
-// 	AvailableBalanceSchema,
-// 	cardDetailSchema,
-// 	CardPaymentSchema,
-// 	cardTypeField,
-// 	// exchangeRateField,
-// 	ExchangeRatSchema,
-// 	paidAmountField,
-// 	PaidAmountSchema,
-// } from "../../../../Component-types/posMenu.type";
-// import Field from "../../../../Form-component/field";
-// import { useEffect, useState } from "react";
-// // import { MotionProps, motion } from "framer-motion";
-// import { FieldProps } from "../../../../Form-component";
-// import { useFormContext, useWatch } from "react-hook-form";
-// import { Student } from "../../../../../services/aoi.type";
-
-// import { useSelector } from "react-redux";
-// import { RootState } from "../../../../../store";
-// import { selectNetTotalAmount } from "../../../../../store/slices/posMenuSlice";
-
-// const PaidAmount = () => {
-// 	const theme = useTheme();
-
-// 	const { control, setValue } = useFormContext<
-// 		PaidAmountSchema &
-// 			AvailableBalanceSchema &
-// 			cardDetailSchema &
-// 			ExchangeRatSchema &
-// 			CardPaymentSchema
-// 	>();
-
-// 	// const [flip, setFlip] = useState<boolean>(false);
-// 	const netTotalAmount = useSelector((state: RootState) =>
-// 		selectNetTotalAmount(state)
-// 	);
-
-// 	const [availBal, setAvailBal] = useState<number>(0);
-// 	const [disableAvalBal, setDisableAvalBal] = useState<boolean>(false);
-// 	const [disableCashAmt, setDisableCashAmt] = useState<boolean>(false);
-// 	const [tempTotalAmount, setTempTotalAmount] =
-// 		useState<number>(netTotalAmount);
-
-// 	const [
-// 		cardNubmerWatch,
-// 		exchangePaidWatch,
-// 		rateWatch,
-// 		paidAmountWatch,
-// 		cashAmountWatch,
-// 		totalPaidWatch,
-// 		// cardTypeWatch,
-// 		// balanceAmountWatch,
-// 	] = useWatch({
-// 		control,
-// 		name: [
-// 			"cardNumber",
-// 			"exchangePaidAmount",
-// 			"rate",
-// 			"paidAmount",
-// 			"cashAmount",
-// 			"totalPaid",
-// 			// "cardType",
-// 			// "balanceAmount",
-// 		],
-// 	});
-
-// 	useEffect(() => {
-// 		if (netTotalAmount !== tempTotalAmount) {
-// 			setTempTotalAmount(netTotalAmount);
-// 		}
-// 	}, [netTotalAmount]);
-
-// 	useEffect(() => {
-// 		if (disableAvalBal) {
-// 			setValue("paidAmount", 0);
-// 		} else {
-// 			setValue("paidAmount", tempTotalAmount);
-// 		}
-// 	}, [tempTotalAmount, disableAvalBal]);
-
-// 	useEffect(() => {
-// 		const remainBalance = availBal - paidAmountWatch;
-// 		console.log("remain balnance", remainBalance, availBal, netTotalAmount);
-// 		setValue("balanceAmount", remainBalance);
-// 		console.log("watch paid amount", Number(paidAmountWatch));
-// 		if (Number(paidAmountWatch) === 0 && netTotalAmount !== 0) {
-// 			console.log("set this to cash amount", netTotalAmount);
-
-// 			setValue("cashAmount", netTotalAmount);
-// 		}
-// 		if (Number(paidAmountWatch) > 0 && Number(cashAmountWatch) > 0) {
-// 			const partialAmount = cashAmountWatch - paidAmountWatch;
-
-// 			setValue("cashAmount", partialAmount);
-// 		}
-
-// 		const remainingPaidAmt = netTotalAmount - paidAmountWatch;
-
-// 		if (remainBalance < 0) {
-// 			setValue("paidAmount", netTotalAmount + remainBalance);
-// 			// setValue("balanceAmount", )
-// 		}
-
-// 		if (Math.abs(remainBalance) > 0) {
-// 			setValue("cashAmount", Math.abs(remainBalance));
-// 		}
-
-// 		if (remainingPaidAmt > 0) {
-// 			setValue("cashAmount", remainingPaidAmt);
-// 		}
-// 	}, [paidAmountWatch]);
-
-// 	useEffect(() => {
-// 		const remainiingBalance = cashAmountWatch - totalPaidWatch;
-// 		console.log("cash remaining balance", remainiingBalance);
-// 		setValue("balance", remainiingBalance);
-// 	}, [totalPaidWatch, cashAmountWatch]);
-
-// 	useEffect(() => {
-// 		if (cashAmountWatch < 0) {
-// 			setValue("totalPaid", 0);
-// 			setDisableCashAmt(true);
-// 		} else {
-// 			setDisableCashAmt(false);
-// 		}
-// 	}, [cashAmountWatch]);
-
-// 	useEffect(() => {
-// 		//* avail balance effect
-// 		const value = cardNubmerWatch as Student;
-// 		const avalbal = value ? Number(value.AvailableBalance) : 0;
-// 		setValue("availableBalance", avalbal);
-// 		setAvailBal(avalbal);
-// 		if (Number(value.AvailableBalance) === 0) {
-// 			setValue("cashAmount", tempTotalAmount);
-// 		}
-// 		console.log("avail is", avalbal);
-// 	}, [(cardNubmerWatch as Student).AvailableBalance, tempTotalAmount]);
-
-// 	useEffect(() => {
-// 		if (Number((cardNubmerWatch as Student)?.AvailableBalance) > 0) {
-// 			console.log("avail is more than 0");
-
-// 			setDisableAvalBal(false);
-// 		} else {
-// 			console.log("avail is less than 0");
-// 			setValue("cashAmount", tempTotalAmount);
-// 			setDisableAvalBal(true);
-// 		}
-// 	}, [(cardNubmerWatch as Student).AvailableBalance]);
-
-// 	// useEffect(() => {
-// 	// 	console.log("balance amount", balanceAmountWatch);
-// 	// 	if (Number(balanceAmountWatch) > 0) {
-// 	// 		setValue("cashAmount", Math.abs(Number(balanceAmountWatch)));
-// 	// 	}
-// 	// }, [balanceAmountWatch]);
-
-// 	useEffect(() => {
-// 		if (exchangePaidWatch !== 0) {
-// 			setValue("exchangeAmount", exchangePaidWatch * rateWatch);
-// 		}
-// 	}, [exchangePaidWatch, rateWatch]);
-
-// 	const renderFields = (fields: FieldProps[], bgColor: string) => (
-// 		<Grid
-// 			item
-// 			container
-// 			gap={1}
-// 			padding={1}
-// 			width={"100%"}
-// 			borderRadius={2}
-// 			bgcolor={alpha(bgColor, 0.1)}>
-// 			{fields.map((field) => (
-// 				<Field key={field.name} {...field} />
-// 			))}
-// 		</Grid>
-// 	);
-
-// 	return (
-// 		<Grid container spacing={1} position={"relative"} sx={{}}>
-// 			<Grid item container xs={12} md={4} position="relative">
-// 				{renderFields(cardTypeField(), theme.palette.hotfood.light)}
-// 			</Grid>
-// 			<Grid item container xs={12} md={4} position="relative">
-// 				{renderFields(
-// 					paidAmountField(disableCashAmt),
-// 					theme.palette.secondary.light
-// 				)}
-// 			</Grid>
-// 			<Grid item container xs={12} md={4} position="relative">
-// 				{renderFields(
-// 					availableBalancefield(theme, disableAvalBal),
-// 					theme.palette.primary.light
-// 				)}
-// 			</Grid>
-// 		</Grid>
-// 	);
-// };
-
-// export default PaidAmount;
-
-import { Grid, alpha, useTheme } from "@mui/material";
+import {
+	Box,
+	// Checkbox,
+	Grid,
+	Stack,
+	Typography,
+	alpha,
+	styled,
+	useTheme,
+} from "@mui/material";
+import Checkbox from "@mui/material/Checkbox";
+import CircleOutlinedIcon from "@mui/icons-material/CircleOutlined";
+import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import {
 	availableBalancefield,
 	AvailableBalanceSchema,
@@ -245,6 +52,8 @@ const PaidAmount = () => {
 	const [disableCashAmt, setDisableCashAmt] = useState<boolean>(false);
 	const [tempTotalAmount, setTempTotalAmount] =
 		useState<number>(netTotalAmount);
+	const [checked, setChecked] = useState<boolean>(false);
+	// const [creditCheck, stCreditCheck] = useState<boolean>(false);
 
 	const [
 		cardNubmerWatch,
@@ -264,6 +73,10 @@ const PaidAmount = () => {
 			"balance",
 		],
 	});
+
+	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setChecked(event.target.checked);
+	};
 
 	// Update temp total amount when netTotalAmount changes
 	useEffect(() => {
@@ -304,6 +117,33 @@ const PaidAmount = () => {
 			setValue("cashAmount", Math.abs(balanceAmountWatch));
 		}
 
+		if (cashAmountWatch > 0 && totalPaidWatch > 0) {
+			setValue("balance", cashAmountWatch - totalPaidWatch);
+		}
+
+		setDisableCashAmt(checked);
+
+		if (checked) {
+			// setDisableCashAmt(true);
+			setValue("cardAmount", netTotalAmount);
+			setValue("paidAmount", 0);
+			setValue("totalPaid", 0);
+			if (availBal > 0) {
+				if (netTotalAmount > availBal) {
+					setValue("paidAmount", netTotalAmount - (tempTotalAmount - availBal));
+					setValue("balanceAmount", 0);
+					setValue("cashAmount", netTotalAmount - paidAmountWatch);
+				} else {
+					setValue("paidAmount", netTotalAmount);
+					setValue("balanceAmount", remainBalance);
+				}
+			}
+			setValue("cashAmount", 0);
+			setValue("balance", 0);
+		} else {
+			setValue("cardAmount", 0);
+		}
+
 		// if (disableAvalBal) {
 		// 	setValue("paidAmount", 0);
 		// } else {
@@ -324,6 +164,8 @@ const PaidAmount = () => {
 		tempTotalAmount,
 		disableAvalBal,
 		balanceAmountWatch,
+		totalPaidWatch,
+		checked,
 		setValue,
 	]);
 
@@ -370,38 +212,100 @@ const PaidAmount = () => {
 
 	// Memoize field rendering to avoid unnecessary re-renders
 	const renderFields = useCallback(
-		(fields: FieldProps[], bgColor: string) => (
+		(
+			fields: FieldProps[],
+			bgColor: string,
+			title: string,
+			titleColor: string,
+			outline?: boolean
+		) => (
 			<Grid
 				item
 				container
-				gap={1}
-				padding={1}
-				width={"100%"}
-				borderRadius={2}
-				bgcolor={alpha(bgColor, 0.1)}>
-				{fields.map((field) => (
-					<Field key={field.name} {...field} />
-				))}
+				sx={{
+					borderRadius: 1,
+					overflow: "hidden",
+					justifyContent: "center",
+					alignItems: "center",
+					bgcolor: bgColor,
+					// outline: outline ? `1px solid ${titleColor}` : "",
+					outline: `1px solid ${titleColor}`,
+				}}>
+				<Grid
+					item
+					xs={outline ? 10 : 12}
+					sx={{
+						// bgcolor: outline ? bgColor : titleColor,
+						bgcolor: bgColor,
+						px: 2,
+						pt: 1,
+						pb: 0.2,
+					}}>
+					<Typography
+						variant="body1"
+						fontWeight={"medium"}
+						// color={outline ? "textPrimary" : "textSecondary"}
+						color={titleColor}
+						// color={"textPrimary"}
+					>
+						{title}
+					</Typography>
+				</Grid>
+				{outline && (
+					<Grid item xs={2} sx={{ bgcolor: bgColor }}>
+						<Checkbox
+							size="small"
+							value={checked}
+							onChange={handleChange}
+							icon={<CircleOutlinedIcon fontSize="small" />}
+							checkedIcon={<CheckCircleRoundedIcon fontSize="small" />}
+							inputProps={{ "aria-label": "controlled" }}
+						/>
+					</Grid>
+				)}
+				<Grid
+					item
+					container
+					gap={1.5}
+					padding={1}
+					width={"100%"}
+					borderRadius={2}
+					// bgcolor={alpha(bgColor, 0.5)}>
+					bgcolor={bgColor}>
+					{fields.map((field) => (
+						<Field key={field.name} {...field} />
+					))}
+				</Grid>
 			</Grid>
 		),
 		[]
 	);
 
 	return (
-		<Grid container spacing={1} position={"relative"}>
+		<Grid container spacing={1} position={"relative"} sx={{ pt: 1 }}>
 			<Grid item container xs={12} md={4} position="relative">
-				{renderFields(cardTypeField(), theme.palette.hotfood.light)}
+				{renderFields(
+					cardTypeField(!checked),
+					"#e9f1fb",
+					"Credit/Debit Card",
+					"#0073a4",
+					true
+				)}
 			</Grid>
 			<Grid item container xs={12} md={4} position="relative">
 				{renderFields(
 					paidAmountField(disableCashAmt),
-					theme.palette.secondary.light
+					"#eefced",
+					"Cash Payment",
+					"#26891d"
 				)}
 			</Grid>
 			<Grid item container xs={12} md={4} position="relative">
 				{renderFields(
 					availableBalancefield(theme, disableAvalBal),
-					theme.palette.primary.light
+					"#ffffd8",
+					"Genio Wallet",
+					"#aa8800"
 				)}
 			</Grid>
 		</Grid>

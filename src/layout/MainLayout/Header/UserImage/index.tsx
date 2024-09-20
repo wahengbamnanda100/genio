@@ -1,4 +1,4 @@
-import React, { CSSProperties } from "react";
+import React, { CSSProperties, useEffect } from "react";
 import { Avatar, Box, CircularProgress } from "@mui/material";
 
 interface ImageComponentProps {
@@ -84,16 +84,25 @@ export const StudentImage: React.FC<ImageComponentProps> = ({
 	const [imgSrc, setImgSrc] = React.useState<string>(
 		appBar ? placeholderUrl : src || ""
 	);
-	const [loading, setLoading] = React.useState<boolean>(!appBar);
+	const [loading, setLoading] = React.useState<boolean>(appBar);
 
 	const handleLoad = () => {
 		setLoading(false);
 	};
 
+	// console.log("src", src, "===", imgSrc);
+
 	const handleError = () => {
 		setLoading(false);
 		setImgSrc(placeholderUrl);
 	};
+
+	useEffect(() => {
+		if (src) {
+			setImgSrc(src);
+		}
+	}, [src]);
+
 	return (
 		<Box
 			position="relative"

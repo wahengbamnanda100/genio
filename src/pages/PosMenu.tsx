@@ -94,7 +94,7 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 
 			//card type
 			cardType: [],
-			cardTypeNumber: 0,
+			cardTypeNumber: "",
 			cardAmount: 0,
 		},
 		mode: "onChange",
@@ -251,7 +251,7 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 
 	return (
 		<>
-			<Paper elevation={4} sx={{ p: 3 }}>
+			<Paper elevation={4} sx={{ p: 3, pt: 2 }}>
 				<FormProvider {...method}>
 					<Grid
 						component={"form"}

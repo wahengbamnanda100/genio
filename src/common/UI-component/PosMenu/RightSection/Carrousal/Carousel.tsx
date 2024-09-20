@@ -33,7 +33,8 @@ const CarouselContainer = styled(Box)(({ theme }: { theme: Theme }) => ({
 	overflow: "hidden",
 	boxShadow: theme.shadows[4],
 	border: `1px solid transparent`,
-	padding: "0.5rem",
+	px: "0.5rem",
+	paddingBottom: "0.5rem",
 	paddingRight: "0.5rem",
 	paddingLeft: "0.5rem",
 	borderRadius: 6,
@@ -76,7 +77,7 @@ const Carousel: React.FC<CarouselProps> = ({
 				display="flex"
 				justifyContent="space-between"
 				alignItems="center"
-				mb={2}>
+				mb={1}>
 				<NaviationButton onClick={handlePrevious} disabled={currentPage === 0}>
 					<ArrowBackIcon />
 				</NaviationButton>
@@ -89,7 +90,7 @@ const Carousel: React.FC<CarouselProps> = ({
 						overflow: "hidden",
 					}}>
 					<Typography
-						variant="h6"
+						variant="body1"
 						fontWeight="medium"
 						textTransform="capitalize">
 						{label}
@@ -111,7 +112,7 @@ const Carousel: React.FC<CarouselProps> = ({
 				onChangeIndex={(index: number) => setCurrentPage(index)}
 				containerStyle={{ width: "100%" }}>
 				{Array.from({ length: totalSlides }).map((_, pageIndex) => (
-					<Grid container spacing={2} key={pageIndex}>
+					<Grid container columnSpacing={2} rowSpacing={1} key={pageIndex}>
 						{children
 							.slice(pageIndex * itemsPerPage, (pageIndex + 1) * itemsPerPage)
 							.map((item, index) => (
@@ -149,7 +150,8 @@ const NaviationButton: FC<NavigationBtnProps> = ({
 					maxHeight: "40px",
 					borderRadius: 1,
 					color: "white",
-					padding: 2,
+					padding: 0,
+					py: 1,
 					boxShadow: theme.shadows[4],
 					// "&:hover": {
 					// 	bgcolor: "secondary.dark",

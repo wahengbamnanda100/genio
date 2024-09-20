@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Button, Grid, Stack, alpha, useTheme } from "@mui/material";
+import { Button, Grid, alpha, useTheme } from "@mui/material";
 import {
 	AvailableBalanceSchema,
 	DiscountAmountSchema,
@@ -129,7 +129,12 @@ const DiscountAmount: FC<DiscountAmountProps> = () => {
 
 	return (
 		<>
-			<Grid container columnSpacing={2} sx={{ mt: 0, px: 0, py: 1 }}>
+			<Grid
+				container
+				columnSpacing={2}
+				sx={{ mt: 0, px: 0, py: 1 }}
+				justifyContent={"center"}
+				alignItems={"center"}>
 				<Grid item xs={6}>
 					{/* <FormProvider {...method}> */}
 					<Grid container spacing={1}>
@@ -141,17 +146,34 @@ const DiscountAmount: FC<DiscountAmountProps> = () => {
 				</Grid>
 				<Grid item xs={6} container alignItems="center" justifyContent="center">
 					{/* <FormProvider {...netAmountMethod}> */}
-					<Stack
+					{/* <Stack
 						flexDirection={"row"}
 						width={"100%"}
 						borderRadius={1}
 						gap={2}
 						p={2}
 						py={1.5}
-						// justifyContent="center"
+						justifyContent="center"
 						alignItems="flex-end"
 						boxShadow={theme.shadows[4]}
 						bgcolor={alpha(theme.palette.secondary.main, 0.3)}>
+						
+					</Stack> */}
+					<Grid
+						item
+						container
+						spacing={1}
+						xs={12}
+						alignItems={"flex-end"}
+						sx={{
+							boxShadow: theme.shadows[4],
+							bgcolor: alpha(theme.palette.secondary.main, 0.3),
+							borderRadius: 1,
+							// gap: 2,
+							p: 1,
+							pt: 0,
+							// py: 1.5,
+						}}>
 						<Field {...netAmountField()} />
 						<Grid item xs={6}>
 							<AnimateButton>
@@ -160,14 +182,14 @@ const DiscountAmount: FC<DiscountAmountProps> = () => {
 									variant="contained"
 									color="secondary"
 									fullWidth
-									sx={{ p: 1.4 }}
+									sx={{ p: 1.4, pt: 1, alignSelf: "flex-end" }}
 									// onClick={handleSubmit(onSubmit)}
 								>
 									Submit
 								</Button>
 							</AnimateButton>
 						</Grid>
-					</Stack>
+					</Grid>
 					{/* </FormProvider> */}
 				</Grid>
 			</Grid>

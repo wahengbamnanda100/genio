@@ -1,7 +1,7 @@
 import { Box, Grid } from "@mui/material";
 import ScanComponent from "./Scan";
 import SelectMenuBox from "./Carrousal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../../../store";
 import { PosMenuItem, addPosMenu } from "../../../../store/slices/posMenuSlice";
@@ -15,9 +15,14 @@ import {
 	MenuListRequstBodiesType,
 } from "../../../../services/aoi.type";
 import { GetCetagoryListing, GetItemListing } from "../../../../services";
+import AlergicBanner from "./AllergyBanner/AlergicBanner";
+import { useFormContext, useWatch } from "react-hook-form";
+import { cardDetailSchema } from "../../../Component-types/posMenu.type";
 
 const RightMenuSection = () => {
 	const dispatch: AppDispatch = useDispatch();
+
+	const { control } = useFormContext<cardDetailSchema>();
 
 	const [cetagoryListParam] = useState<CategoryListingTypeRequestBodiesType>({
 		BusinessUnitId: "1",
@@ -28,6 +33,11 @@ const RightMenuSection = () => {
 		BusinessUnitId: "1", //todo change it later
 		ShowroomId: "147", //todo change it later
 		CategoryId: "",
+	});
+
+	const [studentNameWtach] = useWatch({
+		control,
+		name: ["name"],
 	});
 
 	const {
@@ -64,9 +74,20 @@ const RightMenuSection = () => {
 		};
 		dispatch(addPosMenu(temp));
 	};
+
+	useEffect(() => {
+		if (studentNameWtach) {
+			console.log("studentNameWtach", studentNameWtach);
+		}
+	}, [studentNameWtach]);
+
 	return (
 		<Grid item xs={12} md={6}>
 			<ScanComponent />
+			{/* //todo add toggle accordign to allergy */}
+			<AlergicBanner />
+
+			<RightSpacing />
 
 			<SelectMenuBox
 				data={
