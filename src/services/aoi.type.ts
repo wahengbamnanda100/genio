@@ -70,6 +70,16 @@ export interface ItemsType {
 	Sid_SalesPrice_N: string;
 }
 
+export interface PaymentDtlType {
+	Gem_ID_N: string | null; //Card Type
+	Pyd_CardNo_V: string; // card number
+	Pyd_CardAmount_N: string; //cardamount
+	Pyd_ChequeAmount_N: string; //paidamount
+	Pyd_CashAmount_N: string; //cashamount
+	Pyd_AmountPaid_N: string; //totalpaid
+	Pyd_Balance_N: string; //Balance
+}
+
 export interface PosSaveRequsetBodiesType {
 	Cmp_ID_N: string;
 	ShowroomId: string;
@@ -83,6 +93,7 @@ export interface PosSaveRequsetBodiesType {
 	Sih_ID_N: string;
 	Emp_ID_N: string;
 	Items: ItemsType[];
+	Paymentdtl?: PaymentDtlType[];
 }
 
 export interface PosSaveResponseType {
@@ -118,6 +129,39 @@ export interface PreviousSaleListItemType {
 	CashAmount: string;
 	CardAmount: string;
 	CardSwipe: "NO" | "YES" | string;
+}
+export interface DetailItem {
+	Description: string;
+	Quantity: string;
+	Amount: string;
+	UnitPrice: string;
+	Discount: string;
+	NetAmount: string;
+}
+export interface PreviousDetailType {
+	CardNumber: string;
+	FamilyID: string;
+	IDNumber: string;
+	DailyLimit: string;
+	Name: string;
+	Grade: string;
+	SalesPersonCode: string;
+	SalesPersonName: string;
+	Company_bussinessunit: string;
+	Showroom: string;
+	InvoiceNumber: string;
+	Sih_InvoiceDate_D: string;
+	Total: string;
+	NetAmount: string;
+	CashAmount: string;
+	TotalPaid: string;
+	Balance: string;
+	AvailableBalance: string;
+	PaidAmount: string;
+	DiscountAmount: string;
+	DiscountPercentage: string;
+	Sih_ID_N: string;
+	Items: DetailItem[];
 }
 
 export interface PreviousSaleResponseType {
@@ -263,5 +307,11 @@ export interface ItemListingRequestBodiesType {
 export interface ItemListingResponseType {
 	status: string;
 	Data: ItemDetailsType[] | [];
+	Message: string;
+}
+
+export interface PreviousDetailResponseType {
+	Status: string;
+	Data: PreviousDetailType[] | [];
 	Message: string;
 }

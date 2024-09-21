@@ -4,22 +4,33 @@ import { Grid, Paper } from "@mui/material";
 
 import RightMenuSection from "../common/UI-component/PosMenu/RightSection";
 import LeftMenuSection from "../common/UI-component/PosMenu/LeftSection";
-import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { PosMenuFormSchema } from "../common/Component-types/posMenu.type";
-import { FC, useState } from "react";
+import {
+	FormProvider,
+	SubmitHandler,
+	useForm,
+	UseFormReturn,
+	UseFormSetValue,
+} from "react-hook-form";
+import {
+	cardDetailSchema,
+	PosMenuFormSchema,
+} from "../common/Component-types/posMenu.type";
+import { FC, useEffect, useRef, useState } from "react";
 import ConfirmationDialog from "../common/ModalComponent/ConfirmationDialog";
 import SearchDrawer from "../common/UI-component/History/SearchDrwer";
-import { useMutation } from "@tanstack/react-query";
-import { mutatePosMenu } from "../services";
+import { queryOptions, useMutation } from "@tanstack/react-query";
+import { GetPreviousDetails, mutatePosMenu } from "../services";
 import { useAppProvider } from "../AppProvider";
 import {
 	EmployeeItem,
 	ItemsType,
 	PosSaveRequsetBodiesType,
+	PreviousDetailResponseType,
 	Student,
 } from "../services/aoi.type";
 import { useDispatch, useSelector } from "react-redux";
 import {
+	addMenuItems,
 	PosMenuItem,
 	resetPosMenu,
 	selectMenuTable,
@@ -27,24 +38,29 @@ import {
 } from "../store/slices/posMenuSlice";
 import { AppDispatch, RootState } from "../store";
 import moment from "moment";
+import { useLocation, useParams } from "react-router";
+import Loader from "../common/UI-component/Loader";
+import BreadcrumbNav from "../common/UI-component/PosMenu/Navigation/Breadcrum";
 
 interface PosMenuProps {
 	data: any[] | any;
 }
 
 const FormContainer: FC<PosMenuProps> = ({ data }) => {
+	const effectRan = useRef(false);
+	const { pathname } = useLocation();
 	const { setNotify } = useAppProvider();
 	const dispatch: AppDispatch = useDispatch();
 	const [open, setOpen] = useState<boolean>(false);
 	const [openClear, setOpenClear] = useState<boolean>(false);
-	const [drawerOpen, setrawerOpen] = useState<boolean>(false);
+	const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
 
 	const menuTable = useSelector((state: RootState) => selectMenuTable(state));
 	const netTotalAmount = useSelector((state: RootState) =>
 		selectNetTotalAmount(state)
 	);
 
-	// console.log("data", data);
+	const isView = pathname.includes("view");
 
 	const method = useForm<PosMenuFormSchema>({
 		defaultValues: {
@@ -54,7 +70,7 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 			idNumbar: "",
 			dailyLimit: "",
 			name: "",
-			gardeLimit: 0,
+			gardeLimit: "",
 
 			//menuTableSchema
 
@@ -93,6 +109,7 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 			exchangeAmount: 0,
 
 			//card type
+			allowCard: false,
 			cardType: [],
 			cardTypeNumber: "",
 			cardAmount: 0,
@@ -110,7 +127,10 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 		},
 		onSuccess: (data) => {
 			if (data.statusText === "OK" && data.data.Status === "1") {
-				setNotify({ severity: "success", message: data.data.Message });
+				setNotify({
+					severity: "success",
+					message: `${data.data.Sih_ID_N} - ${data.data.Message}`,
+				});
 			} else if (data.statusText === "OK" && data.data.Status !== "1") {
 				setNotify({
 					severity: "error",
@@ -123,6 +143,69 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 		},
 	});
 
+	const handleSetPreviousDetail = () => {
+		// const { setValue } = method as UseFormReturn<cardDetailSchema, any, undefined>; // Correct destructuring
+		const previousData: (typeof previousDummyDetailData)[0] =
+			previousDummyDetailData[0];
+
+		const studentObj: Partial<Student> = {
+			CardNumber: previousData.CardNumber,
+			FamilyId: previousData.FamilyID,
+			StudentName: previousData.Name,
+			AdmissionNumber: previousData.IDNumber,
+			DailyLimit: previousData.DailyLimit.toString(),
+			Grade: previousData.Grade.toString(),
+			AvailableBalance: previousData.AvailableBalance.toString(),
+		};
+
+		const menuItems: PosMenuItem[] = previousData.Items.map((item, index) => ({
+			// ...item,
+			id: index.toString(),
+			description: item.Description,
+			unitPrice: Number(item.UnitPrice),
+			quantity: Number(item.Quantity),
+			amount: Number(item.Amount),
+			discount: Number(item.Discount),
+			netAmount: Number(item.NetAmount),
+		}));
+
+		const showroomData = {
+			EmployeeCode: previousData.SalesPersonCode,
+			EmployeeName: previousData.SalesPersonName,
+		};
+
+		method.setValue("cardNumber" as any, studentObj as any);
+
+		dispatch(addMenuItems(menuItems));
+
+		method.setValue(
+			"availableBalance" as any,
+			previousData.AvailableBalance as any
+		);
+		method.setValue("netAmount" as any, previousData.NetAmount as any);
+		method.setValue("total" as any, previousData.Total as any);
+		method.setValue("discount" as any, previousData.DiscountPercentage as any);
+		method.setValue(
+			"discountAmount" as any,
+			previousData.DiscountAmount as any
+		);
+		method.setValue("cashAmount" as any, previousData.CashAmount as any);
+		method.setValue("totalPaid" as any, previousData.TotalPaid as any);
+		method.setValue("paidAmount" as any, previousData.PaidAmount as any);
+		method.setValue(
+			"invoiceDate" as any,
+			previousData.Sih_InvoiceDate_D as any
+		);
+		method.setValue("invoiceNumber" as any, previousData.InvoiceNumber as any);
+		method.setValue("showroom" as any, previousData.Showroom as any); //todo need id
+		method.setValue(
+			"cmpName" as any,
+			previousData.Company_bussinessunit as any //todo need id
+		);
+		method.setValue("salesPersonCode" as any, showroomData as any);
+		method.setValue("salesPersonName" as any, showroomData as any);
+	};
+
 	const handleSubmitClick = () => {
 		console.log("Submit button clicked");
 		// Add your custom logic here
@@ -134,7 +217,7 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 
 	const handlePreviousClick = () => {
 		console.log("Previous button clicked");
-		setrawerOpen(true);
+		setDrawerOpen(true);
 		// Add your custom logic here
 	};
 
@@ -150,6 +233,8 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 			availableBalance,
 			paidAmount,
 			totalPaid,
+			balance,
+			allowCard,
 			cashAmount,
 		} = method.getValues();
 
@@ -165,23 +250,32 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 				message: "Amount cannot be graetr than Daily limit",
 			});
 		}
-		if (Number(paidAmount) + Number(totalPaid) !== netTotalAmount) {
-			console.log(
-				"paidAmount + totalPaid",
-				Number(paidAmount) + Number(totalPaid)
-			);
 
-			return setNotify({
-				severity: "error",
-				message: "Paid amount should be equal to Net Amount",
-			});
-		}
-		if (cashAmount !== netTotalAmount) {
-			if (netAmount > availableBalance) {
+		if (!allowCard) {
+			if (Number(paidAmount) + Number(totalPaid) !== netTotalAmount) {
+				console.log(
+					"paidAmount + totalPaid",
+					Number(paidAmount) + Number(totalPaid)
+				);
+
 				return setNotify({
 					severity: "error",
-					message: "Available balance is insufficient",
+					message: "Paid amount should be equal to Net Amount",
 				});
+			}
+			if (balance !== 0) {
+				if (balance < 0) {
+					return setNotify({
+						severity: "error",
+						message: "Total cash paidt cannot be more than cash amount",
+					});
+				}
+				if (netAmount > availableBalance && totalPaid === 0) {
+					return setNotify({
+						severity: "error",
+						message: "Available balance is insufficient",
+					});
+				}
 			}
 		}
 
@@ -190,7 +284,42 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 
 	const onSubmit: SubmitHandler<PosMenuFormSchema> = (data) => {
 		console.log("Form submitted:", data);
+
+		// Validate that cardType is selected
+		if (data.allowCard && (!data.cardType || data.cardType.length === 0)) {
+			// method.setError("cardType", {
+			// 	type: "manual",
+			// 	message: "Card Type is required",
+			// });
+			setNotify({
+				severity: "error",
+				message: "Select a card to proceed",
+			});
+			return;
+		}
+
+		// Validate cardNumber with a specific pattern
+		const cardNumberPattern = /^\d{16}$/;
+
+		if (
+			data.allowCard &&
+			(!data.cardTypeNumber ||
+				!cardNumberPattern.test(data.cardTypeNumber.toString()))
+		) {
+			// method.setError("cardTypeNumber", {
+			// 	type: "manual",
+			// 	message: "Card Number must be in the format XXXX XXXX XXXX XXXX",
+			// });
+			setNotify({
+				severity: "error",
+				message: `Card Number must be in the format XXXX XXXX XXXX XXXX - ${data.cardTypeNumber}`,
+			});
+			return;
+		}
+
+		// If validations pass, proceed to form validation and submission
 		validateForm();
+		console.log("Form submitted successfully", data);
 	};
 
 	const transformMenuTableToItems = (menuTable: PosMenuItem[]): ItemsType[] => {
@@ -222,7 +351,18 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 			Sih_ID_N: "",
 			StudentId: (formData.name as Student)?.StudentId || "",
 			Usr_ID_N: "1",
-			Emp_ID_N: (formData.name as EmployeeItem)?.Emp_ID_N || "",
+			Emp_ID_N: (formData.salesPersonCode as EmployeeItem)?.Emp_ID_N || "",
+			// Paymentdtl: [ //todo after host the api
+			// 	{
+			// 		Gem_ID_N: formData.cardType,
+			// 		Pyd_CardNo_V: formData.cardTypeNumber,
+			// 		Pyd_CardAmount_N: formData.cardAmount.toString(),
+			// 		Pyd_ChequeAmount_N: formData.paidAmount.toString(),
+			// 		Pyd_CashAmount_N: formData.cardAmount.toString(),
+			// 		Pyd_AmountPaid_N: formData.totalPaid.toString(),
+			// 		Pyd_Balance_N: formData.balance.toString(),
+			// 	},
+			// ],
 		};
 		console.log("Handle confirm", formData);
 		console.log("backend data", backendData);
@@ -236,7 +376,7 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 	};
 
 	const handleCloseDrawer = () => {
-		setrawerOpen(false);
+		setDrawerOpen(false);
 	};
 
 	const handleModalClearCancel = () => {
@@ -249,6 +389,30 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 		setOpenClear(false);
 	};
 
+	useEffect(() => {
+		if (effectRan.current === false) {
+			if (isView) {
+				handleSetPreviousDetail();
+				console.log("cardName", isView);
+			}
+
+			effectRan.current = true; // Set the flag to true to prevent running again
+		}
+		if (!isView) {
+			method.reset();
+			method.resetField("availableBalance" as any);
+			dispatch(addMenuItems([]));
+		}
+		return () => {
+			// Reset the flag in case this component is unmounted and remounted
+			effectRan.current = false;
+		};
+	}, [isView, pathname]);
+
+	useEffect(() => {
+		method.resetField("availableBalance" as any);
+	}, [pathname]);
+
 	return (
 		<>
 			<Paper elevation={4} sx={{ p: 3, pt: 2 }}>
@@ -259,6 +423,7 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 						spacing={2}
 						onSubmit={method.handleSubmit(onSubmit)}>
 						<LeftMenuSection
+							isVeiw={isView}
 							handleBackClick={handleBackClick}
 							handleCancelClick={handleCancelClick}
 							handlePreviousClick={handlePreviousClick}
@@ -294,6 +459,7 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 
 			<SearchDrawer
 				open={drawerOpen}
+				setClose={setDrawerOpen}
 				onClose={handleCloseDrawer}
 				onOpen={handlePreviousClick}
 			/>
@@ -301,33 +467,109 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 	);
 };
 
-// const FullScreenLoader: React.FC = () => {
-// 	return (
-// 		<Box
-// 			sx={{
-// 				position: "fixed",
-// 				top: 0,
-// 				left: 0,
-// 				width: "100vw",
-// 				height: "100vh",
-// 				display: "flex",
-// 				justifyContent: "center",
-// 				alignItems: "center",
-// 				backgroundColor: "rgba(255, 255, 255, 0.8)", // Slightly transparent background
-// 				zIndex: 9999, // High z-index to ensure it appears above all content
-// 			}}>
-// 			<CircularProgress />
-// 		</Box>
-// 	);
-// };
-
 const PosMenu = () => {
+	const { id } = useParams();
+	const { setNotify } = useAppProvider();
+
+	// const param = {
+	// 	id: id || "",
+	// };
+
+	// const { data, isLoading, isError, isFetched } = GetPreviousDetails(param, {
+	// 	enabled: !!id,
+	// });
+
+	// useEffect(() => {
+	// 	if (isFetched) {
+	// 		if ((data as PreviousDetailResponseType)?.Status === "1") {
+	// 			setNotify({
+	// 				severity: "success",
+	// 				message: "Previous detail laoded successfully",
+	// 			});
+	// 		}
+	// 	}
+	// }, [isFetched]);
+
+	// if (isLoading) {
+	// 	return <Loader pageLoading={true} />;
+	// }
+
+	// if (isError) {
+	// 	setNotify({
+	// 		severity: "error",
+	// 		message: "Error loading previous detail",
+	// 	});
+	// 	return <FormContainer data={[]} />;
+	// }
+
 	return (
 		<>
 			{/* <FullScreenLoader /> */}
-			<FormContainer data={[]} />
+
+			<FormContainer
+				// data={
+				// 	(isFetched &&
+				// 		(data as PreviousDetailResponseType)?.Status === "1" &&
+				// 		(data as PreviousDetailResponseType)?.Data) ||
+				// 	[]
+				// }
+				data={[]}
+			/>
 		</>
 	);
 };
 
 export default PosMenu;
+
+const previousDummyDetailData = [
+	{
+		CardNumber: "C4763925",
+		FamilyID: "FAM00333",
+		IDNumber: "FAM00333F",
+		DailyLimit: "5000.0000",
+		Name: "Medda, Antonio  ",
+		Grade: "Grade 2",
+		SalesPersonCode: "002",
+		SalesPersonName: "Patricia",
+		Company_bussinessunit: "Anvin Infosystems",
+		Showroom: "01 GENIO ",
+		InvoiceNumber: "AI/INV008050",
+		Sih_InvoiceDate_D: "",
+		Total: "47.0000",
+		NetAmount: "47.0000",
+		CashAmount: "17.0000",
+		TotalPaid: "17.0000",
+		Balance: "0.0000",
+		AvailableBalance: "4923.1600",
+		PaidAmount: "30.0000",
+		DiscountAmount: "0.0000",
+		DiscountPercentage: "0",
+		Sih_ID_N: "243469",
+		Items: [
+			{
+				Description: "CAFE LATTE GRANDE - 16",
+				Quantity: "1",
+				Amount: "16.0000",
+				UnitPrice: "16.0000",
+				Discount: "",
+				NetAmount: "16.0000",
+			},
+			{
+				Description: "CAPPUCCINO GRANDE - 16",
+				Quantity: "1",
+				Amount: "16.0000",
+				UnitPrice: "16.0000",
+				Discount: "",
+				NetAmount: "16.0000",
+			},
+			{
+				Description: "CAFE MOCHA TALL -15",
+				Quantity: "1",
+				Amount: "15.0000",
+				UnitPrice: "15.0000",
+				Discount: "",
+				NetAmount: "15.0000",
+			},
+		],
+	},
+];

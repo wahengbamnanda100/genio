@@ -69,6 +69,7 @@ type common_type = {
 		| true
 		| 1
 		| 2
+		| 2.5
 		| 3
 		| 3.5
 		| 4
@@ -171,6 +172,7 @@ type AsyncSearchFieldProps = {
 	changes?: any;
 	highlightColor?: string;
 	columns?: ColumnProps[];
+	onFocus?: (name: string) => void;
 	renderItem?: ({
 		option,
 		props,

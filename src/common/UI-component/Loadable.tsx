@@ -7,7 +7,7 @@ import Loader from "./Loader";
 
 const Loadable = <P extends object>(Component: ComponentType<P>) => {
 	return (props: P) => (
-		<Suspense fallback={<Loader />}>
+		<Suspense fallback={<Loader pageLoading={false} />}>
 			<Component {...props} />
 		</Suspense>
 	);

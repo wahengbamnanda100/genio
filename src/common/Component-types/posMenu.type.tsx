@@ -25,6 +25,7 @@ import {
 } from "../../services/aoi.type";
 import { getDropDownValues } from "../../utils/utils";
 import EmployeeListItem from "../Form-component/EmployeeList";
+import { Dispatch, SetStateAction } from "react";
 
 export type cardDetailSchema = {
 	cardNumber: unknown;
@@ -33,6 +34,8 @@ export type cardDetailSchema = {
 	dailyLimit: string;
 	name: unknown;
 	gardeLimit: number | string;
+	availableBalance?: number | string;
+	StudentId?: string;
 };
 
 export type MenuItem = {
@@ -89,7 +92,8 @@ export type ExchangeRatSchema = {
 };
 
 export type CardPaymentSchema = {
-	cardType: any[];
+	allowCard: boolean;
+	cardType: any;
 	cardTypeNumber: string;
 	cardAmount: number;
 };
@@ -169,12 +173,31 @@ const getCardTypeValues = () => {
 	return cardTypeListData;
 };
 
-export const cardNumberField = (): FieldProps => ({
+// const studentSearchRequestBodies = {
+// 	FamilyId: "",
+// 	CardNumber: "",
+// 	StudentName: "",
+// 	ShowroomId: "7", //todo change it later
+// 	Cmp_ID_N: "1", //todo change it later
+// };
+
+// const employeeSearchRequsetBodies = {
+// 	SearchText: "",
+// 	Cmp_ID_N: "1",
+// };
+
+export const cardNumberField = (
+	setFocusField: Dispatch<SetStateAction<string>>
+): FieldProps => ({
 	fieldType: "search",
 	name: "cardNumber",
 	// label: "Card Number",
 	placeholder: "Select a Student",
 	size: "small",
+	// disabled: true,
+	onFocus(name) {
+		setFocusField(name);
+	},
 	renderItem: ({ option, props, isSelected, highlightColor }) => (
 		<StudentCard
 			key={option.StudentId}
@@ -209,46 +232,10 @@ export const cardNumberField = (): FieldProps => ({
 	// md: 6,
 });
 
-export const cardDetailFields = (): FieldProps[] => {
+export const cardDetailFields = (
+	setFocusField: Dispatch<SetStateAction<string>>
+): FieldProps[] => {
 	return [
-		// {
-		// 	fieldType: "search",
-		// 	name: "cardNumber",
-		// 	label: "Card Number",
-		// 	size: "small",
-		// 	renderItem: ({ option, props, isSelected, highlightColor }) => (
-		// 		<StudentCard
-		// 			key={option.StudentId}
-		// 			options={option}
-		// 			props={props}
-		// 			isSelected={isSelected}
-		// 			highlightColor={highlightColor}
-		// 		/>
-		// 	),
-		// 	hasErrorMessage: true,
-		// 	rules: {
-		// 		required: "Please enter Card Number",
-		// 	},
-		// 	searchApi: async (keyStroke: string) => {
-		// 		const response = await searchStudentList(
-		// 			{
-		// 				FamilyId: "",
-		// 				CardNumber: keyStroke,
-		// 				StudentName: "",
-		// 				ShowroomId: "7",
-		// 				Cmp_ID_N: "1",
-		// 			},
-		// 			keyStroke && keyStroke !== "" ? true : false
-		// 		);
-
-		// 		return response;
-		// 	},
-		// 	getOptionLabel: (option) => (option ? `${option.CardNumber}` : ""),
-		// 	optionKey: "CardNumber",
-		// 	options: (searchData) => searchData ?? [],
-		// 	xs: 12,
-		// 	md: 6,
-		// },
 		{
 			fieldType: "search",
 			name: "name",
@@ -263,6 +250,11 @@ export const cardDetailFields = (): FieldProps[] => {
 					highlightColor={highlightColor}
 				/>
 			),
+			onFocus: (name) => {
+				console.log("ffff", name);
+
+				setFocusField(name);
+			},
 			hasErrorMessage: true,
 			rules: {
 				required: "Please enter Student Name",
@@ -292,6 +284,10 @@ export const cardDetailFields = (): FieldProps[] => {
 			name: "idNumbar",
 			label: "Admission Number",
 			size: "small",
+			// disabled: true,
+			onFocus(name) {
+				setFocusField(name);
+			},
 			renderItem: ({ option, props, isSelected, highlightColor }) => (
 				<StudentCard
 					key={option.StudentId}
@@ -351,7 +347,10 @@ export const cardDetailFields = (): FieldProps[] => {
 			name: "familyId",
 			label: "Family ID",
 			size: "small",
-
+			// disabled: true,
+			onFocus(name) {
+				setFocusField(name);
+			},
 			renderItem: ({ option, props, isSelected, highlightColor }) => (
 				<StudentCard
 					key={option.StudentId}
@@ -381,12 +380,12 @@ export const cardDetailFields = (): FieldProps[] => {
 			optionKey: "FamilyId",
 			options: (searchData) => searchData ?? [],
 			xs: 12,
-			md: 4,
+			md: 3.5,
 		},
 		{
 			fieldType: "text",
 			name: "gardeLimit",
-			label: "Garde Limit",
+			label: "Garde",
 			size: "small",
 			condition: /^-?\d+$/,
 			disabled: true,
@@ -399,7 +398,7 @@ export const cardDetailFields = (): FieldProps[] => {
 				// style: { textAlign: "end" },
 			},
 			xs: 6,
-			md: 2,
+			md: 2.5,
 		},
 	];
 };
@@ -923,7 +922,7 @@ export const cardTypeField = (disabled: boolean): FieldProps[] => [
 		},
 		inputProps: {
 			// maxLength: 15,
-			style: { textAlign: "end" },
+			style: { textAlign: "left" },
 		},
 		xs: 12,
 	},

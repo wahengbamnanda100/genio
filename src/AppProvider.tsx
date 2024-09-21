@@ -26,7 +26,7 @@ export const useAppProvider = () => React.useContext(app);
 const AppProvider = ({ children }: AppProviderProps) => {
 	const [notify, setNotify] = React.useState<NotifyStateType>(undefined);
 	const [imgUrl, setImgUrl] = React.useState<ImgUrlType>("");
-	const [itemColor, setItemColor] = React.useState<ItemColorType>("#BD4186");
+	const [itemColor, setItemColor] = React.useState<ItemColorType>("#f05d6f");
 
 	return (
 		<app.Provider

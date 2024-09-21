@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { FC, useEffect, useState } from "react";
 import { useTheme } from "@mui/material";
@@ -30,6 +31,9 @@ const SelectMenuBox: FC<SelectMenuBoxProps> = ({
 	const [gradientColors, setGradientColors] = useState<string[]>([]);
 	const [darkColor, setDarkColor] = useState<string[]>([]);
 
+	const [cateColor, setCatColor] = useState<string[]>([]);
+	const [foodItemColor, setFoodItemColor] = useState<string[]>([]);
+
 	useEffect(() => {
 		// Define 5 to 6 linear gradient colors here
 		const linearGradients: Colors[] = [
@@ -59,6 +63,9 @@ const SelectMenuBox: FC<SelectMenuBoxProps> = ({
 			}, // Optional 6th gradient
 		];
 
+		const categoryColor = ["#eb2941", "#833e8e", "#e89456"];
+		const itemColor = ["#f05d6f", "#83578a", "#f49f5f"];
+
 		const darkColors = [
 			theme.palette.breakfast.dark,
 			theme.palette.hotfood.dark,
@@ -71,16 +78,30 @@ const SelectMenuBox: FC<SelectMenuBoxProps> = ({
 		// Generate gradient colors based on the defined linearGradients
 		const generatedColors: string[] = [];
 		const darkColorsRandom: string[] = [];
+		const cc: string[] = [];
+		const ic: string[] = [];
 		for (let i = 0; i < data.length; i++) {
 			const gradientIndex = i % linearGradients.length;
 			const darkIndex = i % darkColors.length;
 			const gradientColor = generateLinearGradient(
 				linearGradients[gradientIndex]
 			);
+			const ccIndex = i % categoryColor.length;
+			const icIndex = i % itemColor.length;
+
+			const ccColor = categoryColor[ccIndex];
+			const icColor = itemColor[icIndex];
+
+			cc.push(ccColor);
+			ic.push(icColor);
+
 			const darkColor = darkColors[darkIndex];
 			darkColorsRandom.push(darkColor);
 			generatedColors.push(gradientColor);
 		}
+
+		setCatColor(cc);
+		setFoodItemColor(ic);
 
 		setGradientColors(generatedColors);
 		setDarkColor(darkColorsRandom);
@@ -95,7 +116,7 @@ const SelectMenuBox: FC<SelectMenuBoxProps> = ({
 		setActiveItem(index);
 		onClickItem(item);
 
-		const colorToStore = darkColor[index % darkColor.length];
+		const colorToStore = foodItemColor[index % foodItemColor.length];
 		setItemColor(colorToStore);
 	};
 
@@ -160,8 +181,8 @@ const SelectMenuBox: FC<SelectMenuBoxProps> = ({
 						key={index}
 						label={item.CategoryDescription}
 						isActive={index === activeItem}
-						color={gradientColors[index % gradientColors.length]}
-						hoverColor={darkColor[index % darkColor.length]}
+						color={cateColor[index % cateColor.length]}
+						hoverColor={foodItemColor[index % foodItemColor.length]}
 						onClick={() => handleCategoryClick(index, item)}
 					/>
 				) : (

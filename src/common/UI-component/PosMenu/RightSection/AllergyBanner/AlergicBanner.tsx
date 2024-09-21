@@ -3,7 +3,7 @@ import { Box, Stack, Typography, useTheme } from "@mui/material";
 import { motion } from "framer-motion";
 import AllergyIcon from "../../.../../../../../assets/icons/AllergyIcon.svg?react";
 
-const AlergicBanner = () => {
+const AlergicBanner = ({ foodItems }: { foodItems: string }) => {
 	const theme = useTheme();
 	return (
 		<Stack
@@ -53,7 +53,7 @@ const AlergicBanner = () => {
 					variant="body1"
 					fontWeight={"normal"}
 					sx={{ color: "white" }}>
-					Please check the items below for allergy information.
+					{foodItems.replace(/,/g, ", ")}
 				</Typography>
 			</Stack>
 		</Stack>

@@ -10,7 +10,7 @@ import {
 	Tooltip,
 	Typography,
 } from "@mui/material";
-import { FC, ReactNode, useEffect, useMemo, useState } from "react";
+import React, { FC, ReactNode, useEffect, useMemo, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import DownloadIcon from "@mui/icons-material/Download";
 import ArticleIcon from "@mui/icons-material/Article";
@@ -39,8 +39,11 @@ import {
 	CustomTableCurrrencyCellFormatter,
 	ListFilterCellComponent,
 } from "../../CutomTable/components/customComponent";
+import { useNavigate } from "react-router";
 
-interface SearchDrawerProps extends SwipeableDrawerProps {}
+interface SearchDrawerProps extends SwipeableDrawerProps {
+	setClose: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
 interface TitleBarProp {
 	onClose: any;
@@ -151,7 +154,13 @@ const StyledDrawerContainer = styled(Box)(() => ({
 	overflowX: "hidden",
 }));
 
-const SearchDrawer: FC<SearchDrawerProps> = ({ open, onClose, onOpen }) => {
+const SearchDrawer: FC<SearchDrawerProps> = ({
+	open,
+	onClose,
+	onOpen,
+	setClose,
+}) => {
+	const navigate = useNavigate();
 	const [searchQuery, setSearchQuery] = useState<{
 		Rows: number;
 		PageNo: number;
@@ -328,6 +337,8 @@ const SearchDrawer: FC<SearchDrawerProps> = ({ open, onClose, onOpen }) => {
 
 	const handleView = (id: string) => {
 		console.log("handle click view", id);
+		navigate(`/pos-menu/view/${id}`);
+		setClose(!open);
 	};
 	const handlePrint = (id: string) => {
 		console.log("handle click Print", id);

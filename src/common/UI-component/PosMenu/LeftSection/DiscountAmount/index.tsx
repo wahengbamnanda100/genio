@@ -26,6 +26,7 @@ import { FC, useEffect, useState } from "react";
 import { Student } from "../../../../Form-component/formField.type";
 
 interface DiscountAmountProps {
+	isView: boolean;
 	// onSubmit: (data: unknown) => void;
 }
 
@@ -40,7 +41,7 @@ const calculateDiscountPercentage = (
 	return parseFloat(discountPercentage.toFixed(2)); // Limit to two decimal places
 };
 
-const DiscountAmount: FC<DiscountAmountProps> = () => {
+const DiscountAmount: FC<DiscountAmountProps> = ({ isView }) => {
 	const theme = useTheme();
 	const dispatch: AppDispatch = useDispatch();
 	const { watch, setValue } = useFormContext<
@@ -181,6 +182,7 @@ const DiscountAmount: FC<DiscountAmountProps> = () => {
 									type="submit"
 									variant="contained"
 									color="secondary"
+									disabled={isView}
 									fullWidth
 									sx={{ p: 1.4, pt: 1, alignSelf: "flex-end" }}
 									// onClick={handleSubmit(onSubmit)}

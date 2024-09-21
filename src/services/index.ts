@@ -3,6 +3,7 @@ import axiosInstance from "../utils/axiosInstance";
 import {
 	UseMutationResult,
 	UseQueryOptions,
+	// queryOptions,
 	useMutation,
 	useQuery,
 } from "@tanstack/react-query";
@@ -25,6 +26,7 @@ import {
 	MenuListRequstBodiesType,
 	PosSaveRequsetBodiesType,
 	PosSaveResponseType,
+	PreviousDetailResponseType,
 	PreviousSaleListItemType,
 	PreviousSaleRequestBodiesType,
 	PreviousSaleResponseType,
@@ -276,6 +278,32 @@ export const searchPreviousList = async (
 
 //!_______REACT USE QUERY___________
 
+export const SearchStudentList = (
+	param: StudentListRequest,
+	queryOptions?: Partial<UseQueryOptions>
+) =>
+	useQuery({
+		queryKey: ["studentList", param],
+		queryFn: async () =>
+			axiosInstance
+				.post("/API/GenioStudentListingAPI", param)
+				.then((res: AxiosResponse) => res.data),
+		...queryOptions,
+	});
+
+export const SearchEmployeeList = (
+	params: EmployeeRequestBodiesType,
+	queryOptions?: Partial<UseQueryOptions>
+) =>
+	useQuery({
+		queryKey: ["searchEmployeeList", params],
+		queryFn: async () =>
+			axiosInstance
+				.post("API/GenioEmployeeListingAPI", params)
+				.then((res: AxiosResponse) => res.data),
+		...queryOptions,
+	});
+
 export const CompoanyUnitList = (param: BussinessUnitRequestBodiesType) =>
 	useQuery({
 		queryKey: ["companyList", param],
@@ -396,6 +424,20 @@ export const GetItemListing = (
 			axiosInstance
 				.post("/API/GenioCategoryItemListingAPI", data)
 				.then((res: AxiosResponse<ItemListingResponseType>) => res.data),
+		...queryOptions,
+	});
+};
+
+export const GetPreviousDetails = (
+	data: any,
+	queryOptions?: Partial<UseQueryOptions>
+) => {
+	return useQuery({
+		queryKey: ["previous-detail", data],
+		queryFn: async () =>
+			axiosInstance
+				.post("API/GenioPreviousSalesViewDetailAPI", data)
+				.then((res: AxiosResponse<PreviousDetailResponseType>) => res.data),
 		...queryOptions,
 	});
 };

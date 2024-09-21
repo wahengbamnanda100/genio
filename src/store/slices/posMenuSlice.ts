@@ -105,6 +105,21 @@ const posMenuSlice = createSlice({
 			// Call recalculateTotals once instead of repeating logic
 			recalculateTotals(state);
 		},
+
+		// New reducer to add a collection of menu items
+		addMenuItems: (state, action: PayloadAction<PosMenuItem[]>) => {
+			// Replace the entire menuTable with the new items
+			state.menuTable = action.payload.map((item) => ({
+				...item,
+				amount: parseFloat(item.amount.toFixed(2)),
+				netAmount: parseFloat(item.netAmount.toFixed(2)),
+				discount: parseFloat(item.discount.toFixed(2)),
+			}));
+
+			// Recalculate totals after replacing the menu items
+			recalculateTotals(state);
+		},
+
 		removePosMenu: (state, action: PayloadAction<string>) => {
 			state.menuTable = state.menuTable.filter(
 				(item) => item.id !== action.payload
@@ -135,20 +150,7 @@ const posMenuSlice = createSlice({
 			}
 			recalculateTotals(state); // Recalculate after decrement
 		},
-		// editMenuItem: (state, action: PayloadAction<PosMenuItem>) => {
-		// 	const index = state.menuTable.findIndex(
-		// 		(item) => item.id === action.payload.id
-		// 	);
-		// 	if (index !== -1) {
-		// 		const updatedItem = {
-		// 			...action.payload,
-		// 			amount: parseFloat(action.payload.amount.toFixed(2)),
-		// 			netAmount: parseFloat(action.payload.netAmount.toFixed(2)),
-		// 		};
-		// 		state.menuTable[index] = updatedItem;
-		// 	}
-		// 	recalculateTotals(state); // Recalculate after edit
-		// },
+
 		setMenuItems: (state, action: PayloadAction<PosMenuItem[]>) => {
 			state.menuTable = action.payload.map((item) => ({
 				...item,
@@ -161,42 +163,7 @@ const posMenuSlice = createSlice({
 			state.discountPercentage = action.payload;
 			recalculateTotals(state); // Recalculate after net total change
 		},
-		// setDiscountPercentage: (state, action: PayloadAction<number>) => {
-		// 	state.discountAmount = action.payload;
-		// 	state.discountPercentage = calculateDiscountPercentage(
-		// 		state.discountAmount,
-		// 		state.totalAmount
-		// 	);
-		// 	state.netTotal = parseFloat(
-		// 		(state.totalAmount - state.discountAmount).toFixed(2)
-		// 	);
-		// },
-		// updateMenuItem: (
-		// 	state,
-		// 	action: PayloadAction<{ [key: number]: Partial<PosMenuItem> }>
-		// ) => {
-		// 	const updates = action.payload;
-		// 	for (const index in updates) {
-		// 		const itemIndex = parseInt(index);
-		// 		if (!isNaN(itemIndex) && state.menuTable[itemIndex]) {
-		// 			const itemUpdates: any = updates[itemIndex];
-		// 			for (const key in itemUpdates) {
-		// 				if (
-		// 					itemUpdates[key] !== undefined &&
-		// 					key in state.menuTable[itemIndex]
-		// 				) {
-		// 					(state.menuTable[itemIndex][key as keyof PosMenuItem] as any) =
-		// 						itemUpdates[key];
-		// 				}
-		// 			}
 
-		// 			const item = state.menuTable[itemIndex];
-		// 			item.amount = parseFloat((item.unitPrice * item.quantity).toFixed(2));
-		// 			item.netAmount = parseFloat((item.amount - item.discount).toFixed(2));
-		// 		}
-		// 	}
-		// 	recalculateTotals(state); // Recalculate after update
-		// },
 		resetPosMenu: () => {
 			return initialState;
 		},
@@ -233,6 +200,7 @@ export const selectDiscountDisable = (state: RootState) =>
 
 export const {
 	addPosMenu,
+	addMenuItems,
 	removePosMenu,
 	incrementItemQuantity,
 	decrementItemQuantity,

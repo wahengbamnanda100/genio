@@ -27,21 +27,25 @@ import {
 import Field from "../../../../Form-component/field";
 import { useEffect, useState, useMemo, useCallback } from "react";
 import { FieldProps } from "../../../../Form-component";
-import { useFormContext, useWatch } from "react-hook-form";
+import { Controller, useFormContext, useWatch } from "react-hook-form";
 import { Student } from "../../../../../services/aoi.type";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../../store";
 import { selectNetTotalAmount } from "../../../../../store/slices/posMenuSlice";
+import { useLocation } from "react-router";
 
 const PaidAmount = () => {
 	const theme = useTheme();
-	const { control, setValue } = useFormContext<
+	const { pathname } = useLocation();
+	const { control, setValue, resetField, reset } = useFormContext<
 		PaidAmountSchema &
 			AvailableBalanceSchema &
 			cardDetailSchema &
 			ExchangeRatSchema &
 			CardPaymentSchema
 	>();
+
+	const isView = pathname.includes("view");
 
 	const netTotalAmount = useSelector((state: RootState) =>
 		selectNetTotalAmount(state)
@@ -78,6 +82,13 @@ const PaidAmount = () => {
 		setChecked(event.target.checked);
 	};
 
+	useEffect(() => {
+		if (cardNubmerWatch) {
+			const value = cardNubmerWatch as Student;
+			setAvailBal(Number(value.AvailableBalance));
+		}
+	}, [cardNubmerWatch]);
+
 	// Update temp total amount when netTotalAmount changes
 	useEffect(() => {
 		if (netTotalAmount !== tempTotalAmount) {
@@ -85,132 +96,131 @@ const PaidAmount = () => {
 		}
 	}, [netTotalAmount, tempTotalAmount]);
 
-	// Handle balance calculation and cash amount changes
 	useEffect(() => {
-		const remainBalance = availBal - paidAmountWatch;
-		// const remainingPaidAmt = netTotalAmount - paidAmountWatch;
-
-		if (availBal === 0) {
-			setValue("paidAmount", 0);
-			setDisableAvalBal(true);
-			setValue("cashAmount", tempTotalAmount);
-		} else {
-			if (tempTotalAmount > availBal) {
-				console.log("tempTotalAmount", tempTotalAmount);
-
-				setValue("paidAmount", tempTotalAmount - (tempTotalAmount - availBal));
-				setValue("balanceAmount", 0);
-				setValue("cashAmount", tempTotalAmount - paidAmountWatch);
+		const handleAvailableBalance = () => {
+			if (availBal === 0) {
+				// No wallet balance, transfer the entire net amount to cashAmount
+				setValue("paidAmount", 0);
+				setDisableAvalBal(true);
+				setValue("availableBalance", 0);
+				setValue("cashAmount", netTotalAmount);
 			} else {
-				setValue("paidAmount", tempTotalAmount);
+				setDisableAvalBal(false);
+				setValue("availableBalance", availBal);
+
+				if (paidAmountWatch > availBal) {
+					setValue("paidAmount", availBal);
+				}
+				updateCashAndBalance();
+			}
+		};
+
+		const updateCashAndBalance = () => {
+			const remainBalance = availBal - Number(paidAmountWatch);
+			const reaminNetAmount = netTotalAmount - Number(paidAmountWatch);
+
+			console.log(
+				"remainBalance",
+				remainBalance,
+				"reaminNetAmount",
+				reaminNetAmount,
+				"paidAmountWatch",
+				Number(paidAmountWatch)
+			);
+
+			setValue("cardAmount", remainBalance);
+
+			if (remainBalance < 0) {
+				setValue("cashAmount", Math.abs(remainBalance));
+				setValue("balanceAmount", 0);
+			} else {
 				setValue("balanceAmount", remainBalance);
 			}
-		}
 
-		if (availBal > 0 && paidAmountWatch) {
-			console.log("remaing bal ", availBal, paidAmountWatch);
-
-			setValue("balanceAmount", availBal - paidAmountWatch);
-		}
-
-		if (balanceAmountWatch < 0 && availBal > 0) {
-			setValue("cashAmount", Math.abs(balanceAmountWatch));
-		}
-
-		if (cashAmountWatch > 0 && totalPaidWatch > 0) {
-			setValue("balance", cashAmountWatch - totalPaidWatch);
-		}
-
-		setDisableCashAmt(checked);
-
-		if (checked) {
-			// setDisableCashAmt(true);
-			setValue("cardAmount", netTotalAmount);
-			setValue("paidAmount", 0);
-			setValue("totalPaid", 0);
-			if (availBal > 0) {
-				if (netTotalAmount > availBal) {
-					setValue("paidAmount", netTotalAmount - (tempTotalAmount - availBal));
-					setValue("balanceAmount", 0);
-					setValue("cashAmount", netTotalAmount - paidAmountWatch);
+			if (reaminNetAmount > 0) {
+				if (checked) {
+					setValue("cashAmount", 0);
 				} else {
-					setValue("paidAmount", netTotalAmount);
-					setValue("balanceAmount", remainBalance);
+					setValue("cashAmount", reaminNetAmount);
 				}
+			} else {
+				setValue("cashAmount", 0); // All paid from wallet
+				setValue("balanceAmount", remainBalance);
 			}
-			setValue("cashAmount", 0);
-			setValue("balance", 0);
-		} else {
-			setValue("cardAmount", 0);
+		};
+
+		const handleCashPayment = () => {
+			if (cashAmountWatch > 0 && totalPaidWatch > 0) {
+				setValue("balance", cashAmountWatch - totalPaidWatch);
+			} else {
+				setValue("balance", 0);
+			}
+		};
+
+		const handleCardPayment = () => {
+			if (checked) {
+				setDisableAvalBal(true);
+				setDisableCashAmt(true);
+				setValue("cardAmount", netTotalAmount);
+				setValue("paidAmount", 0);
+				setValue("totalPaid", 0);
+				setValue("cashAmount", 0);
+				setValue("balance", 0);
+			} else {
+				setDisableAvalBal(false);
+				setDisableCashAmt(false);
+				// resetField(['cardType'])
+				// reset({
+				// 	cardType: [],
+				// 	cardTypeNumber: "",
+				// 	cardAmount: 0,
+				// });
+				setValue("cardType", []);
+				setValue("cardTypeNumber", "");
+				setValue("cardAmount", 0);
+			}
+		};
+
+		const transferCashToCard = () => {
+			if (
+				checked &&
+				paidAmountWatch === 0 &&
+				cashAmountWatch === netTotalAmount
+			) {
+				setValue("cardAmount", netTotalAmount);
+				setValue("cashAmount", 0);
+				setValue("totalPaid", 0);
+			}
+		};
+
+		const clearPaidAmount = () => {
+			if (!paidAmountWatch || paidAmountWatch === 0) {
+				setValue("cashAmount", netTotalAmount);
+				setValue("paidAmount", 0);
+				setValue("balanceAmount", 0);
+			}
+		};
+
+		if (!isView) {
+			// Execute the logic
+			handleAvailableBalance();
+			handleCashPayment();
+			handleCardPayment();
+			transferCashToCard();
+			clearPaidAmount();
 		}
-
-		// if (disableAvalBal) {
-		// 	setValue("paidAmount", 0);
-		// } else {
-		// 	setValue("paidAmount", Math.min(tempTotalAmount, availBal));
-		// }
-
-		// if (remainBalance < 0) {
-		// 	setValue("paidAmount", netTotalAmount + remainBalance);
-		// }
-
-		// if (remainingPaidAmt > 0) {
-		// 	setValue("cashAmount", remainingPaidAmt);
-		// }
 	}, [
 		paidAmountWatch,
 		netTotalAmount,
 		availBal,
-		tempTotalAmount,
 		disableAvalBal,
-		balanceAmountWatch,
+		cashAmountWatch,
 		totalPaidWatch,
 		checked,
-		setValue,
+		isView,
+		// setValue,
 	]);
 
-	// Handle total paid amount and cash amount updates
-	// useEffect(() => {
-	// 	const remainingBalance = cashAmountWatch - totalPaidWatch;
-	// 	setValue("balance", remainingBalance);
-	// }, [totalPaidWatch, cashAmountWatch, setValue]);
-
-	// Handle availability balance when cashAmount changes
-	// useEffect(() => {
-	// 	if (cashAmountWatch < 0) {
-	// 		setValue("totalPaid", 0);
-	// 		setDisableCashAmt(true);
-	// 	} else {
-	// 		setDisableCashAmt(false);
-	// 	}
-	// }, [cashAmountWatch, setValue]);
-
-	// Update available balance and disable status based on cardNumber
-	useEffect(() => {
-		const value = cardNubmerWatch as Student;
-		const avalbal = value ? Number(value.AvailableBalance) : 0;
-		setValue("availableBalance", avalbal);
-		setAvailBal(avalbal);
-
-		// if (Number(value.AvailableBalance) === 0) {
-		// 	setValue("cashAmount", tempTotalAmount);
-		// }
-
-		if (Number(value?.AvailableBalance) === 0) {
-			setDisableAvalBal(true);
-		} else {
-			setDisableAvalBal(false);
-		}
-	}, [cardNubmerWatch]);
-
-	// Update exchange amount based on rate and exchangePaidWatch
-	// useEffect(() => {
-	// 	if (exchangePaidWatch !== 0) {
-	// 		setValue("exchangeAmount", exchangePaidWatch * rateWatch);
-	// 	}
-	// }, [exchangePaidWatch, rateWatch, setValue]);
-
-	// Memoize field rendering to avoid unnecessary re-renders
 	const renderFields = useCallback(
 		(
 			fields: FieldProps[],
@@ -253,13 +263,31 @@ const PaidAmount = () => {
 				</Grid>
 				{outline && (
 					<Grid item xs={2} sx={{ bgcolor: bgColor }}>
-						<Checkbox
+						{/* <Checkbox
 							size="small"
 							value={checked}
 							onChange={handleChange}
 							icon={<CircleOutlinedIcon fontSize="small" />}
 							checkedIcon={<CheckCircleRoundedIcon fontSize="small" />}
 							inputProps={{ "aria-label": "controlled" }}
+						/> */}
+						<Controller
+							name="allowCard" // Name for your checkbox
+							control={control}
+							render={({ field }) => (
+								<Checkbox
+									{...field}
+									size="small"
+									checked={field.value}
+									onChange={(e) => {
+										handleChange(e);
+										field.onChange(e.target.checked);
+									}}
+									icon={<CircleOutlinedIcon fontSize="small" />}
+									checkedIcon={<CheckCircleRoundedIcon fontSize="small" />}
+									inputProps={{ "aria-label": "controlled" }}
+								/>
+							)}
 						/>
 					</Grid>
 				)}

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Box, Grid } from "@mui/material";
 import ScanComponent from "./Scan";
 import SelectMenuBox from "./Carrousal";
@@ -35,10 +36,10 @@ const RightMenuSection = () => {
 		CategoryId: "",
 	});
 
-	const [studentNameWtach] = useWatch({
-		control,
-		name: ["name"],
-	});
+	// const [studentNameWtach] = useWatch({
+	// 	control,
+	// 	name: ["name"],
+	// });
 
 	const {
 		data: caetgoryData,
@@ -75,17 +76,20 @@ const RightMenuSection = () => {
 		dispatch(addPosMenu(temp));
 	};
 
-	useEffect(() => {
-		if (studentNameWtach) {
-			console.log("studentNameWtach", studentNameWtach);
-		}
-	}, [studentNameWtach]);
+	// useEffect(() => {
+	// 	if (studentNameWtach) {
+	// 		console.log("studentNameWtach", studentNameWtach);
+	// 	}
+	// }, [studentNameWtach]);
 
 	return (
 		<Grid item xs={12} md={6}>
 			<ScanComponent />
 			{/* //todo add toggle accordign to allergy */}
-			<AlergicBanner />
+			{/* {studentNameWtach?.AllergicCategory.length > 0 && (
+				<AlergicBanner foodItems="COLD/ICED & FIZZY DRINKS,EGGS,ICE CREAM,NUTS" />
+			)} */}
+			<AlergicBanner foodItems="COLD/ICED & FIZZY DRINKS,EGGS,ICE CREAM,NUTS,MILK,SEA FOOD,BANANA,APPLE,PUMPKIN,CRABS,LOBSTER,OATS," />
 
 			<RightSpacing />
 

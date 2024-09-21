@@ -118,7 +118,7 @@ export const BreakfastItem: FC<BreakfastItemProps> = ({
 						width: "100%",
 						// height: "4.2rem",
 						py: "1rem",
-						background: isActive ? hoverColor : color,
+						background: isActive ? color : color,
 						boxShadow: isActive ? theme.shadows[12] : theme.shadows[4],
 						borderRadius: "10px",
 						// padding: "10px",

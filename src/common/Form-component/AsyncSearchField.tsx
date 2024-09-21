@@ -77,6 +77,7 @@ const AsyncSearchField = ({
 	columns,
 	changes,
 	renderItem,
+	onFocus,
 	highlightColor = "#61c2ff",
 	...restProps
 }: AsyncSearchFieldProps) => {
@@ -113,6 +114,14 @@ const AsyncSearchField = ({
 			debouncedFetchData.cancel();
 		};
 	}, [keyStroke, isFocused, searchApi]);
+
+	useEffect(() => {
+		if (isFocused && onFocus) {
+			console.log("inside seard field", name, isFocused);
+
+			onFocus(name);
+		}
+	}, [isFocused, name, onFocus]);
 
 	return (
 		<Grid item xs={xs} md={md} sm={sm} className={className} style={style}>
