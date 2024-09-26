@@ -22,6 +22,7 @@ import { queryOptions, useMutation } from "@tanstack/react-query";
 import { GetPreviousDetails, mutatePosMenu } from "../services";
 import { useAppProvider } from "../AppProvider";
 import {
+	DetailItem,
 	EmployeeItem,
 	ItemsType,
 	PosSaveRequsetBodiesType,
@@ -49,7 +50,13 @@ interface PosMenuProps {
 const FormContainer: FC<PosMenuProps> = ({ data }) => {
 	const effectRan = useRef(false);
 	const { pathname } = useLocation();
-	const { setNotify } = useAppProvider();
+	const {
+		setNotify,
+		setImgUrl,
+		setAvailBal,
+		setDisableAvailBalance,
+		setDisableCashAmount,
+	} = useAppProvider();
 	const dispatch: AppDispatch = useDispatch();
 	const [open, setOpen] = useState<boolean>(false);
 	const [openClear, setOpenClear] = useState<boolean>(false);
@@ -61,6 +68,8 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 	);
 
 	const isView = pathname.includes("view");
+	let resetCardDetailForm: () => void;
+	let resetScanUnitForm: () => void;
 
 	const method = useForm<PosMenuFormSchema>({
 		defaultValues: {
@@ -129,12 +138,30 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 			if (data.statusText === "OK" && data.data.Status === "1") {
 				setNotify({
 					severity: "success",
-					message: `${data.data.Sih_ID_N} - ${data.data.Message}`,
+					message: `Invoice number ${data.data.Sih_ID_N} - ${data.data.Message}`,
+				});
+				handleResetpage();
+				// After form is successfully submitted, reset CardDetail form
+				if (resetCardDetailForm) {
+					resetCardDetailForm();
+				}
+				if (resetScanUnitForm) {
+					resetScanUnitForm();
+				}
+			} else if (
+				data.statusText === "OK" &&
+				data.data.status !== "1" &&
+				!data.data.Data
+			) {
+				setNotify({
+					severity: "error",
+					message:
+						data.data.Message || data.data.info || "Unable to save pos menu",
 				});
 			} else if (data.statusText === "OK" && data.data.Status !== "1") {
 				setNotify({
 					severity: "error",
-					message: data.data.Message || "Somethig went wrong, try again",
+					message: "Somethig went wrong, try again",
 				});
 			} else {
 				setNotify({ severity: "error", message: "Cannot submit the order" });
@@ -144,9 +171,8 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 	});
 
 	const handleSetPreviousDetail = () => {
-		// const { setValue } = method as UseFormReturn<cardDetailSchema, any, undefined>; // Correct destructuring
-		const previousData: (typeof previousDummyDetailData)[0] =
-			previousDummyDetailData[0];
+		const previousData: (typeof data)[0] = data[0];
+		// console.log("previousData", previousData);
 
 		const studentObj: Partial<Student> = {
 			CardNumber: previousData.CardNumber,
@@ -158,16 +184,18 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 			AvailableBalance: previousData.AvailableBalance.toString(),
 		};
 
-		const menuItems: PosMenuItem[] = previousData.Items.map((item, index) => ({
-			// ...item,
-			id: index.toString(),
-			description: item.Description,
-			unitPrice: Number(item.UnitPrice),
-			quantity: Number(item.Quantity),
-			amount: Number(item.Amount),
-			discount: Number(item.Discount),
-			netAmount: Number(item.NetAmount),
-		}));
+		const menuItems: PosMenuItem[] = previousData.Items.map(
+			(item: DetailItem, index: number) => ({
+				// ...item,
+				id: index.toString(),
+				description: item.Description,
+				unitPrice: Number(item.UnitPrice),
+				quantity: Number(item.Quantity),
+				amount: Number(item.Amount),
+				discount: Number(item.Discount),
+				netAmount: Number(item.NetAmount),
+			})
+		);
 
 		const showroomData = {
 			EmployeeCode: previousData.SalesPersonCode,
@@ -175,6 +203,13 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 		};
 
 		method.setValue("cardNumber" as any, studentObj as any);
+		method.setValue("idNumbar" as any, studentObj as any);
+		method.setValue("familyId" as any, studentObj as any);
+		method.setValue("name" as any, studentObj as any);
+		method.setValue("gardeLimit" as any, studentObj.Grade as any);
+		method.setValue("dailyLimit" as any, studentObj.DailyLimit as any);
+
+		setImgUrl(studentObj?.ImageUrl || "");
 
 		dispatch(addMenuItems(menuItems));
 
@@ -197,10 +232,10 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 			previousData.Sih_InvoiceDate_D as any
 		);
 		method.setValue("invoiceNumber" as any, previousData.InvoiceNumber as any);
-		method.setValue("showroom" as any, previousData.Showroom as any); //todo need id
+		method.setValue("showroom" as any, previousData.Shm_ID_N as any); //todo need id
 		method.setValue(
 			"cmpName" as any,
-			previousData.Company_bussinessunit as any //todo need id
+			previousData.Cmp_ID_N as any //todo need id
 		);
 		method.setValue("salesPersonCode" as any, showroomData as any);
 		method.setValue("salesPersonName" as any, showroomData as any);
@@ -282,15 +317,28 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 		setOpen(true);
 	};
 
+	const handleResetpage = () => {
+		method.reset();
+		dispatch(resetPosMenu());
+		setAvailBal(0);
+		setDisableAvailBalance(false);
+		setDisableCashAmount(false);
+		// setRefresh(true);
+	};
+
+	const handleCardDetailResetRef = (resetFn: () => void) => {
+		resetCardDetailForm = resetFn;
+	};
+
+	const handleScanUnitResetRef = (resetFn: () => void) => {
+		resetScanUnitForm = resetFn;
+	};
+
 	const onSubmit: SubmitHandler<PosMenuFormSchema> = (data) => {
-		console.log("Form submitted:", data);
+		// console.log("Form submitted:", data);
 
 		// Validate that cardType is selected
 		if (data.allowCard && (!data.cardType || data.cardType.length === 0)) {
-			// method.setError("cardType", {
-			// 	type: "manual",
-			// 	message: "Card Type is required",
-			// });
 			setNotify({
 				severity: "error",
 				message: "Select a card to proceed",
@@ -306,10 +354,6 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 			(!data.cardTypeNumber ||
 				!cardNumberPattern.test(data.cardTypeNumber.toString()))
 		) {
-			// method.setError("cardTypeNumber", {
-			// 	type: "manual",
-			// 	message: "Card Number must be in the format XXXX XXXX XXXX XXXX",
-			// });
 			setNotify({
 				severity: "error",
 				message: `Card Number must be in the format XXXX XXXX XXXX XXXX - ${data.cardTypeNumber}`,
@@ -319,7 +363,7 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 
 		// If validations pass, proceed to form validation and submission
 		validateForm();
-		console.log("Form submitted successfully", data);
+		// console.log("Form submitted successfully", data);
 	};
 
 	const transformMenuTableToItems = (menuTable: PosMenuItem[]): ItemsType[] => {
@@ -349,20 +393,20 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 			NetAmount: formData.netAmount?.toString() || "",
 			ShowroomId: formData.showroom,
 			Sih_ID_N: "",
-			StudentId: (formData.name as Student)?.StudentId || "",
+			CardID: (formData.name as Student)?.CardID || "",
 			Usr_ID_N: "1",
 			Emp_ID_N: (formData.salesPersonCode as EmployeeItem)?.Emp_ID_N || "",
-			// Paymentdtl: [ //todo after host the api
-			// 	{
-			// 		Gem_ID_N: formData.cardType,
-			// 		Pyd_CardNo_V: formData.cardTypeNumber,
-			// 		Pyd_CardAmount_N: formData.cardAmount.toString(),
-			// 		Pyd_ChequeAmount_N: formData.paidAmount.toString(),
-			// 		Pyd_CashAmount_N: formData.cardAmount.toString(),
-			// 		Pyd_AmountPaid_N: formData.totalPaid.toString(),
-			// 		Pyd_Balance_N: formData.balance.toString(),
-			// 	},
-			// ],
+			Paymentdtl: [
+				{
+					Gem_ID_N: formData.cardType.length === 0 ? null : formData.cardType,
+					Pyd_CardNo_V: formData.cardTypeNumber,
+					Pyd_CardAmount_N: formData.cardAmount.toString(),
+					Pyd_ChequeAmount_N: formData.paidAmount.toString(),
+					Pyd_CashAmount_N: formData.cashAmount.toString(),
+					Pyd_AmountPaid_N: formData.totalPaid.toString(),
+					Pyd_Balance_N: formData.balance.toString(),
+				},
+			],
 		};
 		console.log("Handle confirm", formData);
 		console.log("backend data", backendData);
@@ -391,9 +435,9 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 
 	useEffect(() => {
 		if (effectRan.current === false) {
-			if (isView) {
+			if (isView && data.length !== 0) {
 				handleSetPreviousDetail();
-				console.log("cardName", isView);
+				// console.log("cardName", isView);
 			}
 
 			effectRan.current = true; // Set the flag to true to prevent running again
@@ -408,10 +452,6 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 			effectRan.current = false;
 		};
 	}, [isView, pathname]);
-
-	useEffect(() => {
-		method.resetField("availableBalance" as any);
-	}, [pathname]);
 
 	return (
 		<>
@@ -428,9 +468,10 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 							handleCancelClick={handleCancelClick}
 							handlePreviousClick={handlePreviousClick}
 							handleSubmitClick={handleSubmitClick}
+							registerReset={handleCardDetailResetRef}
 						/>
 
-						<RightMenuSection />
+						<RightMenuSection resetFormValues={handleScanUnitResetRef} />
 					</Grid>
 				</FormProvider>
 			</Paper>
@@ -471,49 +512,56 @@ const PosMenu = () => {
 	const { id } = useParams();
 	const { setNotify } = useAppProvider();
 
-	// const param = {
-	// 	id: id || "",
-	// };
+	const { data, isLoading, isError, isFetched } = GetPreviousDetails(
+		{ Sih_ID_N: id || "" },
+		{
+			enabled: !!id,
+		}
+	);
 
-	// const { data, isLoading, isError, isFetched } = GetPreviousDetails(param, {
-	// 	enabled: !!id,
-	// });
+	useEffect(() => {
+		if (isFetched) {
+			if ((data as PreviousDetailResponseType)?.Status === "1") {
+				setNotify({
+					severity: "success",
+					message: "Previous sale detail loaded successfully",
+				});
+			}
+		}
+	}, [isFetched]);
 
-	// useEffect(() => {
-	// 	if (isFetched) {
-	// 		if ((data as PreviousDetailResponseType)?.Status === "1") {
-	// 			setNotify({
-	// 				severity: "success",
-	// 				message: "Previous detail laoded successfully",
-	// 			});
-	// 		}
-	// 	}
-	// }, [isFetched]);
+	if (isLoading) {
+		return <Loader pageLoading={true} />;
+	}
 
-	// if (isLoading) {
-	// 	return <Loader pageLoading={true} />;
-	// }
+	if (isFetched && (data as any)?.Status !== "1") {
+		setNotify({
+			severity: "error",
+			message: "Error loading previous sale detail",
+		});
+		return <FormContainer data={[]} />;
+	}
 
-	// if (isError) {
-	// 	setNotify({
-	// 		severity: "error",
-	// 		message: "Error loading previous detail",
-	// 	});
-	// 	return <FormContainer data={[]} />;
-	// }
+	if (isFetched && (data as any)?.status === "false") {
+		setNotify({
+			severity: "error",
+			message: "Error loading previous sale detail",
+		});
+		return <FormContainer data={[]} />;
+	}
 
 	return (
 		<>
 			{/* <FullScreenLoader /> */}
 
 			<FormContainer
-				// data={
-				// 	(isFetched &&
-				// 		(data as PreviousDetailResponseType)?.Status === "1" &&
-				// 		(data as PreviousDetailResponseType)?.Data) ||
-				// 	[]
-				// }
-				data={[]}
+				data={
+					(isFetched &&
+						(data as PreviousDetailResponseType)?.Status === "1" &&
+						(data as PreviousDetailResponseType)?.Data) ||
+					[]
+				}
+				// data={[]}
 			/>
 		</>
 	);

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -25,7 +26,7 @@ import {
 	PaidAmountSchema,
 } from "../../../../Component-types/posMenu.type";
 import Field from "../../../../Form-component/field";
-import { useEffect, useState, useMemo, useCallback } from "react";
+import { useEffect, useState, useMemo, useCallback, FC } from "react";
 import { FieldProps } from "../../../../Form-component";
 import { Controller, useFormContext, useWatch } from "react-hook-form";
 import { Student } from "../../../../../services/aoi.type";
@@ -33,10 +34,24 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../../../store";
 import { selectNetTotalAmount } from "../../../../../store/slices/posMenuSlice";
 import { useLocation } from "react-router";
+import { useAppProvider } from "../../../../../AppProvider";
 
-const PaidAmount = () => {
+interface PaidAmountProps {
+	// registerReset: (resetFunc: () => void) => void;
+}
+
+const PaidAmount: FC<PaidAmountProps> = () => {
 	const theme = useTheme();
 	const { pathname } = useLocation();
+	const {
+		refresh,
+		availBal,
+		setAvailBal,
+		disableAvailableBalance: disableAvalBal,
+		setDisableAvailBalance: setDisableAvalBal,
+		disableCashAmount: disableCashAmt,
+		setDisableCashAmount: setDisableCashAmt,
+	} = useAppProvider();
 	const { control, setValue, resetField, reset } = useFormContext<
 		PaidAmountSchema &
 			AvailableBalanceSchema &
@@ -51,15 +66,16 @@ const PaidAmount = () => {
 		selectNetTotalAmount(state)
 	);
 
-	const [availBal, setAvailBal] = useState<number>(0);
-	const [disableAvalBal, setDisableAvalBal] = useState<boolean>(false);
-	const [disableCashAmt, setDisableCashAmt] = useState<boolean>(false);
+	// const [availBal, setAvailBal] = useState<number>(0);
+	// const [disableAvalBal, setDisableAvalBal] = useState<boolean>(false);
+	// const [disableCashAmt, setDisableCashAmt] = useState<boolean>(false);
 	const [tempTotalAmount, setTempTotalAmount] =
 		useState<number>(netTotalAmount);
 	const [checked, setChecked] = useState<boolean>(false);
 	// const [creditCheck, stCreditCheck] = useState<boolean>(false);
 
 	const [
+		nameWatch,
 		cardNubmerWatch,
 		paidAmountWatch,
 		cashAmountWatch,
@@ -69,6 +85,7 @@ const PaidAmount = () => {
 	] = useWatch({
 		control,
 		name: [
+			"name",
 			"cardNumber",
 			"paidAmount",
 			"cashAmount",
@@ -82,12 +99,29 @@ const PaidAmount = () => {
 		setChecked(event.target.checked);
 	};
 
+	const resetState = () => {
+		setDisableAvalBal(false);
+		setDisableCashAmt(false);
+		setAvailBal(0);
+	};
 	useEffect(() => {
-		if (cardNubmerWatch) {
-			const value = cardNubmerWatch as Student;
+		setAvailBal(0);
+	}, [pathname]);
+
+	useEffect(() => {
+		if (nameWatch) {
+			const value = nameWatch as Student;
 			setAvailBal(Number(value.AvailableBalance));
+			console.log("(nameWatch as Student)", value);
+			// if (refresh) {
+			// 	setAvailBal(0);
+			// }
 		}
-	}, [cardNubmerWatch]);
+	}, [(nameWatch as Student)?.StudentName]);
+
+	// useEffect(() => {
+	// 	console.log("cardNubmerWatch", cardNubmerWatch);
+	// }, [cardNubmerWatch]);
 
 	// Update temp total amount when netTotalAmount changes
 	useEffect(() => {
@@ -101,10 +135,19 @@ const PaidAmount = () => {
 			if (availBal === 0) {
 				// No wallet balance, transfer the entire net amount to cashAmount
 				setValue("paidAmount", 0);
+				console.log("Availble balance is 0", availBal);
+
 				setDisableAvalBal(true);
 				setValue("availableBalance", 0);
-				setValue("cashAmount", netTotalAmount);
+				if (checked) {
+					setValue("cashAmount", 0);
+				} else {
+					setValue("cashAmount", netTotalAmount);
+				}
 			} else {
+				const remainBalance = availBal - Number(paidAmountWatch);
+				setValue("balanceAmount", remainBalance);
+				// setDisableAvalBal(true);
 				setDisableAvalBal(false);
 				setValue("availableBalance", availBal);
 
@@ -167,7 +210,7 @@ const PaidAmount = () => {
 				setValue("cashAmount", 0);
 				setValue("balance", 0);
 			} else {
-				setDisableAvalBal(false);
+				// setDisableAvalBal(true);
 				setDisableCashAmt(false);
 				// resetField(['cardType'])
 				// reset({
@@ -194,14 +237,19 @@ const PaidAmount = () => {
 		};
 
 		const clearPaidAmount = () => {
-			if (!paidAmountWatch || paidAmountWatch === 0) {
-				setValue("cashAmount", netTotalAmount);
-				setValue("paidAmount", 0);
-				setValue("balanceAmount", 0);
+			if (checked) {
+				// setValue("cardAmount", 0);
+				setValue("cardAmount", netTotalAmount);
+			} else {
+				if (!paidAmountWatch || paidAmountWatch === 0) {
+					setValue("cashAmount", netTotalAmount);
+					setValue("paidAmount", 0);
+					setValue("balanceAmount", 0);
+				}
 			}
 		};
 
-		if (!isView) {
+		if (!isView || isView) {
 			// Execute the logic
 			handleAvailableBalance();
 			handleCashPayment();
@@ -218,6 +266,7 @@ const PaidAmount = () => {
 		totalPaidWatch,
 		checked,
 		isView,
+		refresh,
 		// setValue,
 	]);
 
@@ -322,7 +371,7 @@ const PaidAmount = () => {
 			</Grid>
 			<Grid item container xs={12} md={4} position="relative">
 				{renderFields(
-					paidAmountField(disableCashAmt),
+					paidAmountField(theme, disableCashAmt),
 					"#eefced",
 					"Cash Payment",
 					"#26891d"

@@ -16,20 +16,23 @@ import _ from "lodash";
 
 import ScanUnitComponent from "./ScanUnitComponent";
 
-const ScanComponent = () => {
+interface ScanComponentProps {
+	resetFormValues: (resetFunc: () => void) => void;
+}
+
+const ScanComponent: FC<ScanComponentProps> = ({ resetFormValues }) => {
 	const [checked, setChecked] = useState(false);
 
 	const { control } = useFormContext<ScanComponentSchema | ScanUnitSchema>();
 	const { errors } = useFormState({ control });
 
-	const checkField: Array<keyof ScanUnitSchema> = [
-		"cmpName",
-		"showroom",
-		"salesPersonCode",
-		"salesPersonName",
-	];
-
 	useEffect(() => {
+		const checkField: Array<keyof ScanUnitSchema> = [
+			"cmpName",
+			"showroom",
+			"salesPersonCode",
+			"salesPersonName",
+		];
 		const hasAnyKey = _.some(checkField, (key) => _.has(errors, key));
 		// console.log("====================================");
 		// console.log(errors, hasAnyKey);
@@ -39,7 +42,7 @@ const ScanComponent = () => {
 			console.log("error in this page", hasAnyKey);
 			setChecked(true);
 		}
-	}, [errors, checkField]);
+	}, [errors]);
 
 	const handleSubmitCLick = () => {
 		console.log("Clicked submit scan");
@@ -66,7 +69,7 @@ const ScanComponent = () => {
 
 			<Grid item xs={12} sx={{ m: 0, p: 0 }}>
 				<Collapse in={checked} sx={{ p: 0 }}>
-					<ScanUnitComponent />
+					<ScanUnitComponent resetFormValues={resetFormValues} />
 				</Collapse>
 			</Grid>
 		</Grid>

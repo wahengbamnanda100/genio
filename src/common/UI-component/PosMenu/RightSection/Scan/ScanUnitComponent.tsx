@@ -8,67 +8,93 @@ import {
 import Field from "../../../../Form-component/field";
 import { RightSpacing } from "..";
 import { EmployeeItem } from "../../../../../services/aoi.type";
-import { useEffect, useRef } from "react";
+import { FC, useCallback, useEffect, useRef, useState } from "react";
+import { debounce } from "lodash";
 
-const ScanUnitComponent = () => {
-	const previousValuesRef = useRef<Partial<ScanUnitSchema>>({});
+interface ScanUnitComponentProps {
+	resetFormValues: (resetFunc: () => void) => void;
+}
 
+const ScanUnitComponent: FC<ScanUnitComponentProps> = ({ resetFormValues }) => {
 	const { setValue, control } = useFormContext<ScanUnitSchema>();
+	const [focusField, setFocusField] = useState<string>("");
+	const previousValuesRef = useRef<Partial<ScanUnitSchema>>({});
+	// Watch the fields in a single useWatch call to reduce re-renders
+	const [salesPersonCodeWatch, salesPersonNameWatch] = useWatch({
+		control,
+		name: ["salesPersonCode", "salesPersonName"],
+	});
 
-	const [empCodeWatch] = useWatch({ control, name: ["salesPersonCode"] });
-	const [empNameWatch] = useWatch({ control, name: ["salesPersonName"] });
+	// Memoized function to update values based on EmployeeItem
+	const updateValues = useCallback(
+		(selectedKey: keyof ScanUnitSchema, selectedValue: EmployeeItem) => {
+			if (!selectedValue || focusField !== selectedKey) return;
 
-	const updateValues = (
-		selectedKay: Partial<keyof ScanUnitSchema>,
-		selectedValue: EmployeeItem
-	) => {
-		if (selectedValue) {
-			console.log("selectedValue ", selectedKay, selectedValue);
-
+			// Update fields only if values have changed
 			if (
-				selectedKay !== "salesPersonCode" &&
+				selectedKey !== "salesPersonCode" &&
 				previousValuesRef.current.salesPersonCode !== selectedValue.EmployeeCode
 			) {
 				setValue("salesPersonCode", selectedValue, {
 					shouldValidate: true,
-					shouldDirty: true,
 				});
 			}
 			if (
-				selectedKay !== "salesPersonName" &&
+				selectedKey !== "salesPersonName" &&
 				previousValuesRef.current.salesPersonName !== selectedValue.EmployeeName
 			) {
 				setValue("salesPersonName", selectedValue, {
 					shouldValidate: true,
-					shouldDirty: true,
 				});
 			}
 
+			// Store previous values for future reference
 			previousValuesRef.current = {
-				...previousValuesRef.current,
 				salesPersonCode: selectedValue.EmployeeCode,
 				salesPersonName: selectedValue.EmployeeName,
 			};
-		} else {
-			setValue(selectedKay, "");
-		}
+		},
+		[focusField, setValue]
+	);
+
+	// Debounced update handler
+	const debouncedUpdate = useCallback(
+		debounce(
+			(field: keyof ScanUnitSchema, value: EmployeeItem) =>
+				updateValues(field, value),
+			300
+		),
+		[updateValues]
+	);
+
+	// Reset function to be triggered by parent
+	const resetFormAndRefs = () => {
+		previousValuesRef.current = {};
+		setFocusField("");
 	};
 
+	// Unified effect for field watchers
 	useEffect(() => {
-		// console.log("emp code", empCodeWatch);
-		const values = empCodeWatch as EmployeeItem;
-		updateValues("salesPersonCode", values);
-	}, [empCodeWatch]);
+		if (salesPersonCodeWatch && focusField === "salesPersonCode") {
+			debouncedUpdate("salesPersonCode", salesPersonCodeWatch as EmployeeItem);
+		}
+		if (salesPersonNameWatch && focusField === "salesPersonName") {
+			debouncedUpdate("salesPersonName", salesPersonNameWatch as EmployeeItem);
+		}
+
+		return () => {
+			debouncedUpdate.cancel(); // Cancel debounce on unmount
+		};
+	}, [salesPersonCodeWatch, salesPersonNameWatch, debouncedUpdate]);
 
 	useEffect(() => {
-		const values = empNameWatch as EmployeeItem;
-		updateValues("salesPersonName", values);
-	}, [empNameWatch]);
+		resetFormValues(resetFormAndRefs);
+	}, [resetFormValues]);
 
 	return (
 		<>
 			<Grid container spacing={2}>
-				{scanUnitField().map((field) => (
+				{scanUnitField(setFocusField).map((field) => (
 					<Field key={field.name} {...field} />
 				))}
 			</Grid>

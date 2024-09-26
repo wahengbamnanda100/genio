@@ -2,7 +2,7 @@
 import { Box, Grid } from "@mui/material";
 import ScanComponent from "./Scan";
 import SelectMenuBox from "./Carrousal";
-import { useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../../../store";
 import { PosMenuItem, addPosMenu } from "../../../../store/slices/posMenuSlice";
@@ -14,13 +14,18 @@ import {
 	ItemDetailsType,
 	ItemListingResponseType,
 	MenuListRequstBodiesType,
+	Student,
 } from "../../../../services/aoi.type";
 import { GetCetagoryListing, GetItemListing } from "../../../../services";
 import AlergicBanner from "./AllergyBanner/AlergicBanner";
 import { useFormContext, useWatch } from "react-hook-form";
 import { cardDetailSchema } from "../../../Component-types/posMenu.type";
 
-const RightMenuSection = () => {
+interface RightSectionProp {
+	resetFormValues: (resetFunc: () => void) => void;
+}
+
+const RightMenuSection: FC<RightSectionProp> = ({ resetFormValues }) => {
 	const dispatch: AppDispatch = useDispatch();
 
 	const { control } = useFormContext<cardDetailSchema>();
@@ -28,18 +33,20 @@ const RightMenuSection = () => {
 	const [cetagoryListParam] = useState<CategoryListingTypeRequestBodiesType>({
 		BusinessUnitId: "1",
 		ShowroomId: "147",
+		// ShowroomId: "11",
 	});
 
 	const [menuParam, setMenuParam] = useState<MenuListRequstBodiesType>({
 		BusinessUnitId: "1", //todo change it later
+		// ShowroomId: "11", //todo change it later
 		ShowroomId: "147", //todo change it later
 		CategoryId: "",
 	});
 
-	// const [studentNameWtach] = useWatch({
-	// 	control,
-	// 	name: ["name"],
-	// });
+	const [studentNameWtach] = useWatch({
+		control,
+		name: ["name"],
+	});
 
 	const {
 		data: caetgoryData,
@@ -84,12 +91,14 @@ const RightMenuSection = () => {
 
 	return (
 		<Grid item xs={12} md={6}>
-			<ScanComponent />
+			<ScanComponent resetFormValues={resetFormValues} />
 			{/* //todo add toggle accordign to allergy */}
-			{/* {studentNameWtach?.AllergicCategory.length > 0 && (
-				<AlergicBanner foodItems="COLD/ICED & FIZZY DRINKS,EGGS,ICE CREAM,NUTS" />
-			)} */}
-			<AlergicBanner foodItems="COLD/ICED & FIZZY DRINKS,EGGS,ICE CREAM,NUTS,MILK,SEA FOOD,BANANA,APPLE,PUMPKIN,CRABS,LOBSTER,OATS," />
+			{(studentNameWtach as Student)?.AllergicCategory?.length > 0 && (
+				<AlergicBanner
+					foodItems={(studentNameWtach as Student)?.AllergicCategory}
+				/>
+			)}
+			{/* <AlergicBanner foodItems="COLD/ICED & FIZZY DRINKS,EGGS,ICE CREAM,NUTS,MILK,SEA FOOD,BANANA,APPLE,PUMPKIN,CRABS,LOBSTER,OATS," /> */}
 
 			<RightSpacing />
 

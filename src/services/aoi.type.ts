@@ -9,10 +9,11 @@ export interface StudentListRequest {
 }
 
 export interface Student {
-	StudentId: string;
+	CardID: string;
 	StudentName: string;
 	CardNumber: string;
 	AdmissionNumber: string;
+	AllergicCategory: string;
 	FamilyId: string;
 	Grade: string;
 	AvailableBalance: string;
@@ -83,7 +84,7 @@ export interface PaymentDtlType {
 export interface PosSaveRequsetBodiesType {
 	Cmp_ID_N: string;
 	ShowroomId: string;
-	StudentId: string;
+	CardID: string;
 	InvoiceDate: string;
 	CurrencyId: string;
 	GrossAmount: string;
@@ -98,6 +99,8 @@ export interface PosSaveRequsetBodiesType {
 
 export interface PosSaveResponseType {
 	Status: string;
+	status?: string;
+	info?: string;
 	Message: string;
 	Data: null | unknown;
 	Sih_ID_N: string;
@@ -284,6 +287,7 @@ export interface CardDetailsResponseType {
 
 export interface CategoryListingTypeRequestBodiesType {
 	BusinessUnitId: string | "1";
+	// ShowroomId: string | "11";
 	ShowroomId: string | "147";
 }
 
@@ -300,6 +304,7 @@ export interface CategoryListingTypeResponseType {
 
 export interface ItemListingRequestBodiesType {
 	BusinessUnitId: string | "1";
+	// ShowroomId: string | "11";
 	ShowroomId: string | "147";
 	CategoryId: string;
 }

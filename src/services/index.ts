@@ -429,7 +429,7 @@ export const GetItemListing = (
 };
 
 export const GetPreviousDetails = (
-	data: any,
+	data: { Sih_ID_N: string },
 	queryOptions?: Partial<UseQueryOptions>
 ) => {
 	return useQuery({

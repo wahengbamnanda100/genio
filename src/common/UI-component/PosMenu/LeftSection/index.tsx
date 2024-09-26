@@ -16,6 +16,7 @@ interface LeftMenuSectionProps {
 	handleCancelClick: () => void;
 	handlePreviousClick: () => void;
 	handleBackClick: () => void;
+	registerReset: (resetFn: () => void) => void;
 	// onSubmit: () => any;
 }
 
@@ -25,6 +26,7 @@ const LeftMenuSection: FC<LeftMenuSectionProps> = ({
 	handleCancelClick,
 	handlePreviousClick,
 	handleBackClick,
+	registerReset,
 	// onSubmit,
 }) => {
 	useEffect(() => {
@@ -34,7 +36,7 @@ const LeftMenuSection: FC<LeftMenuSectionProps> = ({
 	return (
 		<Grid item xs={12} md={6}>
 			{isVeiw && <BreadcrumbNav />}
-			<CardDetail />
+			<CardDetail resetFormValues={registerReset} />
 
 			<LeftSpacing />
 			<MenuTable />

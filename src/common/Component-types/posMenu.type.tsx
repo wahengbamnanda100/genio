@@ -35,7 +35,7 @@ export type cardDetailSchema = {
 	name: unknown;
 	gardeLimit: number | string;
 	availableBalance?: number | string;
-	StudentId?: string;
+	CardID?: string;
 };
 
 export type MenuItem = {
@@ -173,13 +173,14 @@ const getCardTypeValues = () => {
 	return cardTypeListData;
 };
 
-// const studentSearchRequestBodies = {
-// 	FamilyId: "",
-// 	CardNumber: "",
-// 	StudentName: "",
-// 	ShowroomId: "7", //todo change it later
-// 	Cmp_ID_N: "1", //todo change it later
-// };
+const studentSearchRequestBodies = {
+	FamilyId: "",
+	CardNumber: "",
+	StudentName: "",
+	// ShowroomId: "147", //todo change it later
+	ShowroomId: "11", //todo change it later
+	Cmp_ID_N: "1", //todo change it later
+};
 
 // const employeeSearchRequsetBodies = {
 // 	SearchText: "",
@@ -200,7 +201,7 @@ export const cardNumberField = (
 	},
 	renderItem: ({ option, props, isSelected, highlightColor }) => (
 		<StudentCard
-			key={option.StudentId}
+			key={option.CardID}
 			options={option}
 			props={props}
 			isSelected={isSelected}
@@ -214,11 +215,8 @@ export const cardNumberField = (
 	searchApi: async (keyStroke: string) => {
 		const response = await searchStudentList(
 			{
-				FamilyId: "",
+				...studentSearchRequestBodies,
 				CardNumber: keyStroke,
-				StudentName: "",
-				ShowroomId: "7",
-				Cmp_ID_N: "1",
 			},
 			keyStroke && keyStroke !== "" ? true : false
 		);
@@ -243,7 +241,7 @@ export const cardDetailFields = (
 			size: "small",
 			renderItem: ({ option, props, isSelected, highlightColor }) => (
 				<StudentCard
-					key={option.StudentId}
+					key={option.CardID}
 					options={option}
 					props={props}
 					isSelected={isSelected}
@@ -261,13 +259,7 @@ export const cardDetailFields = (
 			},
 			searchApi: (keyStroke: string) => {
 				return searchStudentList(
-					{
-						FamilyId: "",
-						CardNumber: "",
-						StudentName: keyStroke,
-						ShowroomId: "7",
-						Cmp_ID_N: "1",
-					},
+					{ ...studentSearchRequestBodies, StudentName: keyStroke },
 					keyStroke && keyStroke !== "" ? true : false
 				);
 			},
@@ -290,7 +282,7 @@ export const cardDetailFields = (
 			},
 			renderItem: ({ option, props, isSelected, highlightColor }) => (
 				<StudentCard
-					key={option.StudentId}
+					key={option.CardID}
 					options={option}
 					props={props}
 					isSelected={isSelected}
@@ -304,11 +296,8 @@ export const cardDetailFields = (
 			searchApi: (keyStroke: string) => {
 				return searchStudentList(
 					{
-						FamilyId: "",
+						...studentSearchRequestBodies,
 						CardNumber: keyStroke,
-						StudentName: "",
-						ShowroomId: "7",
-						Cmp_ID_N: "1",
 					},
 					keyStroke && keyStroke !== "" ? true : false
 				);
@@ -353,7 +342,7 @@ export const cardDetailFields = (
 			},
 			renderItem: ({ option, props, isSelected, highlightColor }) => (
 				<StudentCard
-					key={option.StudentId}
+					key={option.CardID}
 					options={option}
 					props={props}
 					isSelected={isSelected}
@@ -367,11 +356,8 @@ export const cardDetailFields = (
 			searchApi: (keyStroke: string) => {
 				return searchStudentList(
 					{
+						...studentSearchRequestBodies,
 						FamilyId: keyStroke,
-						CardNumber: "",
-						StudentName: "",
-						ShowroomId: "7",
-						Cmp_ID_N: "1",
 					},
 					keyStroke && keyStroke !== "" ? true : false
 				);
@@ -552,7 +538,10 @@ export const netAmountField = (): FieldProps => ({
 	xs: 6,
 });
 
-export const paidAmountField = (disabled: boolean): FieldProps[] => [
+export const paidAmountField = (
+	theme: Theme,
+	disabled: boolean
+): FieldProps[] => [
 	{
 		fieldType: "text",
 		name: "cashAmount",
@@ -570,6 +559,12 @@ export const paidAmountField = (disabled: boolean): FieldProps[] => [
 			// },Props: {
 			maxLength: 15,
 			style: { textAlign: "end" },
+		},
+		sx: {
+			"& .MuiOutlinedInput-root": {
+				background: alpha(theme.palette.primary.main, 0.2),
+				fontWeight: "bold",
+			},
 		},
 		xs: 12,
 	},
@@ -632,7 +627,7 @@ export const availableBalancefield = (
 		// },
 		sx: {
 			"& .MuiOutlinedInput-root": {
-				background: alpha(theme.palette.primary.main, 0.1),
+				background: alpha(theme.palette.primary.main, 0.2),
 				fontWeight: "bold",
 			},
 		},
@@ -714,7 +709,9 @@ export const scanField = (): FieldProps[] => [
 	},
 ];
 
-export const scanUnitField = (): FieldProps[] => [
+export const scanUnitField = (
+	setFocusField: Dispatch<SetStateAction<string>>
+): FieldProps[] => [
 	{
 		fieldType: "select",
 		name: "cmpName",
@@ -753,6 +750,11 @@ export const scanUnitField = (): FieldProps[] => [
 				highlightColor={highlightColor}
 			/>
 		),
+		onFocus: (name) => {
+			console.log("ffff", name);
+
+			setFocusField(name);
+		},
 		hasErrorMessage: true,
 		rules: {
 			required: "Please select Sales Person Code",
@@ -778,6 +780,11 @@ export const scanUnitField = (): FieldProps[] => [
 		name: "salesPersonName",
 		label: "Sales Person Name",
 		size: "small",
+		onFocus: (name) => {
+			console.log("ffff", name);
+
+			setFocusField(name);
+		},
 		renderItem: ({ option, props, isSelected, highlightColor }) => (
 			<EmployeeListItem
 				// key={option.Emp_ID_N}
