@@ -28,8 +28,8 @@ const SelectMenuBox: FC<SelectMenuBoxProps> = ({
 	const { setItemColor } = useAppProvider();
 	const [currentPage, setCurrentPage] = useState<number>(0);
 	const [activeItem, setActiveItem] = useState<number | undefined>(undefined);
-	const [gradientColors, setGradientColors] = useState<string[]>([]);
-	const [darkColor, setDarkColor] = useState<string[]>([]);
+	// const [gradientColors, setGradientColors] = useState<string[]>([]);
+	// const [darkColor, setDarkColor] = useState<string[]>([]);
 
 	const [cateColor, setCatColor] = useState<string[]>([]);
 	const [foodItemColor, setFoodItemColor] = useState<string[]>([]);
@@ -103,8 +103,8 @@ const SelectMenuBox: FC<SelectMenuBoxProps> = ({
 		setCatColor(cc);
 		setFoodItemColor(ic);
 
-		setGradientColors(generatedColors);
-		setDarkColor(darkColorsRandom);
+		// setGradientColors(generatedColors);
+		// setDarkColor(darkColorsRandom);
 	}, [data]);
 
 	useEffect(() => {

@@ -1,40 +1,37 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
 // /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
+import CircleOutlinedIcon from "@mui/icons-material/CircleOutlined";
 import {
-	Box,
 	// Checkbox,
 	Grid,
-	Stack,
 	Typography,
-	alpha,
-	styled,
 	useTheme,
 } from "@mui/material";
 import Checkbox from "@mui/material/Checkbox";
-import CircleOutlinedIcon from "@mui/icons-material/CircleOutlined";
-import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
+import { FC, useCallback, useEffect, useState } from "react";
+import { Controller, useFormContext, useWatch } from "react-hook-form";
+import { useSelector } from "react-redux";
+import { useLocation } from "react-router";
+import { useAppProvider } from "../../../../../AppProvider";
+import { Student } from "../../../../../services/aoi.type";
+import { RootState } from "../../../../../store";
+import { selectNetTotalAmount } from "../../../../../store/slices/posMenuSlice";
 import {
 	availableBalancefield,
 	AvailableBalanceSchema,
-	cardTypeField,
 	cardDetailSchema,
 	CardPaymentSchema,
+	cardTypeField,
 	ExchangeRatSchema,
 	paidAmountField,
 	PaidAmountSchema,
 } from "../../../../Component-types/posMenu.type";
-import Field from "../../../../Form-component/field";
-import { useEffect, useState, useMemo, useCallback, FC } from "react";
 import { FieldProps } from "../../../../Form-component";
-import { Controller, useFormContext, useWatch } from "react-hook-form";
-import { Student } from "../../../../../services/aoi.type";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../../store";
-import { selectNetTotalAmount } from "../../../../../store/slices/posMenuSlice";
-import { useLocation } from "react-router";
-import { useAppProvider } from "../../../../../AppProvider";
+import Field from "../../../../Form-component/field";
 
 interface PaidAmountProps {
 	// registerReset: (resetFunc: () => void) => void;
@@ -54,7 +51,7 @@ const PaidAmount: FC<PaidAmountProps> = () => {
 		disableCashAmount: disableCashAmt,
 		setDisableCashAmount: setDisableCashAmt,
 	} = useAppProvider();
-	const { control, setValue, resetField, reset } = useFormContext<
+	const { control, setValue } = useFormContext<
 		PaidAmountSchema &
 			AvailableBalanceSchema &
 			cardDetailSchema &
@@ -78,41 +75,47 @@ const PaidAmount: FC<PaidAmountProps> = () => {
 
 	const [
 		nameWatch,
-		cardNubmerWatch,
+		// cardNubmerWatch,
 		paidAmountWatch,
 		cashAmountWatch,
 		totalPaidWatch,
-		balanceAmountWatch,
-		balanceWatch,
+		// balanceAmountWatch,
+		// balanceWatch,
 		allowCardWatch,
 	] = useWatch({
 		control,
 		name: [
 			"name",
-			"cardNumber",
+			// "cardNumber",
 			"paidAmount",
 			"cashAmount",
 			"totalPaid",
-			"balanceAmount",
-			"balance",
+			// "balanceAmount",
+			// "balance",
 			"allowCard",
 		],
 	});
 
-	// useEffect(() => {
-	// 	if (allowCardWatch) setChecked(true);
-	// 	console.log("allowcard watch", allowCardWatch);
-	// }, [allowCardWatch]);
+	useEffect(() => {
+		// const isView = pathname.includes("view");
+		setChecked(false);
+	}, []);
+
+	useEffect(() => {
+		if (allowCardWatch) setChecked(true);
+		else setChecked(false);
+		console.log("allowcard watch", allowCardWatch);
+	}, [allowCardWatch]);
 
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setChecked(event.target.checked);
 	};
 
-	const resetState = () => {
-		setDisableAvalBal(false);
-		setDisableCashAmt(false);
-		setAvailBal(0);
-	};
+	// const resetState = () => {
+	// 	setDisableAvalBal(false);
+	// 	setDisableCashAmt(false);
+	// 	setAvailBal(0);
+	// };
 	useEffect(() => {
 		setAvailBal(0);
 	}, [pathname]);

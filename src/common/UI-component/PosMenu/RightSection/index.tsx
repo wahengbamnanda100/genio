@@ -1,12 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Box, Grid } from "@mui/material";
-import ScanComponent from "./Scan";
-import SelectMenuBox from "./Carrousal";
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../../../store";
 import { PosMenuItem, addPosMenu } from "../../../../store/slices/posMenuSlice";
+import SelectMenuBox from "./Carrousal";
+import ScanComponent from "./Scan";
 
+import { useFormContext, useWatch } from "react-hook-form";
+import { GetCetagoryListing, GetItemListing } from "../../../../services";
 import {
 	CategoryDetailsType,
 	CategoryListingTypeRequestBodiesType,
@@ -16,10 +18,8 @@ import {
 	MenuListRequstBodiesType,
 	Student,
 } from "../../../../services/aoi.type";
-import { GetCetagoryListing, GetItemListing } from "../../../../services";
-import AlergicBanner from "./AllergyBanner/AlergicBanner";
-import { useFormContext, useWatch } from "react-hook-form";
 import { cardDetailSchema } from "../../../Component-types/posMenu.type";
+import AlergicBanner from "./AllergyBanner/AlergicBanner";
 
 interface RightSectionProp {
 	resetFormValues: (resetFunc: () => void) => void;

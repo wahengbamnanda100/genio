@@ -1,26 +1,20 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Grid, Paper } from "@mui/material";
 
-import RightMenuSection from "../common/UI-component/PosMenu/RightSection";
-import LeftMenuSection from "../common/UI-component/PosMenu/LeftSection";
-import {
-	FormProvider,
-	SubmitHandler,
-	useForm,
-	UseFormReturn,
-	UseFormSetValue,
-} from "react-hook-form";
-import {
-	cardDetailSchema,
-	PosMenuFormSchema,
-} from "../common/Component-types/posMenu.type";
+import { useMutation } from "@tanstack/react-query";
+import moment from "moment";
 import { FC, useEffect, useRef, useState } from "react";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation, useParams } from "react-router";
+import { useAppProvider } from "../AppProvider";
+import { PosMenuFormSchema } from "../common/Component-types/posMenu.type";
 import ConfirmationDialog from "../common/ModalComponent/ConfirmationDialog";
 import SearchDrawer from "../common/UI-component/History/SearchDrwer";
-import { queryOptions, useMutation } from "@tanstack/react-query";
+import Loader from "../common/UI-component/Loader";
+import LeftMenuSection from "../common/UI-component/PosMenu/LeftSection";
+import RightMenuSection from "../common/UI-component/PosMenu/RightSection";
 import { GetPreviousDetails, mutatePosMenu } from "../services";
-import { useAppProvider } from "../AppProvider";
 import {
 	DetailItem,
 	EmployeeItem,
@@ -29,7 +23,7 @@ import {
 	PreviousDetailResponseType,
 	Student,
 } from "../services/aoi.type";
-import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../store";
 import {
 	addMenuItems,
 	PosMenuItem,
@@ -37,11 +31,6 @@ import {
 	selectMenuTable,
 	selectNetTotalAmount,
 } from "../store/slices/posMenuSlice";
-import { AppDispatch, RootState } from "../store";
-import moment from "moment";
-import { useLocation, useParams } from "react-router";
-import Loader from "../common/UI-component/Loader";
-import BreadcrumbNav from "../common/UI-component/PosMenu/Navigation/Breadcrum";
 
 interface PosMenuProps {
 	data: any[] | any;
@@ -190,7 +179,7 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 			previousData.CreditCardNumber !== "" ? true : (false as any)
 		);
 
-		setChecked(previousData.CreditCardNumber !== "" ? true : false);
+		setChecked(previousData?.CreditCardNumber !== "" ? true : false);
 
 		const showroomData = {
 			EmployeeCode: previousData.SalesPersonCode,
@@ -253,12 +242,12 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 		const previousData: (typeof data)[0] = data[0];
 		if (checked) {
 			// Set values after check is complete
-			method.setValue("cardType" as any, previousData.Gem_ID_N as any);
+			method.setValue("cardType" as any, previousData?.Gem_ID_N as any);
 			method.setValue(
 				"cardTypeNumber" as any,
-				previousData.CreditCardNumber as any
+				previousData?.CreditCardNumber as any
 			);
-			method.setValue("cardAmount" as any, previousData.CardAmount as any);
+			method.setValue("cardAmount" as any, previousData?.CardAmount as any);
 		}
 	}, [checked, data, method]);
 
@@ -291,7 +280,7 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 			totalPaid,
 			balance,
 			allowCard,
-			cashAmount,
+			// cashAmount,
 		} = method.getValues();
 
 		if (menuTable.length === 0)
@@ -533,7 +522,7 @@ const PosMenu = () => {
 	const { id } = useParams();
 	const { setNotify } = useAppProvider();
 
-	const { data, isLoading, isError, isFetched } = GetPreviousDetails(
+	const { data, isLoading, isFetched } = GetPreviousDetails(
 		{ Sih_ID_N: id || "" },
 		{
 			enabled: !!id,
@@ -590,55 +579,55 @@ const PosMenu = () => {
 
 export default PosMenu;
 
-const previousDummyDetailData = [
-	{
-		CardNumber: "C4763925",
-		FamilyID: "FAM00333",
-		IDNumber: "FAM00333F",
-		DailyLimit: "5000.0000",
-		Name: "Medda, Antonio  ",
-		Grade: "Grade 2",
-		SalesPersonCode: "002",
-		SalesPersonName: "Patricia",
-		Company_bussinessunit: "Anvin Infosystems",
-		Showroom: "01 GENIO ",
-		InvoiceNumber: "AI/INV008050",
-		Sih_InvoiceDate_D: "",
-		Total: "47.0000",
-		NetAmount: "47.0000",
-		CashAmount: "17.0000",
-		TotalPaid: "17.0000",
-		Balance: "0.0000",
-		AvailableBalance: "4923.1600",
-		PaidAmount: "30.0000",
-		DiscountAmount: "0.0000",
-		DiscountPercentage: "0",
-		Sih_ID_N: "243469",
-		Items: [
-			{
-				Description: "CAFE LATTE GRANDE - 16",
-				Quantity: "1",
-				Amount: "16.0000",
-				UnitPrice: "16.0000",
-				Discount: "",
-				NetAmount: "16.0000",
-			},
-			{
-				Description: "CAPPUCCINO GRANDE - 16",
-				Quantity: "1",
-				Amount: "16.0000",
-				UnitPrice: "16.0000",
-				Discount: "",
-				NetAmount: "16.0000",
-			},
-			{
-				Description: "CAFE MOCHA TALL -15",
-				Quantity: "1",
-				Amount: "15.0000",
-				UnitPrice: "15.0000",
-				Discount: "",
-				NetAmount: "15.0000",
-			},
-		],
-	},
-];
+// const previousDummyDetailData = [
+// 	{
+// 		CardNumber: "C4763925",
+// 		FamilyID: "FAM00333",
+// 		IDNumber: "FAM00333F",
+// 		DailyLimit: "5000.0000",
+// 		Name: "Medda, Antonio  ",
+// 		Grade: "Grade 2",
+// 		SalesPersonCode: "002",
+// 		SalesPersonName: "Patricia",
+// 		Company_bussinessunit: "Anvin Infosystems",
+// 		Showroom: "01 GENIO ",
+// 		InvoiceNumber: "AI/INV008050",
+// 		Sih_InvoiceDate_D: "",
+// 		Total: "47.0000",
+// 		NetAmount: "47.0000",
+// 		CashAmount: "17.0000",
+// 		TotalPaid: "17.0000",
+// 		Balance: "0.0000",
+// 		AvailableBalance: "4923.1600",
+// 		PaidAmount: "30.0000",
+// 		DiscountAmount: "0.0000",
+// 		DiscountPercentage: "0",
+// 		Sih_ID_N: "243469",
+// 		Items: [
+// 			{
+// 				Description: "CAFE LATTE GRANDE - 16",
+// 				Quantity: "1",
+// 				Amount: "16.0000",
+// 				UnitPrice: "16.0000",
+// 				Discount: "",
+// 				NetAmount: "16.0000",
+// 			},
+// 			{
+// 				Description: "CAPPUCCINO GRANDE - 16",
+// 				Quantity: "1",
+// 				Amount: "16.0000",
+// 				UnitPrice: "16.0000",
+// 				Discount: "",
+// 				NetAmount: "16.0000",
+// 			},
+// 			{
+// 				Description: "CAFE MOCHA TALL -15",
+// 				Quantity: "1",
+// 				Amount: "15.0000",
+// 				UnitPrice: "15.0000",
+// 				Discount: "",
+// 				NetAmount: "15.0000",
+// 			},
+// 		],
+// 	},
+// ];

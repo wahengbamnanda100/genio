@@ -242,6 +242,10 @@ const SearchDrawer: FC<SearchDrawerProps> = ({
 			width: 140,
 		},
 		{
+			columnName: "GenioCardAmount",
+			width: 180,
+		},
+		{
 			columnName: "CashAmount",
 			width: 140,
 		},
@@ -308,6 +312,10 @@ const SearchDrawer: FC<SearchDrawerProps> = ({
 		{
 			title: "Net Amount",
 			name: "NetAmount",
+		},
+		{
+			title: "Genio Card Amount",
+			name: "GenioCardAmount",
 		},
 		{
 			title: "Cash Amount",
@@ -565,6 +573,7 @@ const SearchDrawer: FC<SearchDrawerProps> = ({
 								"NetAmount",
 								"CashAmount",
 								"CardAmount",
+								"GenioCardAmount",
 							]}
 							availableFilterOperations={[
 								"equal",
