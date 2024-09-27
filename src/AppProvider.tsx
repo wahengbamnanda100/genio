@@ -27,6 +27,8 @@ type AppContextType = {
 	setDisableAvailBalance: React.Dispatch<React.SetStateAction<DisableType>>;
 	disableCashAmount: DisableType;
 	setDisableCashAmount: React.Dispatch<React.SetStateAction<DisableType>>;
+	checked: DisableType;
+	setChecked: React.Dispatch<React.SetStateAction<DisableType>>;
 };
 
 const app = React.createContext<AppContextType>({} as AppContextType);
@@ -38,6 +40,7 @@ const AppProvider = ({ children }: AppProviderProps) => {
 	const [imgUrl, setImgUrl] = React.useState<ImgUrlType>("");
 	const [availBal, setAvailBal] = React.useState<AvailBalType>(0);
 	const [refresh, setRefresh] = React.useState<RefreshType>(false);
+	const [checked, setChecked] = React.useState<RefreshType>(false);
 	const [disableAvailableBalance, setDisableAvailBalance] =
 		React.useState<DisableType>(false);
 	const [disableCashAmount, setDisableCashAmount] =
@@ -55,6 +58,8 @@ const AppProvider = ({ children }: AppProviderProps) => {
 				setAvailBal,
 				refresh,
 				setRefresh,
+				checked,
+				setChecked,
 				itemColor,
 				setItemColor,
 				disableCashAmount,

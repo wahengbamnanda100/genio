@@ -51,6 +51,8 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 	const effectRan = useRef(false);
 	const { pathname } = useLocation();
 	const {
+		checked,
+		setChecked,
 		setNotify,
 		setImgUrl,
 		setAvailBal,
@@ -183,19 +185,12 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 			Grade: previousData.Grade.toString(),
 			AvailableBalance: previousData.AvailableBalance.toString(),
 		};
-
-		const menuItems: PosMenuItem[] = previousData.Items.map(
-			(item: DetailItem, index: number) => ({
-				// ...item,
-				id: index.toString(),
-				description: item.Description,
-				unitPrice: Number(item.UnitPrice),
-				quantity: Number(item.Quantity),
-				amount: Number(item.Amount),
-				discount: Number(item.Discount),
-				netAmount: Number(item.NetAmount),
-			})
+		method.setValue(
+			"allowCard" as any,
+			previousData.CreditCardNumber !== "" ? true : (false as any)
 		);
+
+		setChecked(previousData.CreditCardNumber !== "" ? true : false);
 
 		const showroomData = {
 			EmployeeCode: previousData.SalesPersonCode,
@@ -211,8 +206,6 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 
 		setImgUrl(studentObj?.ImageUrl || "");
 
-		dispatch(addMenuItems(menuItems));
-
 		method.setValue(
 			"availableBalance" as any,
 			previousData.AvailableBalance as any
@@ -227,6 +220,7 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 		method.setValue("cashAmount" as any, previousData.CashAmount as any);
 		method.setValue("totalPaid" as any, previousData.TotalPaid as any);
 		method.setValue("paidAmount" as any, previousData.PaidAmount as any);
+
 		method.setValue(
 			"invoiceDate" as any,
 			previousData.Sih_InvoiceDate_D as any
@@ -239,7 +233,34 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 		);
 		method.setValue("salesPersonCode" as any, showroomData as any);
 		method.setValue("salesPersonName" as any, showroomData as any);
+
+		const menuItems: PosMenuItem[] = previousData.Items.map(
+			(item: DetailItem, index: number) => ({
+				// ...item,
+				id: index.toString(),
+				description: item.Description,
+				unitPrice: Number(item.UnitPrice),
+				quantity: Number(item.Quantity),
+				amount: Number(item.Amount),
+				discount: Number(item.Discount),
+				netAmount: Number(item.NetAmount),
+			})
+		);
+		dispatch(addMenuItems(menuItems));
 	};
+
+	useEffect(() => {
+		const previousData: (typeof data)[0] = data[0];
+		if (checked) {
+			// Set values after check is complete
+			method.setValue("cardType" as any, previousData.Gem_ID_N as any);
+			method.setValue(
+				"cardTypeNumber" as any,
+				previousData.CreditCardNumber as any
+			);
+			method.setValue("cardAmount" as any, previousData.CardAmount as any);
+		}
+	}, [checked, data, method]);
 
 	const handleSubmitClick = () => {
 		console.log("Submit button clicked");

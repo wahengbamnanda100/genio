@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, ButtonBase, Collapse, Grid } from "@mui/material";
 import {
 	ScanComponentSchema,
@@ -12,9 +13,10 @@ import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { useFormContext, useFormState } from "react-hook-form";
 import { IoScanOutline } from "react-icons/io5";
-import _ from "lodash";
+// import _ from "lodash";
 
 import ScanUnitComponent from "./ScanUnitComponent";
+// import { useAppProvider } from "../../../../../AppProvider";
 
 interface ScanComponentProps {
 	resetFormValues: (resetFunc: () => void) => void;
@@ -26,23 +28,15 @@ const ScanComponent: FC<ScanComponentProps> = ({ resetFormValues }) => {
 	const { control } = useFormContext<ScanComponentSchema | ScanUnitSchema>();
 	const { errors } = useFormState({ control });
 
-	useEffect(() => {
-		const checkField: Array<keyof ScanUnitSchema> = [
-			"cmpName",
-			"showroom",
-			"salesPersonCode",
-			"salesPersonName",
-		];
-		const hasAnyKey = _.some(checkField, (key) => _.has(errors, key));
-		// console.log("====================================");
-		// console.log(errors, hasAnyKey);
-		// console.log("====================================");
+	const { cmpName, showroom, salesPersonName, salesPersonCode } = errors as any;
 
-		if (hasAnyKey) {
-			console.log("error in this page", hasAnyKey);
-			setChecked(true);
-		}
-	}, [errors]);
+	useEffect(() => {
+		console.log("error in cam cmp", errors);
+
+		const hasError = cmpName || showroom || salesPersonName || salesPersonCode;
+
+		setChecked(hasError);
+	}, [cmpName, showroom, salesPersonName, salesPersonCode, errors]);
 
 	const handleSubmitCLick = () => {
 		console.log("Clicked submit scan");

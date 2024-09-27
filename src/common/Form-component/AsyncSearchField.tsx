@@ -117,7 +117,7 @@ const AsyncSearchField = ({
 
 	useEffect(() => {
 		if (isFocused && onFocus) {
-			console.log("inside seard field", name, isFocused);
+			// console.log("inside seard field", name, isFocused);
 
 			onFocus(name);
 		}

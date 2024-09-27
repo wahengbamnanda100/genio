@@ -47,6 +47,8 @@ const PaidAmount: FC<PaidAmountProps> = () => {
 		refresh,
 		availBal,
 		setAvailBal,
+		checked,
+		setChecked,
 		disableAvailableBalance: disableAvalBal,
 		setDisableAvailBalance: setDisableAvalBal,
 		disableCashAmount: disableCashAmt,
@@ -71,7 +73,7 @@ const PaidAmount: FC<PaidAmountProps> = () => {
 	// const [disableCashAmt, setDisableCashAmt] = useState<boolean>(false);
 	const [tempTotalAmount, setTempTotalAmount] =
 		useState<number>(netTotalAmount);
-	const [checked, setChecked] = useState<boolean>(false);
+	// const [checked, setChecked] = useState<boolean>(false);
 	// const [creditCheck, stCreditCheck] = useState<boolean>(false);
 
 	const [
@@ -82,6 +84,7 @@ const PaidAmount: FC<PaidAmountProps> = () => {
 		totalPaidWatch,
 		balanceAmountWatch,
 		balanceWatch,
+		allowCardWatch,
 	] = useWatch({
 		control,
 		name: [
@@ -92,8 +95,14 @@ const PaidAmount: FC<PaidAmountProps> = () => {
 			"totalPaid",
 			"balanceAmount",
 			"balance",
+			"allowCard",
 		],
 	});
+
+	// useEffect(() => {
+	// 	if (allowCardWatch) setChecked(true);
+	// 	console.log("allowcard watch", allowCardWatch);
+	// }, [allowCardWatch]);
 
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setChecked(event.target.checked);

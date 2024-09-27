@@ -120,7 +120,7 @@ const getValuesCompanyUnit = () => {
 		? getDropDownValues<BussinessUnitItem>(
 				data?.Data,
 				"BusinessUnitDesc",
-				"BusinessUnitCode"
+				"BusinessUnitId"
 			)
 		: [];
 	return dropDownValues;
