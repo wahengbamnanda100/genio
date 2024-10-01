@@ -5,7 +5,7 @@ import PaidAmount from "./PaidAmount";
 import DiscountAmount from "./DiscountAmount";
 import MenuTable from "./Menutable";
 import CardDetail from "./CardDetail";
-import { FC, useEffect } from "react";
+import { FC } from "react";
 import BreadcrumbNav from "../Navigation/Breadcrum";
 // import { SubmitHandler } from "react-hook-form";
 // import { PosMenuFormSchema } from "../../../Component-types/posMenu.type";
@@ -29,9 +29,9 @@ const LeftMenuSection: FC<LeftMenuSectionProps> = ({
 	registerReset,
 	// onSubmit,
 }) => {
-	useEffect(() => {
-		console.log("left part rendering...", isVeiw);
-	}, []);
+	// useEffect(() => {
+	// 	console.log("left part rendering...", isVeiw);
+	// }, []);
 
 	return (
 		<Grid item xs={12} md={6}>

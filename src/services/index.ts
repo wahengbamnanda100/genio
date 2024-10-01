@@ -441,3 +441,38 @@ export const GetPreviousDetails = (
 		...queryOptions,
 	});
 };
+
+export interface GradeLimitParamType {
+	strCust_ID_N: string | undefined;
+	strShm_ID_N: string;
+}
+
+export interface GradLimit {
+	STudentId: string;
+	DailyLimit: string;
+}
+
+export interface GradLimitResponse {
+	Status: string;
+	Data: GradLimit[] | [];
+	Message: string;
+}
+
+export const GetGradeLimit = (
+	params: GradeLimitParamType,
+	queryOptions?: Partial<UseQueryOptions>
+) => {
+	const queryParams = new URLSearchParams({
+		strCust_ID_N: params.strCust_ID_N || "",
+		strShm_ID_N: params.strShm_ID_N,
+	}).toString();
+
+	return useQuery({
+		queryKey: ["gradeLimit", params],
+		queryFn: async () =>
+			axiosInstance
+				.post(`API/GenioDailyWiseLimitAPI?${queryParams}`)
+				.then((res: AxiosResponse<GradLimitResponse>) => res.data),
+		...queryOptions,
+	});
+};

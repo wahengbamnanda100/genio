@@ -97,8 +97,8 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 			invoiceNumber: "",
 
 			//scanUnit
-			cmpName: "",
-			showroom: "",
+			cmpName: "1",
+			showroom: "11",
 			salesPersonCode: "",
 			salesPersonName: "",
 
@@ -186,7 +186,7 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 			EmployeeName: previousData.SalesPersonName,
 		};
 
-		method.setValue("cardNumber" as any, studentObj as any);
+		method.setValue("cardNumber" as any, studentObj.CardNumber as any);
 		method.setValue("idNumbar" as any, studentObj as any);
 		method.setValue("familyId" as any, studentObj as any);
 		method.setValue("name" as any, studentObj as any);

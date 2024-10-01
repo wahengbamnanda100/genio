@@ -11,6 +11,7 @@ type NotifyStateType = { message: string; severity: AlertColor } | undefined;
 type ImgUrlType = string;
 type DisableType = boolean;
 type AvailBalType = number;
+type ScannNubmerType = string;
 
 type AppContextType = {
 	notify: NotifyStateType;
@@ -29,6 +30,8 @@ type AppContextType = {
 	setDisableCashAmount: React.Dispatch<React.SetStateAction<DisableType>>;
 	checked: DisableType;
 	setChecked: React.Dispatch<React.SetStateAction<DisableType>>;
+	scanNubmer: ScannNubmerType;
+	setScanNumber: React.Dispatch<React.SetStateAction<ScannNubmerType>>;
 };
 
 const app = React.createContext<AppContextType>({} as AppContextType);
@@ -46,6 +49,7 @@ const AppProvider = ({ children }: AppProviderProps) => {
 	const [disableCashAmount, setDisableCashAmount] =
 		React.useState<DisableType>(false);
 	const [itemColor, setItemColor] = React.useState<ItemColorType>("#f05d6f");
+	const [scanNubmer, setScanNumber] = React.useState<ScannNubmerType>("");
 
 	return (
 		<app.Provider
@@ -62,6 +66,8 @@ const AppProvider = ({ children }: AppProviderProps) => {
 				setChecked,
 				itemColor,
 				setItemColor,
+				scanNubmer,
+				setScanNumber,
 				disableCashAmount,
 				setDisableCashAmount,
 				disableAvailableBalance,

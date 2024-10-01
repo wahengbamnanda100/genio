@@ -73,11 +73,11 @@ const DiscountAmount: FC<DiscountAmountProps> = ({ isView }) => {
 
 	const changeDiscountPercentAmount = watch("discount");
 	const changeDiscountAmount = watch("discountAmount");
-	const changeCardNumberAmount = watch("cardNumber");
+	const changeNameAmount = watch("name");
 
 	useEffect(() => {
-		if (changeCardNumberAmount) {
-			const value = changeCardNumberAmount as Student;
+		if (changeNameAmount) {
+			const value = changeNameAmount as Student;
 			const availableBalance = Number(value.AvailableBalance);
 
 			if (!isNaN(availableBalance)) {
@@ -85,7 +85,7 @@ const DiscountAmount: FC<DiscountAmountProps> = ({ isView }) => {
 				setBalanceAmount(balance);
 			}
 		}
-	}, [changeCardNumberAmount, netTotalAmount]);
+	}, [changeNameAmount, netTotalAmount]);
 
 	useEffect(() => {
 		setValue("total", totalAmount);

@@ -5,13 +5,23 @@ import {
 	cardDetailFields,
 	cardDetailSchema,
 	cardNumberField,
+	ScanUnitSchema,
+	studentSearchRequestBodies,
 } from "../../../../Component-types/posMenu.type";
 import Field from "../../../../Form-component/field";
 import { useEffect, useRef, useCallback, useState, FC } from "react";
-import { Student } from "../../../../../services/aoi.type";
+import { Student, StudentListResponse } from "../../../../../services/aoi.type";
 import { useAppProvider } from "../../../../../AppProvider";
 import { debounce } from "lodash"; // Optional: Use lodash for debouncing
 import { StudentImage } from "../../../../../layout/MainLayout/Header/UserImage";
+import {
+	GetGradeLimit,
+	GradeLimitParamType,
+	GradLimitResponse,
+	// getStudentList,
+	SearchStudentList,
+	// searchStudentList,
+} from "../../../../../services";
 
 interface CardDetailProps {
 	resetFormValues: (resetFunc: () => void) => void;
@@ -19,16 +29,56 @@ interface CardDetailProps {
 
 const CardDetail: FC<CardDetailProps> = ({ resetFormValues }) => {
 	const theme = useTheme();
-	const { setImgUrl } = useAppProvider();
-	const { control, setValue } = useFormContext<cardDetailSchema>();
+	const { setImgUrl, setNotify } = useAppProvider();
+	const { control, setValue } = useFormContext<
+		cardDetailSchema | ScanUnitSchema
+	>();
 	const [focusField, setFocusField] = useState<string>("");
 
 	const previousValuesRef = useRef<Partial<cardDetailSchema>>({});
 
 	// Watch multiple fields with a single useWatch call to reduce re-renders
-	const [cardNumberWatch, idNumberWatch, nameWatch, familyIdWatch] = useWatch({
+	const [
+		cardNumberWatch,
+		idNumberWatch,
+		nameWatch,
+		familyIdWatch,
+		showroomWatch,
+	] = useWatch({
 		control,
-		name: ["cardNumber", "idNumbar", "name", "familyId"],
+		name: ["cardNumber", "idNumbar", "name", "familyId", "showroom"],
+	});
+
+	const debouncedCardNumber = useCallback(
+		debounce((value: string) => value, 300),
+		[]
+	);
+
+	console.log("debsddfds", debouncedCardNumber(cardNumberWatch));
+
+	const { data, isFetched } = SearchStudentList(
+		{
+			...studentSearchRequestBodies,
+			CardNumber: cardNumberWatch!,
+		},
+		{
+			enabled: !!cardNumberWatch,
+		}
+	);
+
+	const params: GradeLimitParamType = {
+		strCust_ID_N: (nameWatch as Student)?.CardID || undefined,
+		strShm_ID_N: showroomWatch,
+	};
+
+	console.log("!!params.strCust_ID_N", !!params.strCust_ID_N);
+
+	const {
+		data: gradeData,
+		isFetched: gradeIsFetched,
+		refetch,
+	} = GetGradeLimit(params, {
+		enabled: !!(nameWatch as Student)?.CardID,
 	});
 
 	// Memoized updateValues function to avoid unnecessary re-creations
@@ -41,7 +91,7 @@ const CardDetail: FC<CardDetailProps> = ({ resetFormValues }) => {
 				selectedKey !== "cardNumber" &&
 				previousValuesRef.current.cardNumber !== selectedValue.CardNumber
 			) {
-				setValue("cardNumber", selectedValue, {
+				setValue("cardNumber", selectedValue.CardNumber, {
 					shouldValidate: true,
 				});
 			}
@@ -65,14 +115,14 @@ const CardDetail: FC<CardDetailProps> = ({ resetFormValues }) => {
 			) {
 				setValue("name", selectedValue, { shouldValidate: true });
 			}
-			if (
-				selectedKey !== "dailyLimit" &&
-				previousValuesRef.current.dailyLimit !== selectedValue.DailyLimit
-			) {
-				setValue("dailyLimit", Number(selectedValue.DailyLimit).toFixed(2), {
-					shouldValidate: true,
-				});
-			}
+			// if (
+			// 	selectedKey !== "dailyLimit" &&
+			// 	previousValuesRef.current.dailyLimit !== selectedValue.DailyLimit
+			// ) {
+			// 	setValue("dailyLimit", Number(selectedValue.DailyLimit).toFixed(2), {
+			// 		shouldValidate: true,
+			// 	});
+			// }
 			if (
 				selectedKey !== "gardeLimit" &&
 				previousValuesRef.current.gardeLimit !== selectedValue.Grade
@@ -90,7 +140,7 @@ const CardDetail: FC<CardDetailProps> = ({ resetFormValues }) => {
 				familyId: selectedValue.FamilyId,
 				idNumbar: selectedValue.AdmissionNumber,
 				name: selectedValue.StudentName,
-				dailyLimit: Number(selectedValue.DailyLimit).toFixed(2),
+				// dailyLimit: Number(selectedValue.DailyLimit).toFixed(2),
 				gardeLimit: selectedValue.Grade,
 			};
 		},
@@ -118,9 +168,9 @@ const CardDetail: FC<CardDetailProps> = ({ resetFormValues }) => {
 	};
 	// Unified effect for field watchers
 	useEffect(() => {
-		if (cardNumberWatch && focusField === "cardNumber") {
-			debouncedUpdate("cardNumber", cardNumberWatch as Student);
-		}
+		// if (cardNumberWatch && focusField === "cardNumber") {
+		// 	debouncedUpdate("cardNumber", cardNumberWatch as Student);
+		// }
 		if (idNumberWatch && focusField === "idNumbar") {
 			debouncedUpdate("idNumbar", idNumberWatch as Student);
 		}
@@ -135,7 +185,7 @@ const CardDetail: FC<CardDetailProps> = ({ resetFormValues }) => {
 			debouncedUpdate.cancel(); // Cancel debounce on unmount
 		};
 	}, [
-		cardNumberWatch,
+		// cardNumberWatch,
 		idNumberWatch,
 		nameWatch,
 		familyIdWatch,
@@ -145,6 +195,64 @@ const CardDetail: FC<CardDetailProps> = ({ resetFormValues }) => {
 	useEffect(() => {
 		resetFormValues(resetFormAndRefs);
 	}, [resetFormValues]);
+
+	useEffect(() => {
+		if (isFetched) {
+			if ((data as StudentListResponse).Status === "1") {
+				const student = (data as StudentListResponse).Data[0];
+				console.log("_data", student);
+
+				setValue("cardNumber", student.CardNumber, { shouldValidate: true });
+				setValue("familyId", student, { shouldValidate: true });
+				setValue("idNumbar", student, { shouldValidate: true });
+				setValue("name", student, { shouldValidate: true });
+				// setValue("dailyLimit", Number(student.DailyLimit).toFixed(2), {
+				// 	shouldValidate: true,
+				// });
+				setValue("gardeLimit", student.Grade, { shouldValidate: true });
+
+				// Update the image URL
+				const imgUrl = import.meta.env.VITE_API_URL + student.ImageUrl;
+				setImgUrl(imgUrl);
+
+				// Store previous values
+				previousValuesRef.current = {
+					cardNumber: student.CardNumber,
+					familyId: student.FamilyId,
+					idNumbar: student.AdmissionNumber,
+					name: student.StudentName,
+					dailyLimit: Number(student.DailyLimit).toFixed(2),
+					gardeLimit: student.Grade,
+				};
+			} else {
+				setNotify({
+					severity: "error",
+					message: "Card number is not found",
+				});
+			}
+			console.log("data in cardnuber", data);
+		}
+	}, [isFetched, data]);
+
+	useEffect(() => {
+		if (gradeIsFetched) {
+			if ((gradeData as GradLimitResponse).Status === "1") {
+				const gradeLimit = (gradeData as GradLimitResponse).Data[0];
+				console.log("gradeLimit", gradeLimit);
+				setValue("dailyLimit", Number(gradeLimit.DailyLimit).toFixed(2));
+			} else {
+				setNotify({
+					severity: "error",
+					message: "Grade limit is not found",
+				});
+			}
+			console.log("gradeData in cardnuber", gradeData);
+		}
+	}, [gradeIsFetched, gradeData]);
+
+	useEffect(() => {
+		refetch();
+	}, [refetch, (nameWatch as Student)?.StudentName]);
 
 	return (
 		<Grid container spacing={1}>
@@ -177,7 +285,7 @@ const CardDetail: FC<CardDetailProps> = ({ resetFormValues }) => {
 							</Typography>
 						</Box>
 						<Box sx={{ flex: 2 }}>
-							<Field {...cardNumberField(setFocusField)} {...control} />
+							<Field {...cardNumberField()} {...control} />
 						</Box>
 					</Stack>
 				</Grid>
@@ -186,13 +294,18 @@ const CardDetail: FC<CardDetailProps> = ({ resetFormValues }) => {
 				))}
 			</Grid>
 			<Grid item xs={2} justifyContent="center">
-				<Box sx={{ width: "120px", height: "120px" }}>
+				<Box
+					sx={{
+						width: "100%",
+						height: "100%",
+						borderRadius: 2,
+						overflow: "hidden",
+					}}>
 					<StudentImage
 						src={
-							import.meta.env.VITE_API_URL +
-							(cardNumberWatch as Student)?.ImageUrl
+							import.meta.env.VITE_API_URL + (nameWatch as Student)?.ImageUrl
 						}
-						alt={(cardNumberWatch as Student)?.StudentName}
+						alt={(nameWatch as Student)?.StudentName}
 						width="100%"
 						height="100%"
 						sxProps={{ objectFit: "cover" }}

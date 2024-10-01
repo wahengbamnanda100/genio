@@ -28,7 +28,7 @@ import EmployeeListItem from "../Form-component/EmployeeList";
 import { Dispatch, SetStateAction } from "react";
 
 export type cardDetailSchema = {
-	cardNumber: unknown;
+	cardNumber: string;
 	familyId: unknown;
 	idNumbar: unknown;
 	dailyLimit: string;
@@ -173,7 +173,7 @@ const getCardTypeValues = () => {
 	return cardTypeListData;
 };
 
-const studentSearchRequestBodies = {
+export const studentSearchRequestBodies = {
 	FamilyId: "",
 	CardNumber: "",
 	StudentName: "",
@@ -187,48 +187,48 @@ const studentSearchRequestBodies = {
 // 	Cmp_ID_N: "1",
 // };
 
-export const cardNumberField = (
-	setFocusField: Dispatch<SetStateAction<string>>
-): FieldProps => ({
-	fieldType: "search",
-	name: "cardNumber",
-	// label: "Card Number",
-	placeholder: "Select a Student",
-	size: "small",
-	// disabled: true,
-	onFocus(name) {
-		setFocusField(name);
-	},
-	renderItem: ({ option, props, isSelected, highlightColor }) => (
-		<StudentCard
-			key={option.CardID}
-			options={option}
-			props={props}
-			isSelected={isSelected}
-			highlightColor={highlightColor}
-		/>
-	),
-	hasErrorMessage: true,
-	rules: {
-		required: "Please enter Card Number",
-	},
-	searchApi: async (keyStroke: string) => {
-		const response = await searchStudentList(
-			{
-				...studentSearchRequestBodies,
-				CardNumber: keyStroke,
-			},
-			keyStroke && keyStroke !== "" ? true : false
-		);
+export const cardNumberField =
+	() // setFocusField: Dispatch<SetStateAction<string>>
+	: FieldProps => ({
+		fieldType: "text",
+		name: "cardNumber",
+		// label: "Card Number",
+		placeholder: "Scan a card",
+		size: "small",
+		// disabled: true,
+		// onFocus(name) {
+		// 	setFocusField(name);
+		// },
+		// renderItem: ({ option, props, isSelected, highlightColor }) => (
+		// 	<StudentCard
+		// 		key={option.CardID}
+		// 		options={option}
+		// 		props={props}
+		// 		isSelected={isSelected}
+		// 		highlightColor={highlightColor}
+		// 	/>
+		// ),
+		// hasErrorMessage: true,
+		// rules: {
+		// 	required: "Please enter Card Number",
+		// },
+		// searchApi: async (keyStroke: string) => {
+		// 	const response = await searchStudentList(
+		// 		{
+		// 			...studentSearchRequestBodies,
+		// 			CardNumber: keyStroke,
+		// 		},
+		// 		keyStroke && keyStroke !== "" ? true : false
+		// 	);
 
-		return response;
-	},
-	getOptionLabel: (option) => (option ? `${option.CardNumber}` : ""),
-	optionKey: "CardNumber",
-	options: (searchData) => searchData ?? [],
-	xs: 12,
-	// md: 6,
-});
+		// 	return response;
+		// },
+		// getOptionLabel: (option) => (option ? `${option.CardNumber}` : ""),
+		// optionKey: "CardNumber",
+		// options: (searchData) => searchData ?? [],
+		xs: 12,
+		// md: 6,
+	});
 
 export const cardDetailFields = (
 	setFocusField: Dispatch<SetStateAction<string>>
@@ -249,8 +249,6 @@ export const cardDetailFields = (
 				/>
 			),
 			onFocus: (name) => {
-				console.log("ffff", name);
-
 				setFocusField(name);
 			},
 			hasErrorMessage: true,
