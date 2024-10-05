@@ -305,7 +305,8 @@ export const cardDetailFields = (
 			optionKey: "AdmissionNumber",
 			options: (searchData) => searchData ?? [],
 			xs: 6,
-			md: 4,
+			md: 8,
+			lg: 4,
 		},
 		{
 			fieldType: "text",
@@ -326,7 +327,8 @@ export const cardDetailFields = (
 				style: { textAlign: "end" },
 			},
 			xs: 6,
-			md: 2,
+			md: 4,
+			lg: 2,
 		},
 
 		{
@@ -364,7 +366,8 @@ export const cardDetailFields = (
 			optionKey: "FamilyId",
 			options: (searchData) => searchData ?? [],
 			xs: 12,
-			md: 3.5,
+			md: 8,
+			lg: 3.5,
 		},
 		{
 			fieldType: "text",
@@ -382,7 +385,8 @@ export const cardDetailFields = (
 				// style: { textAlign: "end" },
 			},
 			xs: 6,
-			md: 2.5,
+			md: 4,
+			lg: 2.5,
 		},
 	];
 };
@@ -687,10 +691,10 @@ export const scanField = (): FieldProps[] => [
 		label: "Invoice Date",
 		size: "small",
 		// disabled: true,
-		hasErrorMessage: true,
-		rules: {
-			required: "Please enter your Invoice Date",
-		},
+		// hasErrorMessage: true,
+		// rules: {
+		// 	required: "Please enter your Invoice Date",
+		// },
 		xs: 6,
 	},
 	{

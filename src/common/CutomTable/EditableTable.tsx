@@ -10,6 +10,7 @@ import {
 import {
 	Grid,
 	Table,
+	TableFixedColumns,
 	TableHeaderRow,
 	// TableEditColumn,
 	TableSelection,
@@ -43,6 +44,8 @@ const MyGridComponent: React.FC<EditTableProps> = ({
 	table,
 	editingState,
 	selection,
+	rightColumns = [],
+	leftColumns = [],
 	setSelection,
 }) => {
 	return (
@@ -91,6 +94,11 @@ const MyGridComponent: React.FC<EditTableProps> = ({
 					highlightRow
 					showSelectionColumn={false}
 					// cellComponent={CustomSelectCell as any}
+				/>
+
+				<TableFixedColumns
+					rightColumns={rightColumns}
+					leftColumns={leftColumns}
 				/>
 
 				{/* <TableEditColumn

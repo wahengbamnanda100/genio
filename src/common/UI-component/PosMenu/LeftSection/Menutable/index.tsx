@@ -6,6 +6,7 @@ import {
 	ButtonBase,
 	IconButton,
 	Typography,
+	useMediaQuery,
 	useTheme,
 } from "@mui/material";
 import {
@@ -38,25 +39,31 @@ import ConfirmationDialog from "../../../../ModalComponent/ConfirmationDialog";
 
 const MenuTable = () => {
 	const dispatch: AppDispatch = useDispatch();
+	const theme = useTheme();
 	const [open, setOpen] = useState<boolean>(false);
 	const menuTable = useSelector((state: RootState) => selectMenuTable(state));
 
+	// const mediaBetweenMd = useMediaQuery(theme.breakpoints.between(1023, 1301));
+	const mediaDownMd = useMediaQuery(theme.breakpoints.down(1300));
+	const mediaDownSm = useMediaQuery(theme.breakpoints.down(1024));
+
 	const [columnExtension] = useState<GridColumnExtension[]>([
-		{ columnName: "sl", width: "50" },
-		// { columnName: "description", width: "160" },
-		{ columnName: "quantity", width: "80", align: "right" },
-		{ columnName: "unitPrice", width: "80", align: "right" },
-		{ columnName: "amount", width: "80", align: "right" },
-		{ columnName: "discount", width: "80", align: "right" },
-		{ columnName: "netAmount", width: "100", align: "right" },
-		{ columnName: "action", width: "60", align: "center" },
+		{ columnName: "sl", width: 50 }, // Width as a number
+		mediaDownSm
+			? { columnName: "description", width: "auto", align: "left" }
+			: mediaDownMd
+				? { columnName: "description", width: 190, align: "left" }
+				: { columnName: "description", width: "auto", align: "left" },
+		{ columnName: "quantity", width: 50, align: "right" },
+		{ columnName: "unitPrice", width: 50, align: "right" },
+		{ columnName: "amount", width: 75, align: "right" },
+		{ columnName: "discount", width: 75, align: "right" },
+		{ columnName: "netAmount", width: 75, align: "right" },
+		{ columnName: "action", width: 60, align: "center" },
 	]);
 	const [selection, setSelection] = useState<(string | number)[]>([]);
 	const [deleteRow, setDeleteRow] = useState<MenuItem>();
-	// const [editingCells, setEditingCells] = useState<EditingCell[]>([]);
-	// const [editColumnExtension] = useState<EditingState.ColumnExtension[]>([
-	// 	{ columnName: "sl", editingEnabled: false },
-	// ]);
+	const [rightColumns] = useState(["action"]);
 
 	const handleRowDelete = (row: MenuItem) => {
 		setDeleteRow(row);
@@ -75,11 +82,11 @@ const MenuTable = () => {
 			name: "description",
 		},
 		{
-			title: "Quantity",
+			title: "Qty",
 			name: "quantity",
 		},
 		{
-			title: "Unit Price",
+			title: "Price",
 			name: "unitPrice",
 		},
 		{
@@ -91,7 +98,7 @@ const MenuTable = () => {
 			name: "discount",
 		},
 		{
-			title: "Net Amount",
+			title: "Net Amt",
 			name: "netAmount",
 		},
 		{
@@ -124,20 +131,6 @@ const MenuTable = () => {
 			setSelection([]);
 		}
 	};
-
-	// const commitChanges: EditingStateProps["onCommitChanges"] = ({
-	// 	changed,
-	// 	deleted,
-	// }) => {
-	// 	if (changed) {
-	// 		dispatch(updateMenuItem(changed));
-	// 	}
-	// 	if (deleted) {
-	// 		const key = deleted[0];
-	// 		const deleteid = menuTable[key as number].id;
-	// 		dispatch(removePosMenu(deleteid));
-	// 	}
-	// };
 
 	const handleAddItem = () => {
 		if (selection.length > 0) {
@@ -196,6 +189,7 @@ const MenuTable = () => {
 				// }}
 				// hasSelect={true}
 				selection={selection}
+				rightColumns={rightColumns}
 				setSelection={handleSelectionChange}
 			/>
 

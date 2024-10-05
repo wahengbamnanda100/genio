@@ -5,9 +5,6 @@ import { useTheme } from "@mui/material";
 // import { FixedSizeList as List } from "react-window";
 import Carousel from "./Carousel";
 import { BreakfastItem, Item } from "../Item";
-import generateLinearGradient, {
-	Colors,
-} from "../../../../../utils/gradientColor";
 import { useAppProvider } from "../../../../../AppProvider";
 
 interface SelectMenuBoxProps {
@@ -35,36 +32,40 @@ const SelectMenuBox: FC<SelectMenuBoxProps> = ({
 	const [foodItemColor, setFoodItemColor] = useState<string[]>([]);
 
 	useEffect(() => {
-		// Define 5 to 6 linear gradient colors here
-		const linearGradients: Colors[] = [
-			{
-				light: theme.palette.breakfast.main,
-				dark: theme.palette.breakfast.dark,
-			},
-			{
-				light: theme.palette.hotfood.main,
-				dark: theme.palette.hotfood.dark,
-			},
-			{
-				light: theme.palette.grab.main,
-				dark: theme.palette.grab.dark,
-			},
-			{
-				light: theme.palette.secondary.main,
-				dark: theme.palette.secondary.dark,
-			},
-			{
-				light: theme.palette.error.main,
-				dark: theme.palette.error.dark,
-			},
-			{
-				light: theme.palette.primary.main,
-				dark: theme.palette.primary.dark,
-			}, // Optional 6th gradient
-		];
+		// Define 5 to 6 linear gradient colors her
 
-		const categoryColor = ["#eb2941", "#833e8e", "#e89456"];
-		const itemColor = ["#f05d6f", "#83578a", "#f49f5f"];
+		const categoryColor = [
+			"#bd4186",
+			"#1d78db",
+			"#c98900",
+			"#8ea8ce",
+			"#2d92c0",
+			"#4fb9af",
+			"#487a47",
+			"#504d7c",
+			"#dd156b",
+			"#922b2e",
+			"#c6ae4a",
+			"#644445",
+			"#88898e",
+			"#2d2a77",
+		];
+		const itemColor = [
+			"#bd4186",
+			"#1d78db",
+			"#c98900",
+			"#8ea8ce",
+			"#2d92c0",
+			"#4fb9af",
+			"#487a47",
+			"#504d7c",
+			"#dd156b",
+			"#922b2e",
+			"#c6ae4a",
+			"#644445",
+			"#88898e",
+			"#2d2a77",
+		];
 
 		const darkColors = [
 			theme.palette.breakfast.dark,
@@ -76,16 +77,16 @@ const SelectMenuBox: FC<SelectMenuBoxProps> = ({
 		];
 
 		// Generate gradient colors based on the defined linearGradients
-		const generatedColors: string[] = [];
+		// const generatedColors: string[] = [];
 		const darkColorsRandom: string[] = [];
 		const cc: string[] = [];
 		const ic: string[] = [];
 		for (let i = 0; i < data.length; i++) {
-			const gradientIndex = i % linearGradients.length;
+			// const gradientIndex = i % linearGradients.length;
 			const darkIndex = i % darkColors.length;
-			const gradientColor = generateLinearGradient(
-				linearGradients[gradientIndex]
-			);
+			// const gradientColor = generateLinearGradient(
+			// linearGradients[gradientIndex]
+			// );
 			const ccIndex = i % categoryColor.length;
 			const icIndex = i % itemColor.length;
 
@@ -97,7 +98,7 @@ const SelectMenuBox: FC<SelectMenuBoxProps> = ({
 
 			const darkColor = darkColors[darkIndex];
 			darkColorsRandom.push(darkColor);
-			generatedColors.push(gradientColor);
+			// generatedColors.push(gradientColor);
 		}
 
 		setCatColor(cc);

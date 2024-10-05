@@ -1,5 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Box, Grid, Stack, Typography, useTheme } from "@mui/material";
+import {
+	Box,
+	Grid,
+	Stack,
+	Typography,
+	useMediaQuery,
+	useTheme,
+} from "@mui/material";
 import { useFormContext, useWatch } from "react-hook-form";
 import {
 	cardDetailFields,
@@ -34,6 +41,10 @@ const CardDetail: FC<CardDetailProps> = ({ resetFormValues }) => {
 		cardDetailSchema | ScanUnitSchema
 	>();
 	const [focusField, setFocusField] = useState<string>("");
+
+	const isMediumScreen = useMediaQuery(theme.breakpoints.between(1024, 1280));
+	const studentImageXs = isMediumScreen ? 3 : 2;
+	const detailsXs = isMediumScreen ? 9 : 10;
 
 	const previousValuesRef = useRef<Partial<cardDetailSchema>>({});
 
@@ -241,10 +252,11 @@ const CardDetail: FC<CardDetailProps> = ({ resetFormValues }) => {
 				console.log("gradeLimit", gradeLimit);
 				setValue("dailyLimit", Number(gradeLimit.DailyLimit).toFixed(2));
 			} else {
-				setNotify({
-					severity: "error",
-					message: "Grade limit is not found",
-				});
+				// setNotify({
+				// 	severity: "error",
+				// 	message: "Grade limit is not found",
+				// });
+				console.log("error in grade limit");
 			}
 			console.log("gradeData in cardnuber", gradeData);
 		}
@@ -256,7 +268,7 @@ const CardDetail: FC<CardDetailProps> = ({ resetFormValues }) => {
 
 	return (
 		<Grid container spacing={1}>
-			<Grid item container spacing={1} xs={10}>
+			<Grid item container spacing={1} xs={detailsXs}>
 				<Grid item xs={8}>
 					<Stack
 						direction="row"
@@ -267,7 +279,7 @@ const CardDetail: FC<CardDetailProps> = ({ resetFormValues }) => {
 						}}>
 						<Box
 							sx={{
-								flex: 1,
+								flex: 1.5,
 								borderRight: `1px solid ${theme.palette.grey[400]}`,
 								bgcolor: theme.palette.primary.main,
 								borderRadius: 1,
@@ -280,7 +292,19 @@ const CardDetail: FC<CardDetailProps> = ({ resetFormValues }) => {
 								textAlign="center"
 								px={1}
 								py={0.6}
-								color={theme.palette.primary.contrastText}>
+								color={theme.palette.primary.contrastText}
+								sx={{
+									fontSize: "1rem", // Default font size
+									[theme.breakpoints.down(1281)]: {
+										fontSize: "0.75rem", // Smaller font size for screens above 1158px
+									},
+									[theme.breakpoints.down(1037)]: {
+										fontSize: "0.65rem", // Smaller font size for screens above 1158px
+									},
+									[theme.breakpoints.down(1024)]: {
+										fontSize: "1rem", // Smaller font size for screens above 1158px
+									},
+								}}>
 								Card Number
 							</Typography>
 						</Box>
@@ -293,7 +317,7 @@ const CardDetail: FC<CardDetailProps> = ({ resetFormValues }) => {
 					<Field key={field.name} {...field} {...control} />
 				))}
 			</Grid>
-			<Grid item xs={2} justifyContent="center">
+			<Grid item xs={studentImageXs} justifyContent="center">
 				<Box
 					sx={{
 						width: "100%",

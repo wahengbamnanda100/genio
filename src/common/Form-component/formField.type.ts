@@ -81,6 +81,24 @@ type common_type = {
 		| 10
 		| 11
 		| 12;
+	lg?:
+		| false
+		| "auto"
+		| true
+		| 1
+		| 2
+		| 2.5
+		| 3
+		| 3.5
+		| 4
+		| 5
+		| 6
+		| 7
+		| 8
+		| 9
+		| 10
+		| 11
+		| 12;
 	hasErrorMessage?: boolean;
 };
 

@@ -48,7 +48,7 @@ const AppProvider = ({ children }: AppProviderProps) => {
 		React.useState<DisableType>(false);
 	const [disableCashAmount, setDisableCashAmount] =
 		React.useState<DisableType>(false);
-	const [itemColor, setItemColor] = React.useState<ItemColorType>("#f05d6f");
+	const [itemColor, setItemColor] = React.useState<ItemColorType>("#bd4186");
 	const [scanNubmer, setScanNumber] = React.useState<ScannNubmerType>("");
 
 	return (

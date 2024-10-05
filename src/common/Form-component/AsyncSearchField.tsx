@@ -66,6 +66,7 @@ const AsyncSearchField = ({
 	xs,
 	sm,
 	md,
+	lg,
 	sx,
 	setValue,
 	placeholder,
@@ -124,7 +125,14 @@ const AsyncSearchField = ({
 	}, [isFocused, name, onFocus]);
 
 	return (
-		<Grid item xs={xs} md={md} sm={sm} className={className} style={style}>
+		<Grid
+			item
+			xs={xs}
+			md={md}
+			sm={sm}
+			lg={lg}
+			className={className}
+			style={style}>
 			<Controller
 				key={id}
 				name={name}

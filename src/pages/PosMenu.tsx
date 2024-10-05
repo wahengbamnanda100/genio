@@ -292,7 +292,7 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 		if (Number(dailyLimit) < netAmount) {
 			return setNotify({
 				severity: "error",
-				message: "Amount cannot be graetr than Daily limit",
+				message: "Amount cannot be greater than Daily limit " + dailyLimit,
 			});
 		}
 
@@ -357,7 +357,7 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 		}
 
 		// Validate cardNumber with a specific pattern
-		const cardNumberPattern = /^\d{16}$/;
+		const cardNumberPattern = /^\d{4}$/;
 
 		if (
 			data.allowCard &&
@@ -366,7 +366,28 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 		) {
 			setNotify({
 				severity: "error",
-				message: `Card Number must be in the format XXXX XXXX XXXX XXXX - ${data.cardTypeNumber}`,
+				message: `Card Number must be in the format XXXX - ${data.cardTypeNumber}`,
+			});
+			return;
+		}
+		console.log("card amount validate@@##", data.cardAmount);
+		if (
+			data.allowCard &&
+			data.cardAmount &&
+			data.cardAmount !== data.netAmount
+		) {
+			setNotify({
+				severity: "error",
+				message: `Card Amount should be equal to Net Amount`,
+			});
+			return;
+		}
+		if (data.allowCard && !data.cardAmount) {
+			console.log("card amount validate", data.cardAmount);
+
+			setNotify({
+				severity: "error",
+				message: `Card Amount cannot be zero`,
 			});
 			return;
 		}
@@ -396,11 +417,11 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 		const backendData: PosSaveRequsetBodiesType = {
 			Cmp_ID_N: "1",
 			CurrencyId: "1", //todo check with vini
-			DiscountAmount: formData.discountAmount?.toString() || "",
+			DiscountAmount: Number(formData.discountAmount)?.toFixed(2) || "",
 			GrossAmount: formData.total.toString() || "",
 			InvoiceDate: moment(formData.invoiceDate).format("DD-MMM-YYYY"),
 			Items: transformMenuTableToItems(menuTable),
-			NetAmount: formData.netAmount?.toString() || "",
+			NetAmount: Number(formData.netAmount)?.toFixed(2) || "",
 			ShowroomId: formData.showroom,
 			Sih_ID_N: "",
 			CardID: (formData.name as Student)?.CardID || "",
@@ -410,11 +431,11 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 				{
 					Gem_ID_N: formData.cardType.length === 0 ? null : formData.cardType,
 					Pyd_CardNo_V: formData.cardTypeNumber,
-					Pyd_CardAmount_N: formData.cardAmount.toString(),
-					Pyd_ChequeAmount_N: formData.paidAmount.toString(),
-					Pyd_CashAmount_N: formData.cashAmount.toString(),
-					Pyd_AmountPaid_N: formData.totalPaid.toString(),
-					Pyd_Balance_N: formData.balance.toString(),
+					Pyd_CardAmount_N: Number(formData.cardAmount).toFixed(2),
+					Pyd_ChequeAmount_N: Number(formData.paidAmount).toFixed(2),
+					Pyd_CashAmount_N: Number(formData.cashAmount).toFixed(2),
+					Pyd_AmountPaid_N: Number(formData.totalPaid).toFixed(2),
+					Pyd_Balance_N: Number(formData.balance).toFixed(2),
 				},
 			],
 		};
@@ -465,7 +486,7 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 
 	return (
 		<>
-			<Paper elevation={4} sx={{ p: 3, pt: 2 }}>
+			<Paper elevation={4} sx={{ p: 2, mt: 1.5 }}>
 				<FormProvider {...method}>
 					<Grid
 						component={"form"}

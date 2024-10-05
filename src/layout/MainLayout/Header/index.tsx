@@ -17,6 +17,8 @@ const Header: React.FC<HeaderProps> = ({ handleLeftDrawerToggle }) => {
 			sx={{
 				width: "100%",
 				display: "flex",
+				// : 1,
+				// border: "1px solid red",
 				[theme.breakpoints.down("md")]: {
 					width: "auto",
 				},

@@ -25,6 +25,7 @@ const InputField = ({
 	style,
 	xs,
 	sm,
+	lg,
 	md,
 	label,
 	// numberFormate,
@@ -41,7 +42,7 @@ const InputField = ({
 	// const removeNonNumeric = (num) => num.toString().replace(/[^0-9]/g, "");
 
 	return (
-		<Grid item xs={xs} sm={sm} md={md} className={className} sx={style}>
+		<Grid item xs={xs} sm={sm} md={md} lg={lg} className={className} sx={style}>
 			<Controller
 				name={name}
 				control={control}
@@ -154,7 +155,7 @@ const CeditCardNubmer = forwardRef<NumericFormatProps, CustomProps>(
 						},
 					});
 				}}
-				format="#### #### #### ####"
+				format="####"
 				mask="_" // Mask for incomplete input
 				// allowEmptyFormatting
 			/>

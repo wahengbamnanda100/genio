@@ -1,5 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Button, ButtonPropsColorOverrides, Grid } from "@mui/material";
+import {
+	Button,
+	ButtonPropsColorOverrides,
+	Grid,
+	useTheme,
+} from "@mui/material";
 import { OverridableStringUnion } from "@mui/types";
 import DoneRoundedIcon from "@mui/icons-material/DoneRounded";
 import ClearRoundedIcon from "@mui/icons-material/ClearRounded";
@@ -21,12 +26,12 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
 	handleBackClick,
 }) => {
 	return (
-		<Grid container spacing={2}>
+		<Grid container spacing={2} alignItems="stretch">
 			<Grid item xs={12} md={3}>
 				<ActionButton
 					label="Submit & Print"
 					type="submitPrint"
-					color={"secondary"}
+					color="secondary"
 					onClick={handleSubmitClick}
 				/>
 			</Grid>
@@ -34,7 +39,7 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
 				<ActionButton
 					label="Cancel"
 					type="cancel"
-					color={"primary"}
+					color="primary"
 					onClick={handleCancelClick}
 				/>
 			</Grid>
@@ -42,7 +47,7 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
 				<ActionButton
 					label="Previous Sales"
 					type="previous"
-					color={"previousSale"}
+					color="previousSale"
 					onClick={handlePreviousClick}
 				/>
 			</Grid>
@@ -50,7 +55,7 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
 				<ActionButton
 					label="Back"
 					type="back"
-					color={"primary"}
+					color="primary"
 					onClick={handleBackClick}
 				/>
 			</Grid>
@@ -86,6 +91,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
 	color,
 	onClick,
 }) => {
+	const theme = useTheme();
 	const buttonIcons = {
 		submitPrint: <DoneRoundedIcon />,
 		cancel: <ClearRoundedIcon />,
@@ -94,18 +100,28 @@ const ActionButton: React.FC<ActionButtonProps> = ({
 	};
 
 	return (
-		<AnimateButton>
+		<AnimateButton style={{ flexGrow: 1, height: "100%" }}>
 			<Button
 				variant="contained"
 				color={color}
 				fullWidth
 				sx={{
 					borderRadius: 1,
-					// bgcolor: color,
 					px: 2,
 					minWidth: "5rem",
 					outline: "none",
 					border: "none",
+					height: "100%",
+					display: "flex",
+					alignItems: "center", // Icon and text aligned horizontally
+					justifyContent: "center",
+					textAlign: "center", // Center the text
+					whiteSpace: "normal", // Allow text to wrap
+					wordBreak: "break-word", // Break long words if necessary
+					[theme.breakpoints.down(1080)]: {
+						fontSize: "0.6rem",
+						minWidth: "3rem",
+					},
 				}}
 				startIcon={buttonIcons[type]}
 				onClick={onClick}>

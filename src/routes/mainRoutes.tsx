@@ -5,7 +5,7 @@ import ErrorElement from "../common/UI-component/ErrorElement";
 import { RouteObject } from "react-router";
 import PageNotFound from "../common/UI-component/PageNotFound";
 
-const Dashboard = Loadable(lazy(() => import("../pages/dashboard")));
+// const Dashboard = Loadable(lazy(() => import("../pages/dashboard")));
 const PosMenu = Loadable(lazy(() => import("../pages/PosMenu")));
 
 const MainRoutes: RouteObject = {
@@ -13,17 +13,22 @@ const MainRoutes: RouteObject = {
 	element: <MainLayout />,
 
 	children: [
+		// {
 		{
 			path: "/",
-			element: <Dashboard />,
+			element: <PosMenu />,
 			errorElement: <ErrorElement />,
 		},
-		{
-			index: true,
-			path: "dashboard",
-			element: <Dashboard />,
-			errorElement: <ErrorElement />,
-		},
+		// 	path: "/",
+		// 	element: <Dashboard />,
+		// 	errorElement: <ErrorElement />,
+		// },
+		// {
+		// 	index: true,
+		// 	path: "dashboard",
+		// 	element: <Dashboard />,
+		// 	errorElement: <ErrorElement />,
+		// },
 		{
 			path: "pos-menu",
 			element: <PosMenu />,

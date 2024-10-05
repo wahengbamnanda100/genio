@@ -116,6 +116,8 @@ export interface EditTableProps {
 		columnExtensions?: Table.ColumnExtension[];
 		rowComponent?: ComponentType<Table.DataRowProps>;
 	};
+	rightColumns?: TableFixedColumnsProps["rightColumns"];
+	leftColumns?: TableFixedColumnsProps["leftColumns"];
 	editingState?: EditingStateProps;
 	selection?: (string | number)[];
 	setSelection?:

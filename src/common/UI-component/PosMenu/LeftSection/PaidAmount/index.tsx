@@ -142,12 +142,153 @@ const PaidAmount: FC<PaidAmountProps> = () => {
 		}
 	}, [netTotalAmount, tempTotalAmount]);
 
+	// useEffect(() => {
+	// 	const handleAvailableBalance = () => {
+	// 		if (availBal === 0) {
+	// 			// No wallet balance, transfer the entire net amount to cashAmount
+	// 			setValue("paidAmount", 0);
+	// 			console.log("Availble balance is 0", availBal);
+
+	// 			setDisableAvalBal(true);
+	// 			setValue("availableBalance", 0);
+	// 			if (checked) {
+	// 				setValue("cashAmount", 0);
+	// 			} else {
+	// 				setValue("cashAmount", netTotalAmount);
+	// 			}
+	// 		} else {
+	// 			setValue("paidAmount", netTotalAmount);
+	// 			const remainBalance = availBal - Number(paidAmountWatch);
+	// 			setValue("balanceAmount", remainBalance);
+	// 			// setDisableAvalBal(true);
+	// 			setDisableAvalBal(false);
+	// 			setValue("availableBalance", availBal);
+
+	// 			if (paidAmountWatch > availBal) {
+	// 				setValue("paidAmount", availBal);
+	// 			}
+	// 			updateCashAndBalance();
+	// 		}
+	// 	};
+
+	// 	const updateCashAndBalance = () => {
+	// 		const remainBalance = availBal - Number(paidAmountWatch);
+	// 		const reaminNetAmount = netTotalAmount - Number(paidAmountWatch);
+
+	// 		console.log(
+	// 			"remainBalance",
+	// 			remainBalance,
+	// 			"reaminNetAmount",
+	// 			reaminNetAmount,
+	// 			"paidAmountWatch",
+	// 			Number(paidAmountWatch)
+	// 		);
+
+	// 		setValue("cardAmount", remainBalance);
+
+	// 		if (remainBalance < 0) {
+	// 			setValue("cashAmount", Math.abs(remainBalance));
+	// 			setValue("balanceAmount", 0);
+	// 		} else {
+	// 			setValue("balanceAmount", remainBalance);
+	// 		}
+
+	// 		if (reaminNetAmount > 0) {
+	// 			if (checked) {
+	// 				setValue("cashAmount", 0);
+	// 			} else {
+	// 				setValue("cashAmount", reaminNetAmount);
+	// 			}
+	// 		} else {
+	// 			setValue("cashAmount", 0); // All paid from wallet
+	// 			setValue("balanceAmount", remainBalance);
+	// 		}
+	// 	};
+
+	// 	const handleCashPayment = () => {
+	// 		if (cashAmountWatch > 0 && totalPaidWatch > 0) {
+	// 			setValue("balance", cashAmountWatch - totalPaidWatch);
+	// 		} else {
+	// 			setValue("balance", 0);
+	// 		}
+	// 	};
+
+	// 	const handleCardPayment = () => {
+	// 		if (checked) {
+	// 			setDisableAvalBal(true);
+	// 			setDisableCashAmt(true);
+	// 			setValue("cardAmount", netTotalAmount);
+	// 			setValue("paidAmount", 0);
+	// 			setValue("totalPaid", 0);
+	// 			setValue("cashAmount", 0);
+	// 			setValue("balance", 0);
+	// 		} else {
+	// 			// setDisableAvalBal(true);
+	// 			setDisableCashAmt(false);
+	// 			// resetField(['cardType'])
+	// 			// reset({
+	// 			// 	cardType: [],
+	// 			// 	cardTypeNumber: "",
+	// 			// 	cardAmount: 0,
+	// 			// });
+	// 			setValue("cardType", []);
+	// 			setValue("cardTypeNumber", "");
+	// 			setValue("cardAmount", 0);
+	// 		}
+	// 	};
+
+	// 	const transferCashToCard = () => {
+	// 		if (
+	// 			checked &&
+	// 			paidAmountWatch === 0 &&
+	// 			cashAmountWatch === netTotalAmount
+	// 		) {
+	// 			setValue("cardAmount", netTotalAmount);
+	// 			setValue("cashAmount", 0);
+	// 			setValue("totalPaid", 0);
+	// 		}
+	// 	};
+
+	// 	const clearPaidAmount = () => {
+	// 		if (checked) {
+	// 			// setValue("cardAmount", 0);
+	// 			setValue("cardAmount", netTotalAmount);
+	// 		} else {
+	// 			if (!paidAmountWatch || paidAmountWatch === 0) {
+	// 				setValue("cashAmount", netTotalAmount);
+	// 				// setValue("paidAmount", 0);
+	// 				setValue("balanceAmount", 0);
+	// 			}
+	// 		}
+	// 	};
+
+	// 	if (!isView || isView) {
+	// 		// Execute the logic
+	// 		handleAvailableBalance();
+	// 		handleCashPayment();
+	// 		handleCardPayment();
+	// 		transferCashToCard();
+	// 		clearPaidAmount();
+	// 	}
+	// }, [
+	// 	paidAmountWatch,
+	// 	netTotalAmount,
+	// 	availBal,
+	// 	disableAvalBal,
+	// 	cashAmountWatch,
+	// 	totalPaidWatch,
+	// 	checked,
+	// 	isView,
+	// 	refresh,
+	// 	// setValue,
+	// ]);
+
 	useEffect(() => {
 		const handleAvailableBalance = () => {
 			if (availBal === 0) {
 				// No wallet balance, transfer the entire net amount to cashAmount
 				setValue("paidAmount", 0);
-				console.log("Availble balance is 0", availBal);
+				console.log("Available balance is 0", availBal);
 
 				setDisableAvalBal(true);
 				setValue("availableBalance", 0);
@@ -157,9 +298,13 @@ const PaidAmount: FC<PaidAmountProps> = () => {
 					setValue("cashAmount", netTotalAmount);
 				}
 			} else {
-				const remainBalance = availBal - Number(paidAmountWatch);
-				setValue("balanceAmount", remainBalance);
-				// setDisableAvalBal(true);
+				// Wallet has balance, start with setting paidAmount to netTotalAmount or available balance, whichever is smaller
+				const initialPaidAmount = Math.min(availBal, netTotalAmount);
+				if (paidAmountWatch !== initialPaidAmount) {
+					setValue("paidAmount", initialPaidAmount);
+				}
+				const remainingBalance = availBal - Number(paidAmountWatch);
+				setValue("balanceAmount", remainingBalance);
 				setDisableAvalBal(false);
 				setValue("availableBalance", availBal);
 
@@ -171,42 +316,39 @@ const PaidAmount: FC<PaidAmountProps> = () => {
 		};
 
 		const updateCashAndBalance = () => {
-			const remainBalance = availBal - Number(paidAmountWatch);
-			const reaminNetAmount = netTotalAmount - Number(paidAmountWatch);
+			const remainingBalance = availBal - Number(paidAmountWatch);
+			const remainingNetAmount = netTotalAmount - Number(paidAmountWatch);
 
 			console.log(
-				"remainBalance",
-				remainBalance,
-				"reaminNetAmount",
-				reaminNetAmount,
+				"remainingBalance",
+				remainingBalance,
+				"remainingNetAmount",
+				remainingNetAmount,
 				"paidAmountWatch",
 				Number(paidAmountWatch)
 			);
 
-			setValue("cardAmount", remainBalance);
-
-			if (remainBalance < 0) {
-				setValue("cashAmount", Math.abs(remainBalance));
-				setValue("balanceAmount", 0);
+			if (checked) {
+				// If card is checked, handle cardAmount logic
+				setValue("cardAmount", remainingNetAmount);
+				setValue("cashAmount", 0); // Disable cash payment when card is selected
 			} else {
-				setValue("balanceAmount", remainBalance);
+				// Update cash amount only if it is necessary
+				if (cashAmountWatch !== remainingNetAmount) {
+					setValue("cashAmount", Math.max(0, remainingNetAmount));
+				}
 			}
 
-			if (reaminNetAmount > 0) {
-				if (checked) {
-					setValue("cashAmount", 0);
-				} else {
-					setValue("cashAmount", reaminNetAmount);
-				}
-			} else {
-				setValue("cashAmount", 0); // All paid from wallet
-				setValue("balanceAmount", remainBalance);
+			// Update balance amount if it changes
+			if (remainingBalance !== availBal) {
+				setValue("balanceAmount", remainingBalance < 0 ? 0 : remainingBalance);
 			}
 		};
 
 		const handleCashPayment = () => {
 			if (cashAmountWatch > 0 && totalPaidWatch > 0) {
-				setValue("balance", cashAmountWatch - totalPaidWatch);
+				const balance = cashAmountWatch - totalPaidWatch;
+				if (balance !== 0) setValue("balance", balance);
 			} else {
 				setValue("balance", 0);
 			}
@@ -222,14 +364,7 @@ const PaidAmount: FC<PaidAmountProps> = () => {
 				setValue("cashAmount", 0);
 				setValue("balance", 0);
 			} else {
-				// setDisableAvalBal(true);
 				setDisableCashAmt(false);
-				// resetField(['cardType'])
-				// reset({
-				// 	cardType: [],
-				// 	cardTypeNumber: "",
-				// 	cardAmount: 0,
-				// });
 				setValue("cardType", []);
 				setValue("cardTypeNumber", "");
 				setValue("cardAmount", 0);
@@ -250,14 +385,10 @@ const PaidAmount: FC<PaidAmountProps> = () => {
 
 		const clearPaidAmount = () => {
 			if (checked) {
-				// setValue("cardAmount", 0);
 				setValue("cardAmount", netTotalAmount);
-			} else {
-				if (!paidAmountWatch || paidAmountWatch === 0) {
-					setValue("cashAmount", netTotalAmount);
-					setValue("paidAmount", 0);
-					setValue("balanceAmount", 0);
-				}
+			} else if (!paidAmountWatch || paidAmountWatch === 0) {
+				setValue("cashAmount", netTotalAmount);
+				setValue("balanceAmount", 0);
 			}
 		};
 
@@ -279,7 +410,6 @@ const PaidAmount: FC<PaidAmountProps> = () => {
 		checked,
 		isView,
 		refresh,
-		// setValue,
 	]);
 
 	const renderFields = useCallback(
@@ -304,13 +434,16 @@ const PaidAmount: FC<PaidAmountProps> = () => {
 				}}>
 				<Grid
 					item
-					xs={outline ? 10 : 12}
+					xs={outline ? 9 : 12}
 					sx={{
 						// bgcolor: outline ? bgColor : titleColor,
 						bgcolor: bgColor,
-						px: 2,
+						pl: 2,
 						pt: 1,
 						pb: 0.2,
+						// [theme.breakpoints.down(1024)]: {
+
+						// },
 					}}>
 					<Typography
 						variant="body1"
@@ -318,12 +451,29 @@ const PaidAmount: FC<PaidAmountProps> = () => {
 						// color={outline ? "textPrimary" : "textSecondary"}
 						color={titleColor}
 						// color={"textPrimary"}
-					>
+						sx={{
+							[theme.breakpoints.between(1025, 1218)]: {
+								fontSize: "0.8rem",
+							},
+							[theme.breakpoints.between(1023, 1025)]: {
+								fontSize: "0.79rem",
+							},
+						}}>
 						{title}
 					</Typography>
 				</Grid>
 				{outline && (
-					<Grid item xs={2} sx={{ bgcolor: bgColor }}>
+					<Grid
+						item
+						xs={3}
+						sx={{
+							bgcolor: bgColor,
+							textAlign: "end",
+							pr: 1,
+							[theme.breakpoints.down(1400)]: {
+								// mr: 1,
+							},
+						}}>
 						{/* <Checkbox
 							size="small"
 							value={checked}
@@ -347,6 +497,15 @@ const PaidAmount: FC<PaidAmountProps> = () => {
 									icon={<CircleOutlinedIcon fontSize="small" />}
 									checkedIcon={<CheckCircleRoundedIcon fontSize="small" />}
 									inputProps={{ "aria-label": "controlled" }}
+									sx={{
+										// Customize the size (height and width) of the checkbox
+										width: 24, // Set the width
+										height: 24, // Set the height
+										px: 1,
+										"& .MuiSvgIcon-root": {
+											fontSize: 24, // Adjust the size of the icon inside the checkbox
+										},
+									}}
 								/>
 							)}
 						/>

@@ -33,7 +33,7 @@ const Main = styled("main", {
 	marginLeft: open ? drawerWidth : 0,
 	minHeight: "100vh",
 	width: `calc(100% - ${open ? drawerWidth : 0}px)`,
-	padding: "16px",
+	padding: "12px",
 	paddingTop: "8px",
 	[theme.breakpoints.down("md")]: {
 		marginLeft: open ? 20 : 0,
@@ -45,6 +45,7 @@ const Main = styled("main", {
 		marginRight: open ? 10 : 0,
 	},
 }));
+
 const MainLayout: React.FC = () => {
 	const theme = useTheme();
 	const { notify } = useAppProvider();
@@ -62,20 +63,51 @@ const MainLayout: React.FC = () => {
 				enableColorOnDark
 				position="fixed"
 				color="inherit"
-				elevation={0}
+				elevation={4}
 				sx={{
 					bgcolor: theme.palette.primary.main,
+
 					transition: leftDrawerOpened
 						? theme.transitions.create("width")
 						: "none",
 				}}>
-				<Toolbar>
+				<Toolbar
+					sx={{
+						height: "44px",
+						minHeight: "44px",
+						// border: "1px solid red",
+						[theme.breakpoints.down(1280)]: {
+							height: "44px",
+							minHeight: "44px", // Apply on smaller screens as well
+						},
+						[theme.breakpoints.down(1025)]: {
+							height: "44px",
+							minHeight: "44px", // Apply on smaller screens as well
+						},
+					}}>
 					<Header handleLeftDrawerToggle={handleLeftDrawerToggle} />
 				</Toolbar>
 			</AppBar>
 
 			<Main theme={theme} open={leftDrawerOpened}>
-				<Toolbar />
+				<Box sx={{ padding: "1.1rem" }}>
+					<CustomSnackbar />
+				</Box>
+				{/* <Toolbar
+					sx={{
+						// height: "44px",
+						minHeight: "20px",
+						border: "1px solid red",
+						[theme.breakpoints.down(1280)]: {
+							// height: "44px",
+							minHeight: "36px", // Apply on smaller screens as well
+						},
+						[theme.breakpoints.down(1025)]: {
+							// height: "44px",
+							minHeight: "36px", // Apply on smaller screens as well
+						},
+					}}
+				/> */}
 				{/* breadcrumb */}
 				{/* <Breadcrumbs
           separator={IconChevronRight}

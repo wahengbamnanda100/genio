@@ -1,4 +1,4 @@
-import { forwardRef, ReactNode } from "react";
+import { CSSProperties, forwardRef, ReactNode } from "react";
 import { motion, useCycle } from "framer-motion";
 
 // Define the prop types
@@ -8,6 +8,7 @@ interface AnimateButtonProps {
 	direction?: "up" | "down" | "left" | "right";
 	offset?: number;
 	scale?: number | { hover: number; tap: number };
+	style?: CSSProperties;
 }
 
 const AnimateButton = forwardRef<HTMLDivElement, AnimateButtonProps>(
@@ -18,6 +19,7 @@ const AnimateButton = forwardRef<HTMLDivElement, AnimateButtonProps>(
 			direction = "right",
 			offset = 10,
 			scale = { hover: 1, tap: 0.95 },
+			style,
 		},
 		ref
 	) => {
@@ -89,7 +91,8 @@ const AnimateButton = forwardRef<HTMLDivElement, AnimateButtonProps>(
 					<motion.div
 						ref={ref}
 						whileHover={{ scale: scale?.hover }}
-						whileTap={{ scale: scale?.tap }}>
+						whileTap={{ scale: scale?.tap }}
+						style={style}>
 						{children}
 					</motion.div>
 				);
