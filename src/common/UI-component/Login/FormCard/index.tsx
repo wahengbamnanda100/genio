@@ -2,6 +2,7 @@
 import {
 	Box,
 	ButtonBase,
+	CircularProgress,
 	Grid,
 	Paper,
 	SxProps,
@@ -22,12 +23,14 @@ interface FormCardProps {
 	showPassword: boolean;
 	sx?: SxProps;
 	onSubmit: (data: LoginFormSchema) => void;
+	isPending: boolean;
 	setShowPassword: Dispatch<SetStateAction<boolean>>;
 }
 const FormCard: FC<FormCardProps> = ({
 	showPassword,
 	sx,
 	onSubmit,
+	isPending,
 	setShowPassword,
 }) => {
 	const theme = useTheme();
@@ -70,6 +73,7 @@ const FormCard: FC<FormCardProps> = ({
 							type="submit"
 							// color="secondary"
 							// variant="contained"
+							disabled={isPending}
 							sx={{
 								width: "100%",
 								textTransform: "uppercase",
@@ -86,7 +90,14 @@ const FormCard: FC<FormCardProps> = ({
 									background: theme.palette.secondary.dark,
 								},
 							}}>
-							Login
+							{isPending ? (
+								<CircularProgress
+									size={18}
+									sx={{ color: "white" }} // Spinner color
+								/>
+							) : (
+								"Login"
+							)}
 						</ButtonBase>
 					</AnimateButton>
 				</Box>

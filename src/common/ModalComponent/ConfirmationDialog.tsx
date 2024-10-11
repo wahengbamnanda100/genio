@@ -12,13 +12,14 @@ import CloseIcon from "@mui/icons-material/Close";
 import DoneAllIcon from "@mui/icons-material/DoneAll";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import RotateLeftIcon from "@mui/icons-material/RotateLeft";
+import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
 
 interface ConfirmationDialogProps extends DialogProps {
 	title: string;
 	description: string;
 	loading?: boolean;
-	dialogType: "submit" | "delete" | "cancel";
-	setOpen: Dispatch<SetStateAction<boolean>>;
+	dialogType: "submit" | "delete" | "cancel" | "logout";
+	setOpen?: Dispatch<SetStateAction<boolean>>;
 	onConfirm: () => void;
 	onCancel: () => void;
 }
@@ -29,7 +30,7 @@ const ConfirmationDialog: FC<ConfirmationDialogProps> = ({
 	open,
 	loading = false,
 	dialogType,
-	setOpen,
+	// setOpen,
 	onConfirm,
 	onCancel,
 }) => {
@@ -38,9 +39,9 @@ const ConfirmationDialog: FC<ConfirmationDialogProps> = ({
 	return (
 		<DialogStyled
 			open={open}
-			onClose={() => setOpen(false)}
+			onClose={() => onCancel}
 			aria-labelledby="confirmation-dialog">
-			<DialogCloseIconStyled onClick={() => setOpen(false)}>
+			<DialogCloseIconStyled onClick={() => onCancel}>
 				<div style={{ position: "relative" }}>
 					<CloseIcon />
 				</div>
@@ -49,6 +50,7 @@ const ConfirmationDialog: FC<ConfirmationDialogProps> = ({
 				{dialogType === "submit" && <DoneAllIcon color="secondary" />}
 				{dialogType === "delete" && <DeleteOutlineOutlinedIcon color="error" />}
 				{dialogType === "cancel" && <RotateLeftIcon color="primary" />}
+				{dialogType === "logout" && <PowerSettingsNewIcon color="error" />}
 				{title}
 			</DialogTitleStyled>
 			<DialogContentStyled>{description}</DialogContentStyled>
@@ -69,7 +71,9 @@ const ConfirmationDialog: FC<ConfirmationDialogProps> = ({
 						? "Submit"
 						: dialogType === "cancel"
 							? "Clear all"
-							: "Delete"}
+							: dialogType === "logout"
+								? "Logout"
+								: "Delete"}
 				</LoadingButton>
 				<Button variant="outlined" onClick={onCancel}>
 					Cancel

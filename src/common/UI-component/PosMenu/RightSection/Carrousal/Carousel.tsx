@@ -28,6 +28,16 @@ interface CarouselProps {
 	setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
 }
 
+interface CarouselEmptyProps {
+	// children: React.ReactNode;
+	// rows: number;
+	// columns: number;
+	label: string;
+	// currentPage: number;
+	// isLoading?: boolean;
+	// setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
+}
+
 const CarouselContainer = styled(Box)(({ theme }: { theme: Theme }) => ({
 	position: "relative",
 	overflow: "hidden",
@@ -128,7 +138,7 @@ const Carousel: React.FC<CarouselProps> = ({
 };
 
 interface NavigationBtnProps extends ButtonBaseProps {
-	children: React.ReactNode;
+	// children: React.ReactNode;
 	onClick: () => void;
 }
 
@@ -185,3 +195,53 @@ const LoadingItem: FC<LoadingItemProps> = ({ rows, columns }) => {
 };
 
 export default Carousel;
+
+export const EmptyCarousel: FC<CarouselEmptyProps> = ({ label }) => {
+	return (
+		<CarouselContainer>
+			<Box
+				display="flex"
+				justifyContent="space-between"
+				alignItems="center"
+				mb={1}>
+				<NaviationButton onClick={() => {}} disabled={true}>
+					<ArrowBackIcon />
+				</NaviationButton>
+				<Box
+					sx={{
+						display: "flex",
+						flexDirection: "column",
+						alignItems: "center",
+						flex: 1, // Allow the content to use up available space
+						overflow: "hidden",
+					}}>
+					<Typography
+						variant="body1"
+						fontWeight="medium"
+						textTransform="capitalize">
+						{label}
+					</Typography>
+					{/* <DotIndicator total={0} activeIndex={0} /> */}
+				</Box>
+				<NaviationButton
+					onClick={() => {}}
+					// disabled={startIndex + visibleItemsCount >= children.length}
+					disabled={true}>
+					<ArrowForwardIcon />
+				</NaviationButton>
+			</Box>
+			<Box
+				sx={{
+					display: "flex",
+					flexDirection: "row",
+					justifyContent: "center",
+					alignItem: "center",
+					p: 3,
+				}}>
+				<Typography variant="body1" fontWeight={"400"}>
+					No Data Found
+				</Typography>
+			</Box>
+		</CarouselContainer>
+	);
+};

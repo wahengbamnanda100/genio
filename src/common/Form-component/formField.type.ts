@@ -122,6 +122,7 @@ type InputFieldProps = {
 	thousandSeparator?: boolean;
 	maxChars?: number;
 	inputProps?: InputBaseComponentProps;
+	onFocus?: (name: string) => void;
 	type?: "email" | "number" | "text" | "password";
 } & common_type;
 
@@ -207,6 +208,7 @@ type SelectFieldProps = {
 	multiple?: boolean;
 	disabledOptions?: any[];
 	changes?: any;
+	initialValue?: boolean;
 	options: { label: string; value: any; mandatory?: boolean }[];
 	customizedRender?: (selectedOptions: string[]) => React.ReactNode;
 } & common_type;

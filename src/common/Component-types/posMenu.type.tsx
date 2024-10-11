@@ -111,34 +111,40 @@ export type PosMenuFormSchema = cardDetailSchema &
 	CardPaymentSchema;
 
 const getValuesCompanyUnit = () => {
+	const userData = JSON.parse(localStorage.getItem("userDetail")!);
+	const CmpID = JSON.parse(localStorage.getItem("CmpId")!);
 	const param: BussinessUnitRequestBodiesType = {
-		Cmp_ID_N: "1",
-		Usr_ID_N: "7",
+		Cmp_ID_N: CmpID,
+		Usr_ID_N: userData.UserId,
 	};
 	const { data, isFetched } = CompoanyUnitList(param);
-	const dropDownValues = isFetched
-		? getDropDownValues<BussinessUnitItem>(
-				data?.Data,
-				"BusinessUnitDesc",
-				"BusinessUnitId"
-			)
-		: [];
+	const dropDownValues =
+		isFetched && data?.Data?.length
+			? getDropDownValues<BussinessUnitItem>(
+					data.Data,
+					"BusinessUnitDesc",
+					"BusinessUnitId"
+				)
+			: [];
 	return dropDownValues;
 };
 
-const getValuesShowroomList = () => {
+const getValuesShowroomList = (bussinessId: string) => {
+	const userData = JSON.parse(localStorage.getItem("userDetail")!);
 	const param: ShowroomRequestBodiesType = {
-		BusinessUnitId: "1",
-		Usr_ID_N: "7",
+		BusinessUnitId: bussinessId,
+		// Usr_ID_N: "1",
+		Usr_ID_N: userData.UserId,
 	};
 	const { data, isFetched } = ShowroomList(param);
-	const dropDownValues = isFetched
-		? getDropDownValues<ShowroomItemType>(
-				data?.Data,
-				"ShowroomDesc",
-				"ShowroomId"
-			)
-		: [];
+	const dropDownValues =
+		isFetched && data?.Data?.length
+			? getDropDownValues<ShowroomItemType>(
+					data?.Data,
+					"ShowroomDesc",
+					"ShowroomId"
+				)
+			: [];
 
 	return dropDownValues;
 };
@@ -172,14 +178,13 @@ const getCardTypeValues = () => {
 
 	return cardTypeListData;
 };
-
+// const userData = JSON.parse(localStorage.getItem("userDetail")!);
 export const studentSearchRequestBodies = {
 	FamilyId: "",
 	CardNumber: "",
 	StudentName: "",
-	// ShowroomId: "147", //todo change it later
-	ShowroomId: "11", //todo change it later
-	Cmp_ID_N: "1", //todo change it later
+	ShowroomId: "", //todo change it later
+	Cmp_ID_N: JSON.parse(localStorage.getItem("CmpId")!) || "", //todo change it later
 };
 
 // const employeeSearchRequsetBodies = {
@@ -231,6 +236,7 @@ export const cardNumberField =
 	});
 
 export const cardDetailFields = (
+	ShowroomId: string,
 	setFocusField: Dispatch<SetStateAction<string>>
 ): FieldProps[] => {
 	return [
@@ -257,7 +263,7 @@ export const cardDetailFields = (
 			},
 			searchApi: (keyStroke: string) => {
 				return searchStudentList(
-					{ ...studentSearchRequestBodies, StudentName: keyStroke },
+					{ ...studentSearchRequestBodies, ShowroomId, StudentName: keyStroke },
 					keyStroke && keyStroke !== "" ? true : false
 				);
 			},
@@ -295,6 +301,7 @@ export const cardDetailFields = (
 				return searchStudentList(
 					{
 						...studentSearchRequestBodies,
+						ShowroomId,
 						CardNumber: keyStroke,
 					},
 					keyStroke && keyStroke !== "" ? true : false
@@ -357,6 +364,7 @@ export const cardDetailFields = (
 				return searchStudentList(
 					{
 						...studentSearchRequestBodies,
+						ShowroomId,
 						FamilyId: keyStroke,
 					},
 					keyStroke && keyStroke !== "" ? true : false
@@ -372,7 +380,7 @@ export const cardDetailFields = (
 		{
 			fieldType: "text",
 			name: "gardeLimit",
-			label: "Garde",
+			label: "Grade",
 			size: "small",
 			condition: /^-?\d+$/,
 			disabled: true,
@@ -614,7 +622,8 @@ export const paidAmountField = (
 
 export const availableBalancefield = (
 	theme: Theme,
-	disabled: boolean
+	disabled: boolean,
+	setFocusField: Dispatch<SetStateAction<string>>
 ): FieldProps[] => [
 	{
 		fieldType: "text",
@@ -653,6 +662,9 @@ export const availableBalancefield = (
 		// rules: {
 		// 	required: "Please enter your Paid Amount",
 		// },
+		onFocus(name) {
+			setFocusField(name);
+		},
 		InputProps: {
 			inputComponent: NumericFormatCustom as any,
 		},
@@ -712,7 +724,8 @@ export const scanField = (): FieldProps[] => [
 ];
 
 export const scanUnitField = (
-	setFocusField: Dispatch<SetStateAction<string>>
+	setFocusField: Dispatch<SetStateAction<string>>,
+	showroomId: string
 ): FieldProps[] => [
 	{
 		fieldType: "select",
@@ -731,7 +744,9 @@ export const scanUnitField = (
 		name: "showroom",
 		label: "Showroom",
 		size: "small",
-		options: getValuesShowroomList(),
+		disabled: showroomId === "" ? true : false,
+		options: getValuesShowroomList(showroomId),
+		initialValue: true,
 		hasErrorMessage: true,
 		rules: {
 			required: "Please select your Showroom",
@@ -804,7 +819,7 @@ export const scanUnitField = (
 			const response = await searchEmployeeList(
 				{
 					SearchText: keyStroke,
-					Cmp_ID_N: "1",
+					Cmp_ID_N: JSON.parse(localStorage.getItem("CmpId")!) || "",
 				},
 				keyStroke && keyStroke !== "" ? true : false
 			);

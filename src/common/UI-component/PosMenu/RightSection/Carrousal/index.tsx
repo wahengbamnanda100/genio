@@ -3,7 +3,7 @@
 import { FC, useEffect, useState } from "react";
 import { useTheme } from "@mui/material";
 // import { FixedSizeList as List } from "react-window";
-import Carousel from "./Carousel";
+import Carousel, { EmptyCarousel } from "./Carousel";
 import { BreakfastItem, Item } from "../Item";
 import { useAppProvider } from "../../../../../AppProvider";
 
@@ -158,6 +158,12 @@ const SelectMenuBox: FC<SelectMenuBoxProps> = ({
 	// 		</div>
 	// 	);
 	// };
+
+	if (data.length === 0) {
+		return (
+			<EmptyCarousel label={category ? "Select Category" : "Select Item"} />
+		);
+	}
 
 	return (
 		<Carousel

@@ -62,6 +62,18 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 	let resetCardDetailForm: () => void;
 	let resetScanUnitForm: () => void;
 
+	const cmpId = JSON.parse(localStorage.getItem("userDetail")!);
+	const CmpID = JSON.parse(localStorage.getItem("CmpId")!);
+
+	const employeeData =
+		!cmpId.EmpCode || !cmpId.EmpName || !cmpId.EmpId
+			? "" // If any of the fields are null or empty, set employeeData to an empty string
+			: {
+					EmployeeCode: cmpId.EmpCode,
+					EmployeeName: cmpId.EmpName,
+					Emp_ID_N: cmpId.EmpId,
+				};
+
 	const method = useForm<PosMenuFormSchema>({
 		defaultValues: {
 			//carddetail
@@ -97,10 +109,10 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 			invoiceNumber: "",
 
 			//scanUnit
-			cmpName: "1",
-			showroom: "11",
-			salesPersonCode: "",
-			salesPersonName: "",
+			cmpName: CmpID.toString() || "",
+			showroom: "",
+			salesPersonCode: employeeData,
+			salesPersonName: employeeData,
 
 			//currency exchange
 			currency: [],
@@ -345,7 +357,7 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 	};
 
 	const onSubmit: SubmitHandler<PosMenuFormSchema> = (data) => {
-		// console.log("Form submitted:", data);
+		console.log("Form submitted:", data);
 
 		// Validate that cardType is selected
 		if (data.allowCard && (!data.cardType || data.cardType.length === 0)) {
@@ -374,8 +386,14 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 		if (
 			data.allowCard &&
 			data.cardAmount &&
-			data.cardAmount !== data.netAmount
+			Number(data.cardAmount) !== data.netAmount
 		) {
+			console.log(
+				"data.cardAmount !== data.netAmount",
+				data.cardAmount,
+				data.netAmount,
+				Number(data.cardAmount) !== data.netAmount
+			);
 			setNotify({
 				severity: "error",
 				message: `Card Amount should be equal to Net Amount`,

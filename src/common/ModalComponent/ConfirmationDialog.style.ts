@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 
 type DialogProps = {
-	dialogType: "submit" | "delete" | "cancel";
+	dialogType: "submit" | "delete" | "cancel" | "logout";
 };
 
 export const DialogStyled = styled(Dialog)(({ theme }) => ({

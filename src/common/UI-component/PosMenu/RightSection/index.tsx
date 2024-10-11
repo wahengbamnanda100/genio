@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Box, Grid } from "@mui/material";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../../../store";
 import { PosMenuItem, addPosMenu } from "../../../../store/slices/posMenuSlice";
@@ -18,7 +18,10 @@ import {
 	MenuListRequstBodiesType,
 	Student,
 } from "../../../../services/aoi.type";
-import { cardDetailSchema } from "../../../Component-types/posMenu.type";
+import {
+	cardDetailSchema,
+	ScanUnitSchema,
+} from "../../../Component-types/posMenu.type";
 import AlergicBanner from "./AllergyBanner/AlergicBanner";
 
 interface RightSectionProp {
@@ -28,18 +31,26 @@ interface RightSectionProp {
 const RightMenuSection: FC<RightSectionProp> = ({ resetFormValues }) => {
 	const dispatch: AppDispatch = useDispatch();
 
-	const { control } = useFormContext<cardDetailSchema>();
+	const { control } = useFormContext<cardDetailSchema & ScanUnitSchema>();
 
-	const [cetagoryListParam] = useState<CategoryListingTypeRequestBodiesType>({
-		BusinessUnitId: "1",
-		ShowroomId: "147",
-		// ShowroomId: "11",
+	const CmpID = JSON.parse(localStorage.getItem("CmpId")!);
+
+	const [showroomWatch] = useWatch({
+		control,
+		name: ["showroom"],
 	});
 
+	const [cetagoryListParam, setCaetegoryListParam] =
+		useState<CategoryListingTypeRequestBodiesType>({
+			BusinessUnitId: CmpID.toString() || "",
+			ShowroomId: "",
+			// ShowroomId: "147",
+		});
+
 	const [menuParam, setMenuParam] = useState<MenuListRequstBodiesType>({
-		BusinessUnitId: "1", //todo change it later
-		// ShowroomId: "11", //todo change it later
-		ShowroomId: "147", //todo change it later
+		BusinessUnitId: CmpID.toString() || "",
+		// ShowroomId: "147", //todo change it later
+		ShowroomId: "",
 		CategoryId: "",
 	});
 
@@ -52,16 +63,18 @@ const RightMenuSection: FC<RightSectionProp> = ({ resetFormValues }) => {
 		data: caetgoryData,
 		isLoading: cetagoryIsLoading,
 		isFetched: cetegoryIsFetch,
+		// refetch: cetagoryRefetch,
 	} = GetCetagoryListing(cetagoryListParam, {
-		enabled: true,
+		enabled: showroomWatch !== "",
 	});
 
 	const {
 		data: menuItemData,
 		isLoading: menuItemIsLoading,
 		isFetched: menuItemIsFetched,
+		// refetch: itemRefetch,
 	} = GetItemListing(menuParam, {
-		enabled: true,
+		enabled: showroomWatch !== "",
 	});
 
 	const handleCategory = (item: CategoryDetailsType) => {
@@ -82,6 +95,19 @@ const RightMenuSection: FC<RightSectionProp> = ({ resetFormValues }) => {
 		};
 		dispatch(addPosMenu(temp));
 	};
+
+	useEffect(() => {
+		console.log("showroomWatch", showroomWatch);
+
+		if (showroomWatch !== "") {
+			console.log("showroomWatch refetch", showroomWatch);
+			setMenuParam((prev) => ({ ...prev, ShowroomId: showroomWatch }));
+			setCaetegoryListParam((prev) => ({ ...prev, ShowroomId: showroomWatch }));
+
+			// cetagoryRefetch();
+			// itemRefetch();
+		}
+	}, [showroomWatch]);
 
 	// useEffect(() => {
 	// 	if (studentNameWtach) {

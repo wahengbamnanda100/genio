@@ -1,4 +1,9 @@
-import { IconButton, InputAdornment, Theme, Typography } from "@mui/material";
+import {
+	IconButton,
+	InputAdornment,
+	Theme,
+	// Typography
+} from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { FieldProps } from "../Form-component";
@@ -122,15 +127,15 @@ export const LoginFields = (
 		md: 12,
 		xs: 12,
 	},
-	{
-		fieldType: "checkbox",
-		name: "rememberMe",
-		labelPlacement: "end",
-		checkBoxs: [
-			{
-				label: <Typography variant="subtitle1">Remember me</Typography>,
-				name: "rememberMe",
-			},
-		],
-	},
+	// {
+	// 	fieldType: "checkbox",
+	// 	name: "rememberMe",
+	// 	labelPlacement: "end",
+	// 	checkBoxs: [
+	// 		{
+	// 			label: <Typography variant="subtitle1">Remember me</Typography>,
+	// 			name: "rememberMe",
+	// 		},
+	// 	],
+	// },
 ];

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
 	Box,
@@ -23,7 +24,7 @@ import { debounce } from "lodash"; // Optional: Use lodash for debouncing
 import { StudentImage } from "../../../../../layout/MainLayout/Header/UserImage";
 import {
 	GetGradeLimit,
-	GradeLimitParamType,
+	// GradeLimitParamType,
 	GradLimitResponse,
 	// getStudentList,
 	SearchStudentList,
@@ -41,6 +42,11 @@ const CardDetail: FC<CardDetailProps> = ({ resetFormValues }) => {
 		cardDetailSchema | ScanUnitSchema
 	>();
 	const [focusField, setFocusField] = useState<string>("");
+	const [showRoom, setShowRoom] = useState<string>("");
+	const [params, setParmas] = useState<any>({
+		strCust_ID_N: undefined,
+		strShm_ID_N: showRoom,
+	});
 
 	const isMediumScreen = useMediaQuery(theme.breakpoints.between(1024, 1280));
 	const studentImageXs = isMediumScreen ? 3 : 2;
@@ -70,6 +76,7 @@ const CardDetail: FC<CardDetailProps> = ({ resetFormValues }) => {
 	const { data, isFetched } = SearchStudentList(
 		{
 			...studentSearchRequestBodies,
+			ShowroomId: showRoom,
 			CardNumber: cardNumberWatch!,
 		},
 		{
@@ -77,12 +84,10 @@ const CardDetail: FC<CardDetailProps> = ({ resetFormValues }) => {
 		}
 	);
 
-	const params: GradeLimitParamType = {
-		strCust_ID_N: (nameWatch as Student)?.CardID || undefined,
-		strShm_ID_N: showroomWatch,
-	};
-
-	console.log("!!params.strCust_ID_N", !!params.strCust_ID_N);
+	// const params: GradeLimitParamType = {
+	// 	strCust_ID_N: (nameWatch as Student)?.CardID || undefined,
+	// 	strShm_ID_N: showRoom,
+	// };
 
 	const {
 		data: gradeData,
@@ -204,6 +209,17 @@ const CardDetail: FC<CardDetailProps> = ({ resetFormValues }) => {
 	]);
 
 	useEffect(() => {
+		if (showroomWatch !== "") {
+			setShowRoom(showroomWatch);
+			setParmas({
+				// ...prev,
+				strCust_ID_N: (nameWatch as Student)?.CardID || undefined,
+				strShm_ID_N: showroomWatch,
+			});
+		}
+	}, [showroomWatch, (nameWatch as Student)?.CardID]);
+
+	useEffect(() => {
 		resetFormValues(resetFormAndRefs);
 	}, [resetFormValues]);
 
@@ -313,7 +329,7 @@ const CardDetail: FC<CardDetailProps> = ({ resetFormValues }) => {
 						</Box>
 					</Stack>
 				</Grid>
-				{cardDetailFields(setFocusField).map((field) => (
+				{cardDetailFields(showroomWatch, setFocusField).map((field) => (
 					<Field key={field.name} {...field} {...control} />
 				))}
 			</Grid>

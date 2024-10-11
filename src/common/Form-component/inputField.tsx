@@ -4,7 +4,7 @@ import { Controller, useFormContext, useFormState } from "react-hook-form";
 import { Grid, TextField } from "@mui/material";
 import _ from "lodash";
 // import { ChangeEvent, forwardRef, useRef } from "react";
-import { ChangeEvent, forwardRef } from "react";
+import { ChangeEvent, forwardRef, useState } from "react";
 import { InputFieldProps } from "./formField.type";
 import { ErrorContainer } from "./ErrorContainer";
 // import { IMaskInput } from "react-imask";
@@ -35,7 +35,7 @@ const InputField = ({
 	const { control } = useFormContext();
 	const { errors } = useFormState({ control });
 
-	// const [isFocused, setIsFocused] = useState<boolean>(false);
+	const [, setIsFocused] = useState<boolean>(false);
 
 	// const addCommas = (num) =>
 	// 	num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -56,8 +56,8 @@ const InputField = ({
 						variant={variant}
 						size={size}
 						// InputLabelProps={{ shrink: Boolean(value) || isFocused }}
-						// onFocus={() => setIsFocused(true)}
-						// onBlur={() => setIsFocused(false)}
+						onFocus={() => setIsFocused(true)}
+						onBlur={() => setIsFocused(false)}
 						onChange={(
 							e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
 						) => {

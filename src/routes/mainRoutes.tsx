@@ -4,6 +4,7 @@ import MainLayout from "../layout/MainLayout";
 import ErrorElement from "../common/UI-component/ErrorElement";
 import { RouteObject } from "react-router";
 import PageNotFound from "../common/UI-component/PageNotFound";
+import PrivateRoute from "./PrivateRotes";
 
 // const Dashboard = Loadable(lazy(() => import("../pages/dashboard")));
 const PosMenu = Loadable(lazy(() => import("../pages/PosMenu")));
@@ -16,7 +17,11 @@ const MainRoutes: RouteObject = {
 		// {
 		{
 			path: "/",
-			element: <PosMenu />,
+			element: (
+				<PrivateRoute>
+					<PosMenu />
+				</PrivateRoute>
+			),
 			errorElement: <ErrorElement />,
 		},
 		// 	path: "/",
@@ -31,12 +36,20 @@ const MainRoutes: RouteObject = {
 		// },
 		{
 			path: "pos-menu",
-			element: <PosMenu />,
+			element: (
+				<PrivateRoute>
+					<PosMenu />
+				</PrivateRoute>
+			),
 			errorElement: <ErrorElement />,
 		},
 		{
 			path: "pos-menu/view/:id",
-			element: <PosMenu />,
+			element: (
+				<PrivateRoute>
+					<PosMenu />
+				</PrivateRoute>
+			),
 			errorElement: <ErrorElement />,
 		},
 		{

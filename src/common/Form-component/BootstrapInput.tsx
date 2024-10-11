@@ -11,7 +11,7 @@ import { Controller, useFormContext, useFormState } from "react-hook-form";
 import { ErrorContainer } from "./ErrorContainer";
 import { InputFieldProps } from "./formField.type";
 import _ from "lodash";
-import { ChangeEvent } from "react";
+import { ChangeEvent, useState } from "react";
 import { NumericFormatCustom } from "./inputField";
 
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
@@ -67,7 +67,7 @@ const BootstrapInputField = ({
 	const { control } = useFormContext();
 	const { errors } = useFormState({ control });
 
-	// const [isFocused, setIsFocused] = useState<boolean>(false);
+	const [, setIsFocused] = useState<boolean>(false);
 
 	// const addCommas = (num) =>
 	// 	num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -92,9 +92,9 @@ const BootstrapInputField = ({
 							inputComponent={NumericFormatCustom as any}
 							// variant={variant}
 							size={size}
-							// InputLabelProps={{ shrink: Boolean(value) || isFocused }}
-							// onFocus={() => setIsFocused(true)}
-							// onBlur={() => setIsFocused(false)}
+							// inputProps={{ shrink: Boolean(value) || isFocused }}
+							onFocus={() => setIsFocused(true)}
+							onBlur={() => setIsFocused(false)}
 							onChange={(
 								e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
 							) => {

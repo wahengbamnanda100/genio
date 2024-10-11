@@ -403,7 +403,7 @@ export const GetCetagoryListing = (
 	queryOptions?: Partial<UseQueryOptions>
 ) => {
 	return useQuery({
-		queryKey: ["category-list", data],
+		queryKey: ["category-list", data.ShowroomId],
 		queryFn: async () =>
 			axiosInstance
 				.post("/API/GenioCategoryListingAPI", data)
@@ -419,7 +419,7 @@ export const GetItemListing = (
 	queryOptions?: Partial<UseQueryOptions>
 ) => {
 	return useQuery({
-		queryKey: ["item-list", data],
+		queryKey: ["item-list", data.ShowroomId],
 		queryFn: async () =>
 			axiosInstance
 				.post("/API/GenioCategoryItemListingAPI", data)

@@ -18,6 +18,7 @@ import _ from "lodash";
 // import { ChangeEvent } from "react";
 import { SelectFieldProps } from "./index";
 import { ErrorContainer } from "./ErrorContainer";
+import { useEffect } from "react";
 type errors = {
 	[key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 };
@@ -37,13 +38,25 @@ const SelectField = ({
 	hasErrorMessage,
 	changes,
 	customizedRender = (value) => value.join(", "),
+	initialValue = false,
 	...restProps
 }: SelectFieldProps) => {
-	const { control } = useFormContext();
+	const { control, setValue, watch } = useFormContext();
 	const theme = useTheme();
 	const { errors }: errors = useFormState({ control });
 	const hasError = Boolean(_.get(errors, name));
 
+	const currentValue = watch(name);
+
+	useEffect(() => {
+		// Only set the value if no value is currently set
+		if (initialValue && options.length > 0 && !currentValue) {
+			// For single select, set the first option's value
+			if (!multiple) {
+				setValue(name, options[0].value); // Use setValue to set the first option
+			}
+		}
+	}, [initialValue, options, multiple, setValue, name, currentValue]);
 	return (
 		<Grid item xs={xs} sm={sm} className={className} style={style}>
 			<FormControl size={size} variant={variant} fullWidth>
