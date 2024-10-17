@@ -13,29 +13,30 @@ import ReplyRoundedIcon from "@mui/icons-material/ReplyRounded";
 import AnimateButton from "../../../Extended/AnimateButton";
 
 interface ButtonGroupProps {
-	handleSubmitClick: () => void;
+	handleSubmitClick?: () => void;
 	handleCancelClick: () => void;
 	handlePreviousClick: () => void;
-	handleBackClick: () => void;
+	handleBackClick?: () => void;
 }
 
 const ButtonGroup: React.FC<ButtonGroupProps> = ({
-	handleSubmitClick,
+	// handleSubmitClick,
 	handleCancelClick,
 	handlePreviousClick,
-	handleBackClick,
+	// handleBackClick,
 }) => {
 	return (
 		<Grid container spacing={2} alignItems="stretch">
-			<Grid item xs={12} md={3}>
+			{/* <Grid item xs={12} md={3}> //todo add later
 				<ActionButton
 					label="Submit & Print"
 					type="submitPrint"
 					color="secondary"
 					onClick={handleSubmitClick}
 				/>
-			</Grid>
-			<Grid item xs={12} md={3}>
+			</Grid> */}
+			{/* <Grid item xs={12} md={3}> */}
+			<Grid item xs={12} md={6}>
 				<ActionButton
 					label="Cancel"
 					type="cancel"
@@ -43,7 +44,8 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
 					onClick={handleCancelClick}
 				/>
 			</Grid>
-			<Grid item xs={12} md={3}>
+			{/* <Grid item xs={12} md={3}> */}
+			<Grid item xs={12} md={6}>
 				<ActionButton
 					label="Previous Sales"
 					type="previous"
@@ -51,14 +53,14 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
 					onClick={handlePreviousClick}
 				/>
 			</Grid>
-			<Grid item xs={12} md={3}>
+			{/* <Grid item xs={12} md={3}>
 				<ActionButton
 					label="Back"
 					type="back"
 					color="primary"
 					onClick={handleBackClick}
 				/>
-			</Grid>
+			</Grid> */}
 		</Grid>
 	);
 };

@@ -9,9 +9,14 @@ import {
 	Typography,
 	useTheme,
 } from "@mui/material";
+import { FC } from "react";
 import { Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
 
-const BreadcrumbNav = () => {
+interface BreadcrumbNavProps {
+	title: string;
+}
+
+const BreadcrumbNav: FC<BreadcrumbNavProps> = ({ title }) => {
 	const theme = useTheme();
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -25,6 +30,7 @@ const BreadcrumbNav = () => {
 
 	const handleBackNavigation = () => {
 		navigate("/pos-menu"); // Navigate back
+		window.location.reload();
 	};
 
 	return (
@@ -70,6 +76,7 @@ const BreadcrumbNav = () => {
 				{breadcrumbSegments.map((segment, index) => {
 					const isLast = index === breadcrumbSegments.length - 1;
 					const to = `/${breadcrumbSegments.slice(0, index + 1).join("/")}`;
+					console.log("braedcrumb to", to);
 
 					if (segment === "pos-menu") {
 						// Customize the display label for 'pos-menu'
@@ -81,6 +88,7 @@ const BreadcrumbNav = () => {
 							<Link
 								component={RouterLink}
 								to={to}
+								onClick={handleBackNavigation}
 								key={to}
 								sx={{ fontWeight: "bold" }}>
 								Pos Menu
@@ -91,7 +99,7 @@ const BreadcrumbNav = () => {
 					// For the last segment (ID), display it as text (without link)
 					return isLast ? (
 						<Typography key={to} color="textPrimary" fontWeight={"bold"}>
-							{segment}
+							{title}
 						</Typography>
 					) : (
 						<Link

@@ -152,18 +152,28 @@ const CurrencyContent = styled("h4")`
 export const CustomTableCurrrencyCellFormatter: React.ComponentType<
 	DataTypeProvider.ValueFormatterProps
 > = ({ value }) => {
+	const fixValues = Number(value).toFixed(2);
+
 	return (
 		<NumericFormat
 			displayType="text"
-			value={value}
+			value={fixValues}
 			// thousandsGroupStyle="lakh"
 			thousandSeparator
 			valueIsNumericString
 			decimalScale={2}
 			fixedDecimalScale
-			renderText={(value) => <CurrencyContent>{value}</CurrencyContent>}
+			renderText={(fixValues) => <CurrencyContent>{fixValues}</CurrencyContent>}
 		/>
 	);
+};
+
+export const currencyFilterPredicate = (
+	value: number | string,
+	filterValue: string
+) => {
+	const formattedValue = Number(value).toFixed(2); // Format the value for comparison
+	return formattedValue === filterValue; // Compare formatted values
 };
 // export const CustomTableRow: React.FC<CustomTableRowProps> = ({
 // 	tableRow,

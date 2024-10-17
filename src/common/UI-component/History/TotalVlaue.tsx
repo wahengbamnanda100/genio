@@ -17,6 +17,7 @@ const TotalVlaue: FC<TotalVlaueProps> = ({ data }) => {
 			totalAmount: 0,
 			discountAmount: 0,
 			netAmount: 0,
+			totalGenioWalletAmount: 0,
 			totalCashAmount: 0,
 			totalCardAmount: 0,
 		},
@@ -27,6 +28,7 @@ const TotalVlaue: FC<TotalVlaueProps> = ({ data }) => {
 			method.setValue("discountAmount", data.discountAmount);
 			method.setValue("netAmount", data.netAmount);
 			method.setValue("totalAmount", data.totalAmount);
+			method.setValue("totalGenioWalletAmount", data.totalGenioWalletAmount);
 			method.setValue("totalCardAmount", data.totalCardAmount);
 			method.setValue("totalCashAmount", data.totalCashAmount);
 		}

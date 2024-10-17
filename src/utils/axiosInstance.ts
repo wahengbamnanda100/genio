@@ -1,10 +1,7 @@
-// src/axiosInstance.ts
-import axios from "axios";
+import axios, { AxiosInstance } from "axios";
 
-const BASE_URL = import.meta.env.VITE_API_URL;
-
-const axiosInstance = axios.create({
-	baseURL: BASE_URL,
+const axiosInstance: AxiosInstance = axios.create({
+	baseURL: import.meta.env.VITE_API_URL, // Default to environment variable
 	headers: {
 		WATCH_WORD_KEY: "HNG37484=",
 		Content: "application/json",
@@ -13,14 +10,32 @@ const axiosInstance = axios.create({
 	},
 });
 
-// You can also set up interceptors here if needed
+// Function to fetch config.json and update the baseURL
+const fetchConfigAndUpdateInstance = async () => {
+	try {
+		const response = await fetch("/config.json");
+		const config = await response.json();
+		const apiUrl = config.API_URL || import.meta.env.VITE_API_URL;
+
+		// Update the axiosInstance with the new baseURL
+		axiosInstance.defaults.baseURL = apiUrl;
+	} catch (error) {
+		console.error("Error loading config, falling back to env variable", error);
+		// If there's an error, the baseURL remains the environment variable
+	}
+};
+
+// Immediately call the fetchConfigAndUpdateInstance function to update the baseURL if necessary
+fetchConfigAndUpdateInstance();
+
+// Setup interceptors (optional)
 axiosInstance.interceptors.request.use(
 	(config) => {
 		// Do something before request is sent
 		return config;
 	},
 	(error) => {
-		// Do something with request error
+		// Handle request error
 		return Promise.reject(error);
 	}
 );
@@ -31,7 +46,7 @@ axiosInstance.interceptors.response.use(
 		return response;
 	},
 	(error) => {
-		// Do something with response error
+		// Handle response error
 		return Promise.reject(error);
 	}
 );

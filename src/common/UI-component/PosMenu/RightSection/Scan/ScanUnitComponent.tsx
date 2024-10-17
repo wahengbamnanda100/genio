@@ -17,6 +17,7 @@ import {
 	selectMenuTable,
 } from "../../../../../store/slices/posMenuSlice";
 import { RootState } from "../../../../../store";
+import { useLocation } from "react-router";
 
 interface ScanUnitComponentProps {
 	resetFormValues: (resetFunc: () => void) => void;
@@ -24,6 +25,7 @@ interface ScanUnitComponentProps {
 
 const ScanUnitComponent: FC<ScanUnitComponentProps> = ({ resetFormValues }) => {
 	const dispatch = useDispatch();
+	const { pathname } = useLocation();
 	const { setValue, control } = useFormContext<ScanUnitSchema>();
 	const [focusField, setFocusField] = useState<string>("");
 	const [showConfirm, setShowConfirm] = useState<boolean>(false);
@@ -40,6 +42,7 @@ const ScanUnitComponent: FC<ScanUnitComponentProps> = ({ resetFormValues }) => {
 		name: ["salesPersonCode", "salesPersonName", "cmpName", "showroom"],
 	});
 
+	const isView = pathname.includes("view");
 	const menuTable = useSelector((state: RootState) => selectMenuTable(state));
 
 	// Memoized function to update values based on EmployeeItem
@@ -125,7 +128,7 @@ const ScanUnitComponent: FC<ScanUnitComponentProps> = ({ resetFormValues }) => {
 	}, [resetFormValues]);
 
 	useEffect(() => {
-		if (menuTable.length !== 0 && showroomWatch !== "") {
+		if (!isView && menuTable.length !== 0 && showroomWatch !== "") {
 			previousShowroomRef.current.showroom = showroomWatch;
 			setShowConfirm(true);
 		}

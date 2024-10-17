@@ -192,48 +192,51 @@ export const studentSearchRequestBodies = {
 // 	Cmp_ID_N: "1",
 // };
 
-export const cardNumberField =
-	() // setFocusField: Dispatch<SetStateAction<string>>
-	: FieldProps => ({
-		fieldType: "text",
-		name: "cardNumber",
-		// label: "Card Number",
-		placeholder: "Scan a card",
-		size: "small",
-		// disabled: true,
-		// onFocus(name) {
-		// 	setFocusField(name);
-		// },
-		// renderItem: ({ option, props, isSelected, highlightColor }) => (
-		// 	<StudentCard
-		// 		key={option.CardID}
-		// 		options={option}
-		// 		props={props}
-		// 		isSelected={isSelected}
-		// 		highlightColor={highlightColor}
-		// 	/>
-		// ),
-		// hasErrorMessage: true,
-		// rules: {
-		// 	required: "Please enter Card Number",
-		// },
-		// searchApi: async (keyStroke: string) => {
-		// 	const response = await searchStudentList(
-		// 		{
-		// 			...studentSearchRequestBodies,
-		// 			CardNumber: keyStroke,
-		// 		},
-		// 		keyStroke && keyStroke !== "" ? true : false
-		// 	);
+export const cardNumberField = (
+	loading: boolean // setFocusField: Dispatch<SetStateAction<string>>
+): FieldProps => ({
+	fieldType: "text",
+	name: "cardNumber",
+	// label: "Card Number",
+	placeholder: "Scan a card",
+	size: "small",
+	InputProps: {
+		endAdornment: loading && <CircularProgress color="inherit" size={20} />,
+	},
+	// disabled: true,
+	// onFocus(name) {
+	// 	setFocusField(name);
+	// },
+	// renderItem: ({ option, props, isSelected, highlightColor }) => (
+	// 	<StudentCard
+	// 		key={option.CardID}
+	// 		options={option}
+	// 		props={props}
+	// 		isSelected={isSelected}
+	// 		highlightColor={highlightColor}
+	// 	/>
+	// ),
+	// hasErrorMessage: true,
+	// rules: {
+	// 	required: "Please enter Card Number",
+	// },
+	// searchApi: async (keyStroke: string) => {
+	// 	const response = await searchStudentList(
+	// 		{
+	// 			...studentSearchRequestBodies,
+	// 			CardNumber: keyStroke,
+	// 		},
+	// 		keyStroke && keyStroke !== "" ? true : false
+	// 	);
 
-		// 	return response;
-		// },
-		// getOptionLabel: (option) => (option ? `${option.CardNumber}` : ""),
-		// optionKey: "CardNumber",
-		// options: (searchData) => searchData ?? [],
-		xs: 12,
-		// md: 6,
-	});
+	// 	return response;
+	// },
+	// getOptionLabel: (option) => (option ? `${option.CardNumber}` : ""),
+	// optionKey: "CardNumber",
+	// options: (searchData) => searchData ?? [],
+	xs: 12,
+	// md: 6,
+});
 
 export const cardDetailFields = (
 	ShowroomId: string,
@@ -293,6 +296,7 @@ export const cardDetailFields = (
 					highlightColor={highlightColor}
 				/>
 			),
+			disabled: true,
 			hasErrorMessage: true,
 			rules: {
 				required: "Please enter ID Number",
@@ -780,7 +784,7 @@ export const scanUnitField = (
 			const response = await searchEmployeeList(
 				{
 					SearchText: keyStroke,
-					Cmp_ID_N: "1",
+					Cmp_ID_N: JSON.parse(localStorage.getItem("CmpId")!) || "",
 				},
 				keyStroke && keyStroke !== "" ? true : false
 			);

@@ -12,8 +12,8 @@ import {
 } from "@mui/material";
 import React, { FC, ReactNode, useEffect, useMemo, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
-import DownloadIcon from "@mui/icons-material/Download";
-import ArticleIcon from "@mui/icons-material/Article";
+// import ReceiptIcon from "@mui/icons-material/Receipt";
+import GridViewIcon from "@mui/icons-material/GridView";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import SearchHistory from "./SearchHistory";
 import CustomTable from "../../CutomTable/CustomTable";
@@ -29,9 +29,10 @@ import {
 	historyTotalDataSchema,
 	searchHistorySchema,
 } from "../../Component-types/history.type";
-import { PreviousList } from "../../../services";
+import { deletePreviousMenu, PreviousList } from "../../../services";
 import moment from "moment";
 import {
+	PrevDeleteRequestBodiesType,
 	PreviousSaleListItemType,
 	PreviousSaleRequestBodiesType,
 } from "../../../services/aoi.type";
@@ -40,6 +41,9 @@ import {
 	ListFilterCellComponent,
 } from "../../CutomTable/components/customComponent";
 import { useNavigate } from "react-router";
+import { useMutation } from "@tanstack/react-query";
+import { useAppProvider } from "../../../AppProvider";
+import ConfirmationDialog from "../../ModalComponent/ConfirmationDialog";
 
 interface SearchDrawerProps extends SwipeableDrawerProps {
 	setClose: React.Dispatch<React.SetStateAction<boolean>>;
@@ -117,7 +121,7 @@ const ActionIconBtn: FC<ActionIconBtnProps> = ({
 };
 
 const ActionBtnGroup: FC<ActionBtnGroupProps> = ({
-	onClickPrint,
+	// onClickPrint,
 	onClickDelete,
 	onClickView,
 	id,
@@ -129,20 +133,20 @@ const ActionBtnGroup: FC<ActionBtnGroupProps> = ({
 			justifyContent={"center"}
 			alignItems={"center"}
 			flex={1}>
-			<ActionIconBtn
+			{/* <ActionIconBtn
 				varient="print"
 				onClick={() => onClickPrint && onClickPrint(id)}>
-				<DownloadIcon />
-			</ActionIconBtn>
+				<ReceiptIcon fontSize="small" />
+			</ActionIconBtn> */}
 			<ActionIconBtn
 				varient="view"
 				onClick={() => onClickView && onClickView(id)}>
-				<ArticleIcon />
+				<GridViewIcon fontSize="small" />
 			</ActionIconBtn>
 			<ActionIconBtn
 				varient="delete"
 				onClick={() => onClickDelete && onClickDelete(id)}>
-				<DeleteOutlineIcon />
+				<DeleteOutlineIcon fontSize="small" />
 			</ActionIconBtn>
 		</Stack>
 	);
@@ -161,6 +165,9 @@ const SearchDrawer: FC<SearchDrawerProps> = ({
 	setClose,
 }) => {
 	const navigate = useNavigate();
+	const { setNotify } = useAppProvider();
+	const CmpID = JSON.parse(localStorage.getItem("CmpId")!);
+
 	const [searchQuery, setSearchQuery] = useState<{
 		Rows: number;
 		PageNo: number;
@@ -175,10 +182,13 @@ const SearchDrawer: FC<SearchDrawerProps> = ({
 
 	const [enable, setEnable] = useState<boolean>(false);
 	const [expanded, setExpanded] = useState<boolean>(false);
+	const [deleteOpen, setDeleteOpen] = useState<boolean>(false);
+	const [deleteRow, setDeleteRow] = useState<string>("");
 	const [totalValues, setTotalValues] = useState<historyTotalDataSchema>({
 		totalAmount: 0,
 		discountAmount: 0,
 		netAmount: 0,
+		totalGenioWalletAmount: 0,
 		totalCashAmount: 0,
 		totalCardAmount: 0,
 	});
@@ -192,8 +202,10 @@ const SearchDrawer: FC<SearchDrawerProps> = ({
 		AdmissionNUmber: "",
 		FromDate: moment(new Date()).format("DD-MMM-YYYY"),
 		ToDate: moment(new Date()).format("DD-MMM-YYYY"),
-		Cmp_ID_N: "1", //todo add later
+		Cmp_ID_N: CmpID.toString(), //todo add later
 	});
+
+	const USERDATA = JSON.parse(localStorage.getItem("userDetail")!);
 
 	const method = useForm<searchHistorySchema>({
 		defaultValues: {
@@ -343,6 +355,25 @@ const SearchDrawer: FC<SearchDrawerProps> = ({
 		},
 	];
 
+	const { mutateAsync } = useMutation({
+		mutationKey: ["deletePos"],
+		mutationFn: deletePreviousMenu,
+		onSuccess: (data) => {
+			if (data?.Status === "1") {
+				refetch();
+				setNotify({
+					severity: "success",
+					message: data.Message,
+				});
+			} else {
+				setNotify({
+					severity: "error",
+					message: "Unable to delete, try again",
+				});
+			}
+		},
+	});
+
 	const handleView = (id: string) => {
 		console.log("handle click view", id);
 		navigate(`/pos-menu/view/${id}`);
@@ -352,21 +383,36 @@ const SearchDrawer: FC<SearchDrawerProps> = ({
 		console.log("handle click Print", id);
 	};
 	const handleDelete = (id: string) => {
-		console.log("handle click Delete", id);
+		setDeleteRow(id);
+		setDeleteOpen(true);
+	};
+
+	const handleDeleteConfirm = () => {
+		console.log("handle click Delete", deleteRow);
+		const deleteData: PrevDeleteRequestBodiesType = {
+			UserID: USERDATA.UserId || "",
+			Sih_Id_N: deleteRow,
+		};
+		mutateAsync(deleteData);
+		setDeleteOpen(false);
+	};
+
+	const handleDeleteCancel = () => {
+		setDeleteOpen(false);
 	};
 
 	const onSearch = (data: any) => {
 		console.log("search data", data);
 		const searchData: PreviousSaleRequestBodiesType = {
 			InvoiceNumber: data?.invoiceNubmer?.InvoiceNumber || "",
-			CardNumber: data?.cardNumber?.AdmissionNumber || "",
+			CardNumber: data?.cardNumber?.CardNumber || "",
 			StudentName: data?.studentName?.StudentName || "",
 			ShowroomId: data?.showroom || "",
 			BussinessUnitId: data?.CompanyBussinessUnit || "",
 			AdmissionNUmber: data?.admissionNumber?.AdmissionNumber || "",
 			FromDate: moment(data.fromDate).format("DD-MMM-YYYY"),
 			ToDate: moment(data.toDate).format("DD-MMM-YYYY"),
-			Cmp_ID_N: "1", //todo add later
+			Cmp_ID_N: CmpID.toString(), //todo add later
 		};
 
 		setSearch(searchData);
@@ -375,12 +421,45 @@ const SearchDrawer: FC<SearchDrawerProps> = ({
 		console.log("backend search data", searchData);
 	};
 
-	const { data, isLoading, isFetched } = PreviousList(search!, enable);
+	const { data, isLoading, isFetched, refetch } = PreviousList(search!, enable);
 
 	const currentPageData = useMemo(() => {
-		if (!isFetched || !data || !Array.isArray(data.Data)) return [];
+		if (!isFetched || !data || !Array.isArray(data.Data)) {
+			setTotalValues({
+				totalAmount: 0,
+				netAmount: 0,
+				discountAmount: 0,
+				totalGenioWalletAmount: 0,
+				totalCashAmount: 0,
+				totalCardAmount: 0,
+				// Reset any other fields as needed
+			});
+			return [];
+		}
 		try {
-			const calculatedTotals = data.Data.reduce(
+			// First, slice the data according to pagination
+			const startIndex = (searchQuery.PageNo - 1) * searchQuery.Rows;
+			const endIndex = startIndex + searchQuery.Rows;
+			const slicedData = data.Data.slice(startIndex, endIndex);
+
+			console.log("sliced data", slicedData, data?.Data);
+
+			// Check if slicedData is empty, reset totals to 0 if it is
+			if (slicedData.length === 0) {
+				setTotalValues({
+					totalAmount: 0,
+					netAmount: 0,
+					discountAmount: 0,
+					totalGenioWalletAmount: 0,
+					totalCashAmount: 0,
+					totalCardAmount: 0,
+					// Reset any other fields as needed
+				});
+				return [];
+			}
+
+			// Then calculate totals based on the sliced (current page) data
+			const calculatedTotals = slicedData.reduce(
 				(
 					acc: historyTotalDataSchema,
 					item: Partial<PreviousSaleListItemType>
@@ -388,6 +467,7 @@ const SearchDrawer: FC<SearchDrawerProps> = ({
 					acc.totalAmount += Number(item.TotalAmount) || 0;
 					acc.netAmount += Number(item.NetAmount) || 0;
 					acc.discountAmount += Number(item.DiscountAmount) || 0;
+					acc.totalGenioWalletAmount += Number(item.GenioCardAmount) || 0;
 					acc.totalCashAmount += Number(item.CashAmount) || 0;
 					acc.totalCardAmount += Number(item.CardAmount) || 0;
 					// Add more fields as needed
@@ -397,6 +477,7 @@ const SearchDrawer: FC<SearchDrawerProps> = ({
 					totalAmount: 0,
 					netAmount: 0,
 					discountAmount: 0,
+					totalGenioWalletAmount: 0,
 					totalCashAmount: 0,
 					totalCardAmount: 0,
 					// Initialize more fields as needed
@@ -413,6 +494,9 @@ const SearchDrawer: FC<SearchDrawerProps> = ({
 			calculatedTotals.discountAmount = parseFloat(
 				calculatedTotals.discountAmount.toFixed(2)
 			);
+			calculatedTotals.totalGenioWalletAmount = parseFloat(
+				calculatedTotals.totalGenioWalletAmount
+			);
 			calculatedTotals.totalCashAmount = parseFloat(
 				calculatedTotals.totalCashAmount.toFixed(2)
 			);
@@ -423,21 +507,35 @@ const SearchDrawer: FC<SearchDrawerProps> = ({
 			// Store the total amount in state
 			setTotalValues(calculatedTotals);
 
-			const startIndex = (searchQuery.PageNo - 1) * searchQuery.Rows;
-			const endIndex = startIndex + searchQuery.Rows;
-			const slicedData = data.Data.slice(startIndex, endIndex);
+			// Format specific fields in slicedData to have 2 decimal digits
+			const formattedSlicedData = slicedData.map(
+				(item: PreviousSaleListItemType) => ({
+					...item,
+					TotalAmount: parseFloat((Number(item.TotalAmount) || 0).toFixed(2)),
+					NetAmount: parseFloat((Number(item.NetAmount) || 0).toFixed(2)),
+					GenioCardAmount: parseFloat(
+						(Number(item.GenioCardAmount) || 0).toFixed(2)
+					),
+					DiscountAmount: parseFloat(
+						(Number(item.DiscountAmount) || 0).toFixed(2)
+					),
+					CashAmount: parseFloat((Number(item.CashAmount) || 0).toFixed(2)),
+					CardAmount: parseFloat((Number(item.CardAmount) || 0).toFixed(2)),
+					// Add more fields as needed
+				})
+			);
 
-			return slicedData;
+			return formattedSlicedData;
 		} catch (error) {
 			console.error("Error occurred while processing data:", error);
 			return [];
 		}
-	}, [data, searchQuery]);
+	}, [data, searchQuery, isFetched, data?.Data, data?.status]);
 
 	useEffect(() => {
 		if (isFetched) {
 			setEnable(false);
-			console.log("Data item ", data);
+			// console.log("Data item ", data);
 		}
 	}, [isFetched]);
 
@@ -448,6 +546,14 @@ const SearchDrawer: FC<SearchDrawerProps> = ({
 		}
 		if (!open) {
 			method.reset(); // Reset the form
+			setTotalValues({
+				totalAmount: 0,
+				netAmount: 0,
+				discountAmount: 0,
+				totalGenioWalletAmount: 0,
+				totalCashAmount: 0,
+				totalCardAmount: 0,
+			});
 			setSearch({
 				InvoiceNumber: "",
 				CardNumber: "",
@@ -457,7 +563,7 @@ const SearchDrawer: FC<SearchDrawerProps> = ({
 				AdmissionNUmber: "",
 				FromDate: moment(new Date()).format("DD-MMM-YYYY"),
 				ToDate: moment(new Date()).format("DD-MMM-YYYY"),
-				Cmp_ID_N: "1", //todo add later
+				Cmp_ID_N: CmpID.toString(), //todo add later
 			}); // Clear table data
 			setEnable(false); // Reset enable state
 			setExpanded(false);
@@ -591,6 +697,14 @@ const SearchDrawer: FC<SearchDrawerProps> = ({
 					<TotalVlaue data={totalValues} />
 					<RightSpacing />
 				</StyledDrawerContainer>
+				<ConfirmationDialog
+					dialogType="delete"
+					title="Delete"
+					description="Do you want to delete this previous record"
+					open={deleteOpen}
+					onConfirm={handleDeleteConfirm}
+					onCancel={handleDeleteCancel}
+				/>
 			</FormProvider>
 		</SwipeableDrawer>
 	);

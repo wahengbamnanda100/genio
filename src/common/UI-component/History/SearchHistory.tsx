@@ -17,7 +17,14 @@ import AnimateButton from "../Extended/AnimateButton";
 import SearchIcon from "@mui/icons-material/Search";
 import ClearIcon from "@mui/icons-material/Clear";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { Dispatch, FC, SetStateAction, useEffect, useRef } from "react";
+import {
+	Dispatch,
+	FC,
+	SetStateAction,
+	useEffect,
+	useRef,
+	useState,
+} from "react";
 import { useFormContext, useWatch } from "react-hook-form";
 import {
 	searchHistoryFields,
@@ -25,7 +32,12 @@ import {
 } from "../../Component-types/history.type";
 import Field from "../../Form-component/field";
 import moment from "moment";
-import { PreviousSaleListItemType } from "../../../services/aoi.type";
+import {
+	PreviousSaleListItemType,
+	ShowroomItemType,
+} from "../../../services/aoi.type";
+import { ShowroomList } from "../../../services";
+import { getDropDownValues } from "../../../utils/utils";
 
 interface ActionButtonProps {
 	//todo refactor all animate button to one compoennt
@@ -86,6 +98,18 @@ const SearchHistory: FC<SearchHistoryProps> = ({
 	const { setValue, reset, control } = useFormContext<searchHistorySchema>();
 	const previousValuesRef = useRef<Partial<searchHistorySchema>>({});
 
+	const [showroomOptions, setShowroomOptions] = useState<
+		{ label: string; value: string }[]
+	>([]);
+
+	const [showroomParams, setShowroomParams] = useState<{
+		BusinessUnitId: string;
+		Usr_ID_N: string;
+	}>({
+		BusinessUnitId: "",
+		Usr_ID_N: JSON.parse(localStorage.getItem("userDetail")!)?.UserId || "",
+	});
+
 	const [fromDate] = useWatch({ control, name: ["fromDate"] });
 	const [toDate] = useWatch({ control, name: ["toDate"] });
 
@@ -93,6 +117,10 @@ const SearchHistory: FC<SearchHistoryProps> = ({
 	const [cardNumberWatch] = useWatch({ control, name: ["cardNumber"] });
 	const [admissionWatch] = useWatch({ control, name: ["admissionNumber"] });
 	const [studentNameWatch] = useWatch({ control, name: ["studentName"] });
+	const [bussinessUnitWatch] = useWatch({
+		control,
+		name: ["CompanyBussinessUnit"],
+	});
 
 	const updateValue = (
 		selectedKey: keyof searchHistorySchema,
@@ -101,7 +129,7 @@ const SearchHistory: FC<SearchHistoryProps> = ({
 		if (selectedValue) {
 			if (
 				selectedKey !== "cardNumber" &&
-				previousValuesRef.current.cardNumber !== selectedValue.AdmissionNumber
+				previousValuesRef.current.cardNumber !== selectedValue.CardNumber
 			) {
 				setValue("cardNumber", selectedValue);
 			}
@@ -127,7 +155,7 @@ const SearchHistory: FC<SearchHistoryProps> = ({
 
 			previousValuesRef.current = {
 				...previousValuesRef.current,
-				cardNumber: selectedValue.AdmissionNumber,
+				cardNumber: selectedValue.CardNumber,
 				admissionNumber: selectedValue.AdmissionNumber,
 				studentName: selectedValue.StudentName,
 				invoiceNubmer: selectedValue.InvoiceNumber,
@@ -140,6 +168,26 @@ const SearchHistory: FC<SearchHistoryProps> = ({
 	const onCancel = () => {
 		reset();
 	};
+
+	const { data, isFetched } = ShowroomList(showroomParams);
+
+	useEffect(() => {
+		if (isFetched) {
+			if (data.Status === "1") {
+				const dropDownValues = getDropDownValues<ShowroomItemType>(
+					data?.Data,
+					"ShowroomDesc",
+					"ShowroomId"
+				);
+
+				setShowroomOptions(dropDownValues);
+			} else {
+				setShowroomOptions([]);
+			}
+		}
+
+		console.log("comp unit watch in api call", bussinessUnitWatch);
+	}, [isFetched, data]);
 
 	useEffect(() => {
 		const value = invoiceWatch as PreviousSaleListItemType;
@@ -160,6 +208,17 @@ const SearchHistory: FC<SearchHistoryProps> = ({
 		const value = studentNameWatch as PreviousSaleListItemType;
 		updateValue("studentName", value);
 	}, [studentNameWatch]);
+
+	useEffect(() => {
+		if (bussinessUnitWatch) {
+			setShowroomOptions([]);
+			setShowroomParams((prev) => ({
+				...prev,
+				BusinessUnitId: bussinessUnitWatch as string,
+			}));
+		}
+		console.log("comp unit watch", bussinessUnitWatch);
+	}, [bussinessUnitWatch]);
 
 	return (
 		<Paper
@@ -199,6 +258,7 @@ const SearchHistory: FC<SearchHistoryProps> = ({
 				<AccordionDetails sx={{ pb: 0.4 }}>
 					<Grid container spacing={1.5}>
 						{searchHistoryFields(
+							showroomOptions,
 							moment(fromDate).format("DD-MMMM-YYYY"),
 							moment(toDate).format("DD-MMMM-YYYY")
 						).map((field) => (

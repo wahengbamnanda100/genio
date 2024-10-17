@@ -23,6 +23,7 @@ import {
 	ScanUnitSchema,
 } from "../../../Component-types/posMenu.type";
 import AlergicBanner from "./AllergyBanner/AlergicBanner";
+import { useAppProvider } from "../../../../AppProvider";
 
 interface RightSectionProp {
 	resetFormValues: (resetFunc: () => void) => void;
@@ -30,6 +31,7 @@ interface RightSectionProp {
 
 const RightMenuSection: FC<RightSectionProp> = ({ resetFormValues }) => {
 	const dispatch: AppDispatch = useDispatch();
+	const { setItemColor } = useAppProvider();
 
 	const { control } = useFormContext<cardDetailSchema & ScanUnitSchema>();
 
@@ -78,6 +80,8 @@ const RightMenuSection: FC<RightSectionProp> = ({ resetFormValues }) => {
 	});
 
 	const handleCategory = (item: CategoryDetailsType) => {
+		console.log("category item clicked", item);
+
 		setMenuParam((prev) => ({ ...prev, CategoryId: item.CategoryId }));
 	};
 
@@ -101,9 +105,13 @@ const RightMenuSection: FC<RightSectionProp> = ({ resetFormValues }) => {
 
 		if (showroomWatch !== "") {
 			console.log("showroomWatch refetch", showroomWatch);
-			setMenuParam((prev) => ({ ...prev, ShowroomId: showroomWatch }));
+			setMenuParam((prev) => ({
+				...prev,
+				CategoryId: "",
+				ShowroomId: showroomWatch,
+			}));
 			setCaetegoryListParam((prev) => ({ ...prev, ShowroomId: showroomWatch }));
-
+			setItemColor("#bd4186");
 			// cetagoryRefetch();
 			// itemRefetch();
 		}

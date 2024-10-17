@@ -11,6 +11,7 @@ import BreadcrumbNav from "../Navigation/Breadcrum";
 // import { PosMenuFormSchema } from "../../../Component-types/posMenu.type";
 
 interface LeftMenuSectionProps {
+	studentName: string;
 	isVeiw: boolean;
 	handleSubmitClick: () => void;
 	handleCancelClick: () => void;
@@ -21,6 +22,7 @@ interface LeftMenuSectionProps {
 }
 
 const LeftMenuSection: FC<LeftMenuSectionProps> = ({
+	studentName,
 	isVeiw,
 	handleSubmitClick,
 	handleCancelClick,
@@ -35,7 +37,7 @@ const LeftMenuSection: FC<LeftMenuSectionProps> = ({
 
 	return (
 		<Grid item xs={12} md={6}>
-			{isVeiw && <BreadcrumbNav />}
+			{isVeiw && <BreadcrumbNav title={studentName} />}
 			<CardDetail resetFormValues={registerReset} />
 
 			<LeftSpacing />

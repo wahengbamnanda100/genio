@@ -52,6 +52,8 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 	const [open, setOpen] = useState<boolean>(false);
 	const [openClear, setOpenClear] = useState<boolean>(false);
 	const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
+	const [alertOpen, setAlertOpen] = useState<boolean>(false);
+	const [alertMsg, setAlertMsg] = useState<string>("");
 
 	const menuTable = useSelector((state: RootState) => selectMenuTable(state));
 	const netTotalAmount = useSelector((state: RootState) =>
@@ -129,6 +131,19 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 		mode: "onChange",
 	});
 
+	const focusCardNumber = () => {
+		setTimeout(() => {
+			method.setFocus("cardNumber" as any); // Set focus after 1 second
+		}, 1000); // 1000 ms = 1 second
+	};
+
+	const handleKeyDown = (event: React.KeyboardEvent<HTMLFormElement>) => {
+		if (event.key === "Enter") {
+			// Prevent the default behavior of form submission on Enter key
+			event.preventDefault();
+		}
+	};
+
 	const { mutateAsync, isPending } = useMutation({
 		mutationKey: ["posMneuSave"],
 		mutationFn: mutatePosMenu,
@@ -141,9 +156,10 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 			if (data.statusText === "OK" && data.data.Status === "1") {
 				setNotify({
 					severity: "success",
-					message: `Invoice number ${data.data.Sih_ID_N} - ${data.data.Message}`,
+					message: `Invoice number ${data.data.Refernumber} - ${data.data.Message}`,
 				});
 				handleResetpage();
+
 				// After form is successfully submitted, reset CardDetail form
 				if (resetCardDetailForm) {
 					resetCardDetailForm();
@@ -151,6 +167,9 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 				if (resetScanUnitForm) {
 					resetScanUnitForm();
 				}
+			} else if (data.statusText === "OK" && data.data.Status === "2") {
+				setAlertOpen(true);
+				setAlertMsg(data.data.Message);
 			} else if (
 				data.statusText === "OK" &&
 				data.data.status !== "1" &&
@@ -170,6 +189,7 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 				setNotify({ severity: "error", message: "Cannot submit the order" });
 			}
 			setOpen(false);
+			focusCardNumber();
 		},
 	});
 
@@ -224,7 +244,7 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 
 		method.setValue(
 			"invoiceDate" as any,
-			previousData.Sih_InvoiceDate_D as any
+			new Date(previousData.Sih_InvoiceDate_D) as any
 		);
 		method.setValue("invoiceNumber" as any, previousData.InvoiceNumber as any);
 		method.setValue("showroom" as any, previousData.Shm_ID_N as any); //todo need id
@@ -345,6 +365,7 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 		setAvailBal(0);
 		setDisableAvailBalance(false);
 		setDisableCashAmount(false);
+		method.setFocus("cardNumber" as any);
 		// setRefresh(true);
 	};
 
@@ -432,8 +453,10 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 
 	const handleModalConfirm = () => {
 		const formData: PosMenuFormSchema = method.getValues();
+		console.log("data🚀", formData.invoiceDate);
+
 		const backendData: PosSaveRequsetBodiesType = {
-			Cmp_ID_N: "1",
+			Cmp_ID_N: CmpID,
 			CurrencyId: "1", //todo check with vini
 			DiscountAmount: Number(formData.discountAmount)?.toFixed(2) || "",
 			GrossAmount: formData.total.toString() || "",
@@ -470,6 +493,7 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 
 	const handleCloseDrawer = () => {
 		setDrawerOpen(false);
+		focusCardNumber();
 	};
 
 	const handleModalClearCancel = () => {
@@ -480,7 +504,18 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 		method.reset();
 		dispatch(resetPosMenu());
 		setOpenClear(false);
+		focusCardNumber();
 	};
+
+	const handleModalAlertConfirm = () => {
+		setAlertOpen(false);
+		setAlertMsg("");
+		focusCardNumber();
+	};
+
+	useEffect(() => {
+		method.setFocus("cardNumber" as any);
+	}, []);
 
 	useEffect(() => {
 		if (effectRan.current === false) {
@@ -499,6 +534,7 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 		return () => {
 			// Reset the flag in case this component is unmounted and remounted
 			effectRan.current = false;
+			method.setFocus("cardNumber" as any);
 		};
 	}, [isView, pathname]);
 
@@ -510,8 +546,10 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 						component={"form"}
 						container
 						spacing={2}
-						onSubmit={method.handleSubmit(onSubmit)}>
+						onSubmit={method.handleSubmit(onSubmit)}
+						onKeyDown={handleKeyDown}>
 						<LeftMenuSection
+							studentName={(data[0] && data[0].Name) || ""}
 							isVeiw={isView}
 							handleBackClick={handleBackClick}
 							handleCancelClick={handleCancelClick}
@@ -545,6 +583,17 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 				description="Do you want to clear all menu"
 				onConfirm={handleModalClearConfirm}
 				onCancel={handleModalClearCancel}
+			/>
+
+			<ConfirmationDialog
+				dialogType="warning"
+				open={alertOpen}
+				// loading={isPending}
+				setOpen={setAlertOpen}
+				title="Allergy item"
+				description={alertMsg}
+				onConfirm={handleModalAlertConfirm}
+				onCancel={handleModalAlertConfirm}
 			/>
 
 			<SearchDrawer
@@ -617,56 +666,3 @@ const PosMenu = () => {
 };
 
 export default PosMenu;
-
-// const previousDummyDetailData = [
-// 	{
-// 		CardNumber: "C4763925",
-// 		FamilyID: "FAM00333",
-// 		IDNumber: "FAM00333F",
-// 		DailyLimit: "5000.0000",
-// 		Name: "Medda, Antonio  ",
-// 		Grade: "Grade 2",
-// 		SalesPersonCode: "002",
-// 		SalesPersonName: "Patricia",
-// 		Company_bussinessunit: "Anvin Infosystems",
-// 		Showroom: "01 GENIO ",
-// 		InvoiceNumber: "AI/INV008050",
-// 		Sih_InvoiceDate_D: "",
-// 		Total: "47.0000",
-// 		NetAmount: "47.0000",
-// 		CashAmount: "17.0000",
-// 		TotalPaid: "17.0000",
-// 		Balance: "0.0000",
-// 		AvailableBalance: "4923.1600",
-// 		PaidAmount: "30.0000",
-// 		DiscountAmount: "0.0000",
-// 		DiscountPercentage: "0",
-// 		Sih_ID_N: "243469",
-// 		Items: [
-// 			{
-// 				Description: "CAFE LATTE GRANDE - 16",
-// 				Quantity: "1",
-// 				Amount: "16.0000",
-// 				UnitPrice: "16.0000",
-// 				Discount: "",
-// 				NetAmount: "16.0000",
-// 			},
-// 			{
-// 				Description: "CAPPUCCINO GRANDE - 16",
-// 				Quantity: "1",
-// 				Amount: "16.0000",
-// 				UnitPrice: "16.0000",
-// 				Discount: "",
-// 				NetAmount: "16.0000",
-// 			},
-// 			{
-// 				Description: "CAFE MOCHA TALL -15",
-// 				Quantity: "1",
-// 				Amount: "15.0000",
-// 				UnitPrice: "15.0000",
-// 				Discount: "",
-// 				NetAmount: "15.0000",
-// 			},
-// 		],
-// 	},
-// ];

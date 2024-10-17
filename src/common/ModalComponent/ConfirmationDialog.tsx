@@ -1,3 +1,4 @@
+/// <reference types="vite-plugin-svgr/client" />
 import { Button, DialogProps } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { Dispatch, FC, SetStateAction } from "react";
@@ -14,14 +15,17 @@ import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined
 import RotateLeftIcon from "@mui/icons-material/RotateLeft";
 import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
 
+import AllergyIcon from "../../assets/icons/AllergyIcon.svg?react";
+
+export type DialogType = "submit" | "delete" | "cancel" | "logout" | "warning";
 interface ConfirmationDialogProps extends DialogProps {
 	title: string;
 	description: string;
 	loading?: boolean;
-	dialogType: "submit" | "delete" | "cancel" | "logout";
+	dialogType: DialogType;
 	setOpen?: Dispatch<SetStateAction<boolean>>;
 	onConfirm: () => void;
-	onCancel: () => void;
+	onCancel?: () => void;
 }
 
 const ConfirmationDialog: FC<ConfirmationDialogProps> = ({
@@ -39,21 +43,36 @@ const ConfirmationDialog: FC<ConfirmationDialogProps> = ({
 	return (
 		<DialogStyled
 			open={open}
-			onClose={() => onCancel}
+			onClose={onCancel}
 			aria-labelledby="confirmation-dialog">
-			<DialogCloseIconStyled onClick={() => onCancel}>
+			<DialogCloseIconStyled onClick={onCancel}>
 				<div style={{ position: "relative" }}>
 					<CloseIcon />
 				</div>
 			</DialogCloseIconStyled>
-			<DialogTitleStyled dialogType={dialogType || "submit"}>
+			<DialogTitleStyled
+				dialogType={dialogType || "submit"}
+				sx={{
+					color: dialogType === "warning" ? "#4f1c1b" : "inherit",
+					fontWeight: dialogType === "warning" ? "bold" : "inheritx",
+				}}>
 				{dialogType === "submit" && <DoneAllIcon color="secondary" />}
 				{dialogType === "delete" && <DeleteOutlineOutlinedIcon color="error" />}
 				{dialogType === "cancel" && <RotateLeftIcon color="primary" />}
 				{dialogType === "logout" && <PowerSettingsNewIcon color="error" />}
+
+				{dialogType === "warning" && (
+					<AllergyIcon style={{ width: "50px", height: "60px" }} />
+				)}
 				{title}
 			</DialogTitleStyled>
-			<DialogContentStyled>{description}</DialogContentStyled>
+			<DialogContentStyled
+				sx={{
+					textAlign: dialogType === "warning" ? "center" : "left",
+					fontWeight: dialogType === "warning" ? "400" : "inherit",
+				}}>
+				{description}
+			</DialogContentStyled>
 			<DialogActionsStyled dialogType={dialogType || "submit"}>
 				<LoadingButton
 					loading={loading}
@@ -64,7 +83,9 @@ const ConfirmationDialog: FC<ConfirmationDialogProps> = ({
 							? "secondary"
 							: dialogType === "cancel"
 								? "primary"
-								: "error"
+								: dialogType === "warning"
+									? "error"
+									: "error"
 					}
 					onClick={onConfirm}>
 					{dialogType === "submit"
@@ -73,11 +94,15 @@ const ConfirmationDialog: FC<ConfirmationDialogProps> = ({
 							? "Clear all"
 							: dialogType === "logout"
 								? "Logout"
-								: "Delete"}
+								: dialogType === "warning"
+									? "Okay"
+									: "Delete"}
 				</LoadingButton>
-				<Button variant="outlined" onClick={onCancel}>
-					Cancel
-				</Button>
+				{!(dialogType === "warning") && (
+					<Button variant="outlined" onClick={onCancel}>
+						Cancel
+					</Button>
+				)}
 			</DialogActionsStyled>
 		</DialogStyled>
 	);

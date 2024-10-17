@@ -5,9 +5,10 @@ import {
 	DialogTitle,
 	styled,
 } from "@mui/material";
+import { DialogType } from "./ConfirmationDialog";
 
 type DialogProps = {
-	dialogType: "submit" | "delete" | "cancel" | "logout";
+	dialogType: DialogType;
 };
 
 export const DialogStyled = styled(Dialog)(({ theme }) => ({

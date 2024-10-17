@@ -103,7 +103,8 @@ export interface PosSaveResponseType {
 	info?: string;
 	Message: string;
 	Data: null | unknown;
-	Sih_ID_N: string;
+	// Sih_ID_N: string;
+	Refernumber: string;
 }
 
 //!_________PREVIOUS SALE____________
@@ -124,9 +125,11 @@ export interface PreviousSaleListItemType {
 	OrderId: string;
 	InvoiceNumber: string;
 	InvoiceDate: string;
+	CardNumber: string;
 	AdmissionNumber: string;
 	StudentName: string;
 	DiscountAmount: string;
+	GenioCardAmount: string;
 	TotalAmount: string;
 	NetAmount: string;
 	CashAmount: string;
@@ -318,5 +321,18 @@ export interface ItemListingResponseType {
 export interface PreviousDetailResponseType {
 	Status: string;
 	Data: PreviousDetailType[] | [];
+	Message: string;
+}
+
+//!_________________POS DELETE_____________
+
+export interface PrevDeleteRequestBodiesType {
+	UserID: string;
+	Sih_Id_N: string;
+}
+
+export interface PrevDeleteResponseType {
+	Status: string;
+	Data: null;
 	Message: string;
 }

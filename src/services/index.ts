@@ -26,6 +26,8 @@ import {
 	MenuListRequstBodiesType,
 	PosSaveRequsetBodiesType,
 	PosSaveResponseType,
+	PrevDeleteRequestBodiesType,
+	PrevDeleteResponseType,
 	PreviousDetailResponseType,
 	PreviousSaleListItemType,
 	PreviousSaleRequestBodiesType,
@@ -315,11 +317,12 @@ export const CompoanyUnitList = (param: BussinessUnitRequestBodiesType) =>
 
 export const ShowroomList = (param: ShowroomRequestBodiesType) =>
 	useQuery({
-		queryKey: ["showroomList", param],
+		queryKey: ["showroomList", param.BusinessUnitId],
 		queryFn: async () =>
 			axiosInstance
 				.post("API/GenioShowroomListingAPI", param)
 				.then((res: AxiosResponse) => res.data),
+		// enabled: param.BusinessUnitId !== ""
 	});
 
 export const MenuList = (param: MenuListRequstBodiesType) =>
@@ -419,7 +422,7 @@ export const GetItemListing = (
 	queryOptions?: Partial<UseQueryOptions>
 ) => {
 	return useQuery({
-		queryKey: ["item-list", data.ShowroomId],
+		queryKey: ["item-list", data.ShowroomId, data.CategoryId],
 		queryFn: async () =>
 			axiosInstance
 				.post("/API/GenioCategoryItemListingAPI", data)
@@ -475,4 +478,33 @@ export const GetGradeLimit = (
 				.then((res: AxiosResponse<GradLimitResponse>) => res.data),
 		...queryOptions,
 	});
+};
+
+export const DeletePreviousItem = (
+	data: PrevDeleteRequestBodiesType,
+	queryOptions?: Partial<UseQueryOptions>
+) => {
+	return useQuery({
+		queryKey: ["deletePrevData", data],
+		queryFn: async () =>
+			axiosInstance
+				.post("API/DeletePOSAPI", data)
+				.then((res: AxiosResponse<PrevDeleteResponseType>) => res.data),
+		...queryOptions,
+	});
+};
+
+export const deletePreviousMenu = async (
+	data: PrevDeleteRequestBodiesType
+): Promise<PrevDeleteResponseType | null> => {
+	try {
+		const response = await axiosInstance.post<PrevDeleteResponseType>(
+			"/API/DeletePOSAPI",
+			data
+		);
+		return response.data;
+	} catch (err) {
+		console.error("delete err", err);
+		return null; // or you could throw an error or handle it differently
+	}
 };

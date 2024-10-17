@@ -2,13 +2,13 @@
 import {
 	CompoanyUnitList,
 	searchPreviousList,
-	ShowroomList,
+	// ShowroomList,
 } from "../../services";
 import {
 	BussinessUnitItem,
 	BussinessUnitRequestBodiesType,
-	ShowroomItemType,
-	ShowroomRequestBodiesType,
+	// ShowroomItemType,
+	// ShowroomRequestBodiesType,
 } from "../../services/aoi.type";
 import { getDropDownValues } from "../../utils/utils";
 import { FieldProps } from "../Form-component";
@@ -28,44 +28,51 @@ export type historyTotalDataSchema = {
 	totalAmount: number;
 	discountAmount: number;
 	netAmount: number;
+	totalGenioWalletAmount: number;
 	totalCashAmount: number;
 	totalCardAmount: number;
 };
 
 const getValuesCompanyUnit = () => {
 	const param: BussinessUnitRequestBodiesType = {
-		Cmp_ID_N: "1",
-		Usr_ID_N: "7",
+		Cmp_ID_N: JSON.parse(localStorage.getItem("CmpId")!) || "",
+		Usr_ID_N: JSON.parse(localStorage.getItem("userDetail")!)?.UserId || "",
 	};
+
 	const { data, isFetched } = CompoanyUnitList(param);
-	const dropDownValues = isFetched
-		? getDropDownValues<BussinessUnitItem>(
-				data?.Data,
-				"BusinessUnitDesc",
-				"BusinessUnitCode"
-			)
-		: [];
+	const dropDownValues =
+		isFetched && data.Status === "1"
+			? getDropDownValues<BussinessUnitItem>(
+					data?.Data,
+					"BusinessUnitDesc",
+					"BusinessUnitId"
+				)
+			: [];
 	return dropDownValues;
 };
 
-const getValuesShowroomList = () => {
-	const param: ShowroomRequestBodiesType = {
-		BusinessUnitId: "1",
-		Usr_ID_N: "7",
-	};
-	const { data, isFetched } = ShowroomList(param);
-	const dropDownValues = isFetched
-		? getDropDownValues<ShowroomItemType>(
-				data?.Data,
-				"ShowroomDesc",
-				"ShowroomId"
-			)
-		: [];
+// const getValuesShowroomList = (BusinessUnitId: string) => {
+// 	const param: ShowroomRequestBodiesType = {
+// 		BusinessUnitId,
+// 		Usr_ID_N: JSON.parse(localStorage.getItem("userDetail")!)?.UserId || "",
+// 	};
 
-	return dropDownValues;
-};
+// 	console.log("getValuesShowroomList params =", param);
+// 	const { data, isFetched } = ShowroomList(param);
+// 	const dropDownValues =
+// 		isFetched && data.Status === "1"
+// 			? getDropDownValues<ShowroomItemType>(
+// 					data?.Data,
+// 					"ShowroomDesc",
+// 					"ShowroomId"
+// 				)
+// 			: [];
+
+// 	return dropDownValues;
+// };
 
 export const searchHistoryFields = (
+	showroomOptions: { label: string; value: string }[],
 	fromDate: string,
 	toDate: string
 ): FieldProps[] => {
@@ -90,7 +97,7 @@ export const searchHistoryFields = (
 						AdmissionNUmber: "",
 						FromDate: fromDate,
 						ToDate: toDate,
-						Cmp_ID_N: "",
+						Cmp_ID_N: JSON.parse(localStorage.getItem("CmpId")!) || "",
 					},
 					keyStroke && keyStroke !== "" ? true : false
 				);
@@ -123,16 +130,15 @@ export const searchHistoryFields = (
 						AdmissionNUmber: "",
 						FromDate: fromDate,
 						ToDate: toDate,
-						Cmp_ID_N: "",
+						Cmp_ID_N: JSON.parse(localStorage.getItem("CmpId")!) || "",
 					},
 					keyStroke && keyStroke !== "" ? true : false
 				);
 
 				return response;
 			},
-			getOptionLabel: (option: any) =>
-				option ? `${option.AdmissionNumber}` : "",
-			optionKey: "AdmissionNumber",
+			getOptionLabel: (option: any) => (option ? `${option.CardNumber}` : ""),
+			optionKey: "CardNumber",
 			options: (searchData: any) => searchData ?? [],
 			xs: 3,
 			md: 3,
@@ -153,7 +159,7 @@ export const searchHistoryFields = (
 						AdmissionNUmber: "",
 						FromDate: fromDate,
 						ToDate: toDate,
-						Cmp_ID_N: "",
+						Cmp_ID_N: JSON.parse(localStorage.getItem("CmpId")!) || "",
 					},
 					keyStroke && keyStroke !== "" ? true : false
 				);
@@ -182,7 +188,7 @@ export const searchHistoryFields = (
 						AdmissionNUmber: keyStroke,
 						FromDate: fromDate,
 						ToDate: toDate,
-						Cmp_ID_N: "",
+						Cmp_ID_N: JSON.parse(localStorage.getItem("CmpId")!) || "",
 					},
 					keyStroke && keyStroke !== "" ? true : false
 				);
@@ -230,7 +236,7 @@ export const searchHistoryFields = (
 			name: "showroom",
 			label: "Showroom",
 			size: "small",
-			options: getValuesShowroomList(),
+			options: showroomOptions,
 			xs: 3,
 			md: 3,
 		},
@@ -249,7 +255,7 @@ export const historyTotalField = (): FieldProps[] => [
 			maxLength: 7,
 			style: { textAlign: "end" },
 		},
-		xs: 2.4,
+		xs: 2,
 	},
 	{
 		fieldType: "text",
@@ -262,7 +268,7 @@ export const historyTotalField = (): FieldProps[] => [
 			maxLength: 7,
 			style: { textAlign: "end" },
 		},
-		xs: 2.4,
+		xs: 2,
 	},
 	{
 		fieldType: "text",
@@ -275,7 +281,20 @@ export const historyTotalField = (): FieldProps[] => [
 			maxLength: 7,
 			style: { textAlign: "end" },
 		},
-		xs: 2.4,
+		xs: 2,
+	},
+	{
+		fieldType: "text",
+		name: "totalGenioWalletAmount",
+		label: "Total Genio Wallet",
+		size: "small",
+		disabled: true,
+		condition: /^-?\d*\.?\d{0,2}$/,
+		inputProps: {
+			maxLength: 7,
+			style: { textAlign: "end" },
+		},
+		xs: 2,
 	},
 	{
 		fieldType: "text",
@@ -288,12 +307,12 @@ export const historyTotalField = (): FieldProps[] => [
 			maxLength: 7,
 			style: { textAlign: "end" },
 		},
-		xs: 2.4,
+		xs: 2,
 	},
 	{
 		fieldType: "text",
 		name: "totalCardAmount",
-		label: "Total Card Amount",
+		label: "Total Debit/Credit",
 		size: "small",
 		disabled: true,
 		condition: /^-?\d*\.?\d{0,2}$/,
@@ -301,6 +320,6 @@ export const historyTotalField = (): FieldProps[] => [
 			maxLength: 7,
 			style: { textAlign: "end" },
 		},
-		xs: 2.4,
+		xs: 2,
 	},
 ];
