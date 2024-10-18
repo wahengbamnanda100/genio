@@ -177,7 +177,7 @@ const StudentCard: React.FC<StudentCardProps> = ({
 		Class,
 	} = options;
 
-	// console.log("Student data", options);
+	// //console.log("Student data", options);
 
 	const imgUrl = import.meta.env.VITE_API_URL + ImageUrl;
 

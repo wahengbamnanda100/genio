@@ -3,7 +3,7 @@
 import { FC, useEffect, useState } from "react";
 import { useTheme } from "@mui/material";
 // import { FixedSizeList as List } from "react-window";
-import Carousel, { EmptyCarousel } from "./Carousel";
+import Carousel from "./Carousel";
 import { BreakfastItem, Item } from "../Item";
 import { useAppProvider } from "../../../../../AppProvider";
 
@@ -129,42 +129,6 @@ const SelectMenuBox: FC<SelectMenuBoxProps> = ({
 		if (!category) setCurrentPage(0);
 	}, [data]);
 
-	// const renderRow = ({
-	// 	index,
-	// 	style,
-	// }: {
-	// 	index: number;
-	// 	style: React.CSSProperties;
-	// }) => {
-	// 	const item = data[index];
-	// 	return category ? (
-	// 		<div style={style}>
-	// 			<BreakfastItem
-	// 				key={index}
-	// 				label={item.CategoryDescription}
-	// 				isActive={index === activeItem}
-	// 				color={gradientColors[index % gradientColors.length]}
-	// 				hoverColor={darkColor[index % darkColor.length]}
-	// 				onClick={() => handleCategoryClick(index, item)}
-	// 			/>
-	// 		</div>
-	// 	) : (
-	// 		<div style={style}>
-	// 			<Item
-	// 				key={item.PartId}
-	// 				label={item.PartDescription}
-	// 				onClick={() => handleItemClick(item)}
-	// 			/>
-	// 		</div>
-	// 	);
-	// };
-
-	if (data.length === 0) {
-		return (
-			<EmptyCarousel label={category ? "Select Category" : "Select Item"} />
-		);
-	}
-
 	return (
 		<Carousel
 			rows={category ? 1 : 4}
@@ -172,6 +136,7 @@ const SelectMenuBox: FC<SelectMenuBoxProps> = ({
 			currentPage={currentPage}
 			setCurrentPage={setCurrentPage}
 			isLoading={isLoading}
+			category={category}
 			label={category ? "Select Category" : "Select Item"}>
 			{/* <List
 				height={400} // Adjust based on your component height

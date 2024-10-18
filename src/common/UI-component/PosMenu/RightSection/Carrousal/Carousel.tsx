@@ -25,6 +25,7 @@ interface CarouselProps {
 	label: string;
 	currentPage: number;
 	isLoading?: boolean;
+	category: boolean;
 	setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
 }
 
@@ -60,6 +61,7 @@ const Carousel: React.FC<CarouselProps> = ({
 	label,
 	currentPage,
 	isLoading,
+	category,
 	setCurrentPage,
 }) => {
 	// const [currentPage, setCurrentPage] = useState(0);
@@ -120,7 +122,10 @@ const Carousel: React.FC<CarouselProps> = ({
 			<SwipeableViews
 				index={currentPage}
 				onChangeIndex={(index: number) => setCurrentPage(index)}
-				containerStyle={{ width: "100%" }}>
+				containerStyle={{
+					width: "100%",
+					minHeight: category ? "auto" : "300px",
+				}}>
 				{Array.from({ length: totalSlides }).map((_, pageIndex) => (
 					<Grid container columnSpacing={2} rowSpacing={1} key={pageIndex}>
 						{children

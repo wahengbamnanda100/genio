@@ -66,10 +66,10 @@ const PaidAmount: FC<PaidAmountProps> = () => {
 	);
 
 	// const [availBal, setAvailBal] = useState<number>(0);
-	// const [disableAvalBal, setDisableAvalBal] = useState<boolean>(false);
-	// const [disableCashAmt, setDisableCashAmt] = useState<boolean>(false);
-	const [tempTotalAmount, setTempTotalAmount] =
-		useState<number>(netTotalAmount);
+	// const [checkDisabled, setCheckDisabled] = useState<boolean>(false);
+	const [checkDisabled, setCheckDisable] = useState<boolean>(false);
+	// const [tempTotalAmount, setTempTotalAmount] =
+	// 	useState<number>(netTotalAmount);
 	const [, setFocusField] = useState<string>("");
 	// const [checked, setChecked] = useState<boolean>(false);
 	// const [creditCheck, stCreditCheck] = useState<boolean>(false);
@@ -105,117 +105,112 @@ const PaidAmount: FC<PaidAmountProps> = () => {
 	useEffect(() => {
 		if (allowCardWatch) setChecked(true);
 		else setChecked(false);
-		console.log("allowcard watch", allowCardWatch);
+		//console.log("allowcard watch", allowCardWatch);
 	}, [allowCardWatch]);
 
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setChecked(event.target.checked);
 	};
 
-	// const resetState = () => {
-	// 	setDisableAvalBal(false);
-	// 	setDisableCashAmt(false);
-	// 	setAvailBal(0);
-	// };
 	useEffect(() => {
 		setAvailBal(0);
 	}, [pathname]);
 
 	useEffect(() => {
+		if (availBal > 0) {
+			if (availBal >= netTotalAmount) {
+				//console.log("setCheckDisable(true);", availBal);
+
+				setCheckDisable(true);
+			} else {
+				//console.log("setCheckDisable(false);", availBal);
+				setCheckDisable(false);
+			}
+		} else {
+			//console.log("setCheckDisable(false) outter;", availBal);
+			setCheckDisable(false);
+		}
+	}, [availBal, netTotalAmount, setCheckDisable]);
+
+	useEffect(() => {
 		if (nameWatch) {
 			const value = nameWatch as Student;
 			setAvailBal(Number(value.AvailableBalance));
-			console.log("(nameWatch as Student)", value);
+			//console.log("(nameWatch as Student)", value);
 			// if (refresh) {
 			// 	setAvailBal(0);
 			// }
 		}
 	}, [(nameWatch as Student)?.StudentName]);
 
-	// useEffect(() => {
-	// 	console.log("cardNubmerWatch", cardNubmerWatch);
-	// }, [cardNubmerWatch]);
-
 	// Update temp total amount when netTotalAmount changes
-	useEffect(() => {
-		if (netTotalAmount !== tempTotalAmount) {
-			setTempTotalAmount(netTotalAmount);
-		}
-	}, [netTotalAmount, tempTotalAmount]);
+	// useEffect(() => {
+	// 	if (netTotalAmount !== tempTotalAmount) {
+	// 		setTempTotalAmount(netTotalAmount);
+	// 	}
+	// }, [netTotalAmount, tempTotalAmount]);
 
 	useEffect(() => {
 		const handleAvailableBalance = () => {
 			if (availBal === 0) {
 				// No wallet balance, transfer the entire net amount to cashAmount
 				setValue("paidAmount", 0);
-				console.log("Available balance is 0", availBal);
-
 				setDisableAvalBal(true);
 				setValue("availableBalance", 0);
+
 				if (checked) {
-					setValue("cashAmount", 0);
+					setValue("cashAmount", 0); // Set cash amount to 0 if card is checked
 				} else {
-					setValue("cashAmount", netTotalAmount);
+					setValue("cashAmount", netTotalAmount); // Transfer net amount to cash if card is not checked
 				}
 			} else {
-				// Wallet has balance, start with setting paidAmount to netTotalAmount or available balance, whichever is smaller
+				// Wallet has balance, set paidAmount to min of netTotalAmount or available balance
 				const initialPaidAmount = Math.min(availBal, netTotalAmount);
-				if (paidAmountWatch !== initialPaidAmount) {
-					setValue("paidAmount", initialPaidAmount);
-				}
+				setValue("paidAmount", initialPaidAmount);
 				const remainingBalance = availBal - Number(paidAmountWatch);
+
+				// Update balance amount and availability
 				setValue("balanceAmount", remainingBalance);
 				setDisableAvalBal(false);
 				setValue("availableBalance", availBal);
 
-				if (paidAmountWatch > availBal) {
-					setValue("paidAmount", availBal);
-				}
-				updateCashAndBalance();
+				updateCashAndBalance(); // Trigger update for cash/card amounts based on remaining balance
 			}
 		};
 
 		const updateCashAndBalance = () => {
-			const remainingBalance = availBal - Number(paidAmountWatch);
 			const remainingNetAmount = netTotalAmount - Number(paidAmountWatch);
 
-			console.log(
-				"remainingBalance",
-				remainingBalance,
-				"remainingNetAmount",
-				remainingNetAmount,
-				"paidAmountWatch",
-				Number(paidAmountWatch)
-			);
-
+			// Card payment handling
 			if (checked) {
-				// If card is checked, handle cardAmount logic
-				setValue("cardAmount", remainingNetAmount);
-				setValue("cashAmount", 0); // Disable cash payment when card is selected
+				setValue("cardAmount", remainingNetAmount); // Transfer remaining amount to card if checked
+				setValue("cashAmount", 0); // Disable cash payment
 			} else {
-				// Update cash amount only if it is necessary
+				// Cash payment handling
 				if (cashAmountWatch !== remainingNetAmount) {
 					setValue("cashAmount", Math.max(0, remainingNetAmount));
+					setDisableCashAmt(false); // Enable cash payment if necessary
+					// setCheckDisabled(false);
+				} else {
+					setDisableCashAmt(true); // Disable if already at the correct amount
+					// setCheckDisabled(true);
 				}
-			}
-
-			// Update balance amount if it changes
-			if (remainingBalance !== availBal) {
-				setValue("balanceAmount", remainingBalance < 0 ? 0 : remainingBalance);
 			}
 		};
 
 		const handleCashPayment = () => {
+			// Update balance if cash payment is applied
 			if (cashAmountWatch > 0 && totalPaidWatch > 0) {
 				const balance = cashAmountWatch - totalPaidWatch;
-				if (balance !== 0) setValue("balance", balance);
+				setValue("balance", Math.max(0, balance));
 			} else {
-				setValue("balance", 0);
+				setValue("balance", 0); // Set balance to 0 if no cash payment
 			}
 		};
 
 		const handleCardPayment = () => {
 			if (checked) {
+				// Card is selected, disable other payments and set all to card
 				setDisableAvalBal(true);
 				setDisableCashAmt(true);
 				setValue("cardAmount", netTotalAmount);
@@ -224,36 +219,44 @@ const PaidAmount: FC<PaidAmountProps> = () => {
 				setValue("cashAmount", 0);
 				setValue("balance", 0);
 			} else {
-				setDisableCashAmt(false);
-				setValue("cardType", []);
-				setValue("cardTypeNumber", "");
-				setValue("cardAmount", 0);
+				// Card is deselected, reset card-related values
+				if (Number(cashAmountWatch) > 0) {
+					setDisableCashAmt(false);
+				} else {
+					setDisableCashAmt(true);
+				}
+				setValue("cardType", []); // Reset card type
+				setValue("cardTypeNumber", ""); // Reset card number
+				setValue("cardAmount", 0); // Reset card amount
 			}
 		};
 
 		const transferCashToCard = () => {
+			// If switching from cash to card payment, transfer the net amount
 			if (
 				checked &&
 				paidAmountWatch === 0 &&
 				cashAmountWatch === netTotalAmount
 			) {
-				setValue("cardAmount", netTotalAmount);
-				setValue("cashAmount", 0);
-				setValue("totalPaid", 0);
+				setValue("cardAmount", netTotalAmount); // Move amount to card
+				setValue("cashAmount", 0); // Set cash to 0
+				setValue("totalPaid", 0); // Reset total paid
 			}
 		};
 
 		const clearPaidAmount = () => {
 			if (checked) {
+				// Clear paid amount if card is selected
 				setValue("cardAmount", netTotalAmount);
 			} else if (!paidAmountWatch || paidAmountWatch === 0) {
+				// Clear cash and balance amounts if no paid amount
 				setValue("cashAmount", netTotalAmount);
 				setValue("balanceAmount", 0);
 			}
 		};
 
-		if (!isView || isView) {
-			// Execute the logic
+		// Only execute this logic when the view is not readonly
+		if (!isView) {
 			handleAvailableBalance();
 			handleCashPayment();
 			handleCardPayment();
@@ -264,20 +267,24 @@ const PaidAmount: FC<PaidAmountProps> = () => {
 		paidAmountWatch,
 		netTotalAmount,
 		availBal,
-		disableAvalBal,
 		cashAmountWatch,
 		totalPaidWatch,
 		checked,
 		isView,
 		refresh,
+		setValue,
+		setDisableAvalBal,
+		setDisableCashAmt,
 	]);
 
 	// useEffect(() => {
-	// 	// Function to handle the available balance logic
+	// 	// debugger;
 	// 	const handleAvailableBalance = () => {
 	// 		if (availBal === 0) {
 	// 			// No wallet balance, transfer the entire net amount to cashAmount
 	// 			setValue("paidAmount", 0);
+	// 			//console.log("Available balance is 0", availBal);
+
 	// 			setDisableAvalBal(true);
 	// 			setValue("availableBalance", 0);
 	// 			if (checked) {
@@ -286,7 +293,7 @@ const PaidAmount: FC<PaidAmountProps> = () => {
 	// 				setValue("cashAmount", netTotalAmount);
 	// 			}
 	// 		} else {
-	// 			// Wallet has balance, set the paidAmount to the lesser of netTotalAmount or availBal
+	// 			// Wallet has balance, start with setting paidAmount to netTotalAmount or available balance, whichever is smaller
 	// 			const initialPaidAmount = Math.min(availBal, netTotalAmount);
 	// 			if (paidAmountWatch !== initialPaidAmount) {
 	// 				setValue("paidAmount", initialPaidAmount);
@@ -303,37 +310,51 @@ const PaidAmount: FC<PaidAmountProps> = () => {
 	// 		}
 	// 	};
 
-	// 	// Function to update the cash and balance amounts
 	// 	const updateCashAndBalance = () => {
-	// 		const remainingNetAmount = netTotalAmount - Number(paidAmountWatch);
 	// 		const remainingBalance = availBal - Number(paidAmountWatch);
+	// 		const remainingNetAmount = netTotalAmount - Number(paidAmountWatch);
 
-	// 		// If card is checked, update cardAmount and reset cashAmount
+	// 		//console.log(
+	// 			"paidAmountWatch",
+	// 			paidAmountWatch,
+	// 			"remainingBalance",
+	// 			remainingBalance,
+	// 			"remainingNetAmount",
+	// 			remainingNetAmount,
+	// 			"paidAmountWatch",
+	// 			Number(paidAmountWatch)
+	// 		);
+
 	// 		if (checked) {
+	// 			// If card is checked, handle cardAmount logic
 	// 			setValue("cardAmount", remainingNetAmount);
 	// 			setValue("cashAmount", 0); // Disable cash payment when card is selected
 	// 		} else {
-	// 			// Update cashAmount if paidAmount is deleted or reduced
+	// 			// Update cash amount only if it is necessary
+
 	// 			if (cashAmountWatch !== remainingNetAmount) {
 	// 				setValue("cashAmount", Math.max(0, remainingNetAmount));
+	// 				setDisableCashAmt(false);
+	// 			} else {
+	// 				setDisableCashAmt(true);
 	// 			}
 	// 		}
 
-	// 		// Update balance amount
-	// 		setValue("balanceAmount", remainingBalance < 0 ? 0 : remainingBalance);
+	// 		// Update balance amount if it changes
+	// 		if (remainingBalance !== availBal) {
+	// 			setValue("balanceAmount", remainingBalance < 0 ? 0 : remainingBalance);
+	// 		}
 	// 	};
 
-	// 	// Function to handle cash payment logic
 	// 	const handleCashPayment = () => {
 	// 		if (cashAmountWatch > 0 && totalPaidWatch > 0) {
 	// 			const balance = cashAmountWatch - totalPaidWatch;
-	// 			setValue("balance", balance !== 0 ? balance : 0);
+	// 			if (balance !== 0) setValue("balance", balance);
 	// 		} else {
 	// 			setValue("balance", 0);
 	// 		}
 	// 	};
 
-	// 	// Function to handle card payment logic when checked
 	// 	const handleCardPayment = () => {
 	// 		if (checked) {
 	// 			setDisableAvalBal(true);
@@ -344,14 +365,14 @@ const PaidAmount: FC<PaidAmountProps> = () => {
 	// 			setValue("cashAmount", 0);
 	// 			setValue("balance", 0);
 	// 		} else {
-	// 			setDisableCashAmt(false);
+	// 			if (Number(cashAmountWatch) > 0) setDisableCashAmt(false);
+	// 			else setDisableCashAmt(true);
 	// 			setValue("cardType", []);
 	// 			setValue("cardTypeNumber", "");
 	// 			setValue("cardAmount", 0);
 	// 		}
 	// 	};
 
-	// 	// Transfer cashAmount to cardAmount if conditions are met
 	// 	const transferCashToCard = () => {
 	// 		if (
 	// 			checked &&
@@ -364,7 +385,6 @@ const PaidAmount: FC<PaidAmountProps> = () => {
 	// 		}
 	// 	};
 
-	// 	// Function to clear paidAmount if certain conditions are met
 	// 	const clearPaidAmount = () => {
 	// 		if (checked) {
 	// 			setValue("cardAmount", netTotalAmount);
@@ -374,22 +394,9 @@ const PaidAmount: FC<PaidAmountProps> = () => {
 	// 		}
 	// 	};
 
-	// 	// Handle changes to paidAmount and transfer remaining to cashAmount
-	// 	const handlePaidAmountChange = () => {
-	// 		if (Number(paidAmountWatch) < netTotalAmount) {
-	// 			// If paidAmount is less than netTotalAmount, transfer the remainder to cashAmount
-	// 			const remainingAmount = netTotalAmount - Number(paidAmountWatch);
-	// 			setValue("cashAmount", remainingAmount);
-	// 		} else {
-	// 			// Otherwise, set cashAmount to 0
-	// 			setValue("cashAmount", 0);
-	// 		}
-	// 	};
-
-	// 	// Run the effect
-	// 	if (!isView || isView) {
+	// 	if (!isView) {
+	// 		// Execute the logic
 	// 		handleAvailableBalance();
-	// 		handlePaidAmountChange(); // Add this function to handle deletions/changes to paidAmount
 	// 		handleCashPayment();
 	// 		handleCardPayment();
 	// 		transferCashToCard();
@@ -485,6 +492,7 @@ const PaidAmount: FC<PaidAmountProps> = () => {
 									{...field}
 									size="small"
 									checked={field.value}
+									disabled={checkDisabled}
 									onChange={(e) => {
 										handleChange(e);
 										field.onChange(e.target.checked);
@@ -521,7 +529,7 @@ const PaidAmount: FC<PaidAmountProps> = () => {
 				</Grid>
 			</Grid>
 		),
-		[]
+		[checkDisabled]
 	);
 
 	return (

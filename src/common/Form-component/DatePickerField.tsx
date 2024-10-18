@@ -22,7 +22,7 @@ const DateField = ({
 	name,
 	className,
 	style,
-	inputFormat = "dd-MM-yyyy",
+	inputFormat = "dd-MMM-yyyy",
 	rules,
 	size = "small",
 	variant = "outlined",
@@ -61,7 +61,7 @@ const DateField = ({
 							},
 						}}
 						localeText={{
-							fieldMonthPlaceholder: () => "MM",
+							fieldMonthPlaceholder: () => "MMM",
 						}}
 					/>
 				)}

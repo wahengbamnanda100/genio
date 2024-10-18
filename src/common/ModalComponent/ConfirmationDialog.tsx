@@ -67,7 +67,7 @@ const ConfirmationDialog: FC<ConfirmationDialogProps> = ({
 				{title}
 			</DialogTitleStyled>
 			<DialogContentStyled
-				sx={{
+				sx={{ whiteSpace: 'pre-line' ,
 					textAlign: dialogType === "warning" ? "center" : "left",
 					fontWeight: dialogType === "warning" ? "400" : "inherit",
 				}}>

@@ -10,6 +10,7 @@ import {
 import {
 	Grid,
 	Table,
+	TableColumnResizing,
 	TableFixedColumns,
 	TableHeaderRow,
 	// TableEditColumn,
@@ -46,6 +47,9 @@ const MyGridComponent: React.FC<EditTableProps> = ({
 	selection,
 	rightColumns = [],
 	leftColumns = [],
+	dynamicResize,
+	columnWidths,
+	setColumnWidths,
 	setSelection,
 }) => {
 	return (
@@ -82,6 +86,12 @@ const MyGridComponent: React.FC<EditTableProps> = ({
 					// )}
 					{...table}
 				/>
+				{dynamicResize && columnWidths && setColumnWidths && (
+					<TableColumnResizing
+						columnWidths={columnWidths}
+						onColumnWidthsChange={setColumnWidths}
+					/>
+				)}
 				<TableHeaderRow />
 				{/* <TableInlineCellEditing
 					// cellComponent={EditCell}
@@ -100,29 +110,6 @@ const MyGridComponent: React.FC<EditTableProps> = ({
 					rightColumns={rightColumns}
 					leftColumns={leftColumns}
 				/>
-
-				{/* <TableEditColumn
-					width={50}
-					showDeleteCommand
-					commandComponent={Command}
-					cellComponent={StyledCommandCell}
-				/> */}
-				{/* 
-				<Getter
-					name="tableColumns"
-					computed={({ tableColumns }) => {
-						const editCommandKey = Symbol.for("editCommand").toString();
-
-						const columns = tableColumns.filter(
-							(c: any) => c.key !== editCommandKey
-						);
-						const actionCommand = tableColumns.filter(
-							(c: any) => c.key === editCommandKey
-						);
-
-						return [...columns, ...actionCommand];
-					}}
-				/> */}
 			</Grid>
 		</Paper>
 	);

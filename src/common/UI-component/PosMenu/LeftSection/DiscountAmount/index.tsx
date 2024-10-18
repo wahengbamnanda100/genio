@@ -1,5 +1,17 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Grid, alpha, useTheme } from "@mui/material";
+import { debounce } from "lodash";
+import { FC, useCallback, useEffect } from "react";
+import { useFormContext } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../../../../store";
+import {
+	selectDiscountAmount,
+	selectDiscountDisable,
+	selectDiscountPercent,
+	selectNetTotalAmount,
+	selectTotalAmount,
+	setNetTotalAmount,
+} from "../../../../../store/slices/posMenuSlice";
 import {
 	AvailableBalanceSchema,
 	DiscountAmountSchema,
@@ -10,35 +22,21 @@ import {
 } from "../../../../Component-types/posMenu.type";
 import Field from "../../../../Form-component/field";
 import AnimateButton from "../../../Extended/AnimateButton";
-import { useFormContext } from "react-hook-form";
-import { AppDispatch, RootState } from "../../../../../store";
-import { useDispatch, useSelector } from "react-redux";
-import {
-	selectNetTotalAmount,
-	selectTotalAmount,
-	setNetTotalAmount,
-	selectDiscountAmount,
-	// setDiscountPercentage,
-	selectDiscountPercent,
-	selectDiscountDisable,
-} from "../../../../../store/slices/posMenuSlice";
-import { FC, useEffect, useState } from "react";
-import { Student } from "../../../../Form-component/formField.type";
+// import { Student } from "../../../../Form-component/formField.type";
 
 interface DiscountAmountProps {
 	isView: boolean;
-	// onSubmit: (data: unknown) => void;
 }
 
 const calculateDiscountPercentage = (
-	discountAmount: number,
-	totalAmount: number
+	totalAmount: number,
+	discountPercentage: number
 ): number => {
-	if (totalAmount === 0) {
-		return 0; // Prevent division by zero
+	if (totalAmount === 0 || discountPercentage === 0) {
+		return 0;
 	}
-	const discountPercentage = (discountAmount / totalAmount) * 100;
-	return parseFloat(discountPercentage.toFixed(2)); // Limit to two decimal places
+	const discountAmount = (totalAmount * discountPercentage) / 100;
+	return parseFloat(discountAmount.toFixed(2)); // Limit to two decimal places
 };
 
 const DiscountAmount: FC<DiscountAmountProps> = ({ isView }) => {
@@ -50,7 +48,7 @@ const DiscountAmount: FC<DiscountAmountProps> = ({ isView }) => {
 		| cardDetailSchema
 		| NetAmountSchema
 	>();
-	const [balanceAmount, setBalanceAmount] = useState<number>(0);
+	// const [balanceAmount, setBalanceAmount] = useState<number>(0);
 
 	const totalAmount = useSelector((state: RootState) =>
 		selectTotalAmount(state)
@@ -73,19 +71,27 @@ const DiscountAmount: FC<DiscountAmountProps> = ({ isView }) => {
 
 	const changeDiscountPercentAmount = watch("discount");
 	const changeDiscountAmount = watch("discountAmount");
-	const changeNameAmount = watch("name");
+	// const changeNameAmount = watch("name");
 
-	useEffect(() => {
-		if (changeNameAmount) {
-			const value = changeNameAmount as Student;
-			const availableBalance = Number(value.AvailableBalance);
+	// Use debouncing to optimize the performance and avoid frequent re-renders
+	const updateDiscount = useCallback(
+		debounce((discount: number) => {
+			dispatch(setNetTotalAmount(discount));
+		}, 300),
+		[]
+	);
 
-			if (!isNaN(availableBalance)) {
-				const balance = availableBalance - netTotalAmount;
-				setBalanceAmount(balance);
-			}
-		}
-	}, [changeNameAmount, netTotalAmount]);
+	// useEffect(() => {
+	// 	if (changeNameAmount) {
+	// 		const value = changeNameAmount as Student;
+	// 		const availableBalance = Number(value.AvailableBalance);
+
+	// 		if (!isNaN(availableBalance)) {
+	// 			const balance = availableBalance - netTotalAmount;
+	// 			setBalanceAmount(balance);
+	// 		}
+	// 	}
+	// }, [changeNameAmount, netTotalAmount]);
 
 	useEffect(() => {
 		setValue("total", totalAmount);
@@ -93,9 +99,7 @@ const DiscountAmount: FC<DiscountAmountProps> = ({ isView }) => {
 
 	useEffect(() => {
 		setValue("netAmount", netTotalAmount);
-		// setValue("paidAmount", netTotalAmount);
-		// setValue("balanceAmount", balanceAmount);
-	}, [netTotalAmount, balanceAmount]);
+	}, [netTotalAmount]);
 
 	useEffect(() => {
 		setValue("discountAmount", discountAmount);
@@ -106,96 +110,89 @@ const DiscountAmount: FC<DiscountAmountProps> = ({ isView }) => {
 	}, [discountPercent]);
 
 	useEffect(() => {
-		if (changeDiscountPercentAmount && changeDiscountPercentAmount !== 0)
-			dispatch(setNetTotalAmount(changeDiscountPercentAmount));
-		else dispatch(setNetTotalAmount(0));
+		if (changeDiscountPercentAmount && changeDiscountPercentAmount > 100) {
+			setValue("discount", 100);
+		}
+
+		if (changeDiscountPercentAmount && changeDiscountPercentAmount <= 100) {
+			const percentage = calculateDiscountPercentage(
+				totalAmount,
+				changeDiscountPercentAmount
+			);
+
+			if (percentage !== discountAmount) {
+				if (percentage > totalAmount) {
+					setValue("discountAmount", totalAmount);
+					dispatch(setNetTotalAmount(totalAmount));
+				} else {
+					setValue("discountAmount", percentage);
+					updateDiscount(percentage); // Use debounced function
+				}
+			}
+		} else if (
+			changeDiscountAmount &&
+			changeDiscountAmount !== discountAmount
+		) {
+			updateDiscount(changeDiscountAmount); // Use debounced function
+		}
 	}, [changeDiscountPercentAmount]);
 
 	useEffect(() => {
-		if (changeDiscountAmount && changeDiscountAmount !== 0) {
-			const percentage = calculateDiscountPercentage(
-				changeDiscountAmount,
-				totalAmount
-			);
-			dispatch(setNetTotalAmount(percentage));
-			setValue("discount", percentage);
-		} else if (changeDiscountAmount && changeDiscountAmount > totalAmount)
-			setValue("discountAmount", totalAmount);
-		else setValue("discountAmount", 0);
+		const discountAmount = changeDiscountAmount ?? 0;
+		const total = totalAmount ?? 0;
+
+		if (discountAmount > total && discountAmount !== total) {
+			setValue("discountAmount", total);
+		} else if (discountAmount !== 0 && discountAmount !== netTotalAmount) {
+			updateDiscount(discountAmount); // Use debounced function
+		} else if (discountAmount === 0 && netTotalAmount !== 0) {
+			dispatch(setNetTotalAmount(0));
+		}
 	}, [changeDiscountAmount]);
 
-	// const onSubmit: SubmitHandler<PosMenuFormSchema> = (data) => {
-	// 	console.log("handle submit", data);
-	// };
-
 	return (
-		<>
-			<Grid
-				container
-				columnSpacing={2}
-				sx={{ mt: 0, px: 0, py: 1 }}
-				justifyContent={"center"}
-				alignItems={"center"}>
-				<Grid item xs={6}>
-					{/* <FormProvider {...method}> */}
-					<Grid container spacing={1}>
-						{discountAmountField(theme, discountDisable).map((field) => (
-							<Field key={field.name} {...field} />
-						))}
-					</Grid>
-					{/* </FormProvider> */}
-				</Grid>
-				<Grid item xs={6} container alignItems="center" justifyContent="center">
-					{/* <FormProvider {...netAmountMethod}> */}
-					{/* <Stack
-						flexDirection={"row"}
-						width={"100%"}
-						borderRadius={1}
-						gap={2}
-						p={2}
-						py={1.5}
-						justifyContent="center"
-						alignItems="flex-end"
-						boxShadow={theme.shadows[4]}
-						bgcolor={alpha(theme.palette.secondary.main, 0.3)}>
-						
-					</Stack> */}
-					<Grid
-						item
-						container
-						spacing={1}
-						xs={12}
-						alignItems={"flex-end"}
-						sx={{
-							boxShadow: theme.shadows[4],
-							bgcolor: alpha(theme.palette.secondary.main, 0.3),
-							borderRadius: 1,
-							// gap: 2,
-							p: 1,
-							pt: 0,
-							// py: 1.5,
-						}}>
-						<Field {...netAmountField()} />
-						<Grid item xs={6}>
-							<AnimateButton>
-								<Button
-									type="submit"
-									variant="contained"
-									color="secondary"
-									disabled={isView}
-									fullWidth
-									sx={{ p: 1.4, pt: 1, alignSelf: "flex-end" }}
-									// onClick={handleSubmit(onSubmit)}
-								>
-									Submit
-								</Button>
-							</AnimateButton>
-						</Grid>
-					</Grid>
-					{/* </FormProvider> */}
+		<Grid
+			container
+			columnSpacing={2}
+			justifyContent="center"
+			alignItems="center">
+			<Grid item xs={6}>
+				<Grid container spacing={1}>
+					{discountAmountField(theme, discountDisable).map((field) => (
+						<Field key={field.name} {...field} />
+					))}
 				</Grid>
 			</Grid>
-		</>
+			<Grid item xs={6} container alignItems="center" justifyContent="center">
+				<Grid
+					item
+					container
+					spacing={1}
+					xs={12}
+					alignItems="flex-end"
+					sx={{
+						boxShadow: theme.shadows[4],
+						bgcolor: alpha(theme.palette.secondary.main, 0.3),
+						borderRadius: 1,
+						p: 1,
+					}}>
+					<Field {...netAmountField()} />
+					<Grid item xs={6}>
+						<AnimateButton>
+							<Button
+								type="submit"
+								variant="contained"
+								color="secondary"
+								disabled={isView}
+								fullWidth
+								sx={{ p: 1.4, pt: 1 }}>
+								Submit
+							</Button>
+						</AnimateButton>
+					</Grid>
+				</Grid>
+			</Grid>
+		</Grid>
 	);
 };
 

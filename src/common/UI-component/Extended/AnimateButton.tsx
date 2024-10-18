@@ -90,7 +90,7 @@ const AnimateButton = forwardRef<HTMLDivElement, AnimateButtonProps>(
 				return (
 					<motion.div
 						ref={ref}
-						whileHover={{ scale: scale?.hover }}
+						// whileHover={{ scale: scale?.hover }}
 						whileTap={{ scale: scale?.tap }}
 						style={style}>
 						{children}

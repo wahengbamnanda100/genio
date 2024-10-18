@@ -76,7 +76,7 @@ const BreadcrumbNav: FC<BreadcrumbNavProps> = ({ title }) => {
 				{breadcrumbSegments.map((segment, index) => {
 					const isLast = index === breadcrumbSegments.length - 1;
 					const to = `/${breadcrumbSegments.slice(0, index + 1).join("/")}`;
-					console.log("braedcrumb to", to);
+					//console.log("braedcrumb to", to);
 
 					if (segment === "pos-menu") {
 						// Customize the display label for 'pos-menu'

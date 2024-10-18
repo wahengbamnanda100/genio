@@ -186,7 +186,7 @@ const SearchHistory: FC<SearchHistoryProps> = ({
 			}
 		}
 
-		console.log("comp unit watch in api call", bussinessUnitWatch);
+		//console.log("comp unit watch in api call", bussinessUnitWatch);
 	}, [isFetched, data]);
 
 	useEffect(() => {
@@ -217,7 +217,7 @@ const SearchHistory: FC<SearchHistoryProps> = ({
 				BusinessUnitId: bussinessUnitWatch as string,
 			}));
 		}
-		console.log("comp unit watch", bussinessUnitWatch);
+		//console.log("comp unit watch", bussinessUnitWatch);
 	}, [bussinessUnitWatch]);
 
 	return (

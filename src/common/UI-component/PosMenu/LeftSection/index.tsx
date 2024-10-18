@@ -32,7 +32,7 @@ const LeftMenuSection: FC<LeftMenuSectionProps> = ({
 	// onSubmit,
 }) => {
 	// useEffect(() => {
-	// 	console.log("left part rendering...", isVeiw);
+	// 	//console.log("left part rendering...", isVeiw);
 	// }, []);
 
 	return (

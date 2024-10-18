@@ -118,7 +118,7 @@ const AsyncSearchField = ({
 
 	useEffect(() => {
 		if (isFocused && onFocus) {
-			// console.log("inside seard field", name, isFocused);
+			// //console.log("inside seard field", name, isFocused);
 
 			onFocus(name);
 		}
@@ -194,8 +194,8 @@ const AsyncSearchField = ({
 						}}
 						noOptionsText={loading ? "Loading..." : "No options"}
 						renderInput={(params: any) => {
-							// console.log("pram auto", params);
-							// console.log("restProps auto", restProps);
+							// //console.log("pram auto", params);
+							// //console.log("restProps auto", restProps);
 
 							return (
 								<TextField

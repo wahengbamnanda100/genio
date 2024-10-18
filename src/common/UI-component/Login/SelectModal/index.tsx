@@ -147,8 +147,8 @@ const SelectCompanyModal: FC<SelectCompanyModalProps> = ({ open, onClose }) => {
 	);
 
 	const handleSubmit = () => {
-		console.log("Selected Year:", selectedYear);
-		console.log("Selected Company:", selectedCompany);
+		//console.log("Selected Year:", selectedYear);
+		//console.log("Selected Company:", selectedCompany);
 		localStorage.setItem("CmpId", selectedCompany);
 		onClose();
 		navigate("/");
@@ -157,7 +157,7 @@ const SelectCompanyModal: FC<SelectCompanyModalProps> = ({ open, onClose }) => {
 
 	useEffect(() => {
 		if (isFetchedYears) {
-			console.log("Financial Year Data:", financialYearData);
+			//console.log("Financial Year Data:", financialYearData);
 			// Set the selectedYear to the first item if not already set
 			const firstYear = (financialYearData as FyResponseType).Data[0];
 			if (firstYear && !selectedYear) {
@@ -165,7 +165,7 @@ const SelectCompanyModal: FC<SelectCompanyModalProps> = ({ open, onClose }) => {
 			}
 		}
 		if (isFetchedCompanies) {
-			console.log("Company Data:", companyData);
+			//console.log("Company Data:", companyData);
 			// Set the selectedCompany to the first item if not already set
 			const firstCompany = (companyData as FyBussinessUnitResponseType).Data[0];
 			if (firstCompany && !selectedCompany) {

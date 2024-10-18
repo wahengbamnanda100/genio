@@ -24,6 +24,7 @@ import {
 } from "../../../Component-types/posMenu.type";
 import AlergicBanner from "./AllergyBanner/AlergicBanner";
 import { useAppProvider } from "../../../../AppProvider";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface RightSectionProp {
 	resetFormValues: (resetFunc: () => void) => void;
@@ -41,6 +42,8 @@ const RightMenuSection: FC<RightSectionProp> = ({ resetFormValues }) => {
 		control,
 		name: ["showroom"],
 	});
+
+	const queryClient = useQueryClient();
 
 	const [cetagoryListParam, setCaetegoryListParam] =
 		useState<CategoryListingTypeRequestBodiesType>({
@@ -80,13 +83,15 @@ const RightMenuSection: FC<RightSectionProp> = ({ resetFormValues }) => {
 	});
 
 	const handleCategory = (item: CategoryDetailsType) => {
-		console.log("category item clicked", item);
-
+		//console.log("category item clicked", item);
+		queryClient.removeQueries({
+			queryKey: ["item-list"],
+		});
 		setMenuParam((prev) => ({ ...prev, CategoryId: item.CategoryId }));
 	};
 
 	const handleItem = (item: unknown) => {
-		// console.log("item clicked", item);
+		// //console.log("item clicked", item);
 		const typedItem = item as ItemDetailsType;
 		const temp: PosMenuItem = {
 			id: typedItem.PartId,
@@ -101,10 +106,10 @@ const RightMenuSection: FC<RightSectionProp> = ({ resetFormValues }) => {
 	};
 
 	useEffect(() => {
-		console.log("showroomWatch", showroomWatch);
+		//console.log("showroomWatch", showroomWatch);
 
 		if (showroomWatch !== "") {
-			console.log("showroomWatch refetch", showroomWatch);
+			//console.log("showroomWatch refetch", showroomWatch);
 			setMenuParam((prev) => ({
 				...prev,
 				CategoryId: "",
@@ -117,9 +122,15 @@ const RightMenuSection: FC<RightSectionProp> = ({ resetFormValues }) => {
 		}
 	}, [showroomWatch]);
 
+	useEffect(() => {
+		if (menuItemIsFetched) {
+			console.log("is item chengeng", menuItemIsFetched);
+		}
+	}, [menuItemIsFetched]);
+
 	// useEffect(() => {
 	// 	if (studentNameWtach) {
-	// 		console.log("studentNameWtach", studentNameWtach);
+	// 		//console.log("studentNameWtach", studentNameWtach);
 	// 	}
 	// }, [studentNameWtach]);
 

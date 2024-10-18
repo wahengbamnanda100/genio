@@ -14,7 +14,7 @@ import AppProvider from "./AppProvider";
 
 function App() {
 	const queryClient = new QueryClient();
-	console.log("this page is loaded @app");
+	//console.log("this page is loaded @app");
 
 	return (
 		<Provider store={store}>

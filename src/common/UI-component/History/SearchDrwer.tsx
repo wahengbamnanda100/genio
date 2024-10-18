@@ -41,7 +41,7 @@ import {
 	ListFilterCellComponent,
 } from "../../CutomTable/components/customComponent";
 import { useNavigate } from "react-router";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAppProvider } from "../../../AppProvider";
 import ConfirmationDialog from "../../ModalComponent/ConfirmationDialog";
 
@@ -206,6 +206,8 @@ const SearchDrawer: FC<SearchDrawerProps> = ({
 	});
 
 	const USERDATA = JSON.parse(localStorage.getItem("userDetail")!);
+
+	const queryClient = useQueryClient();
 
 	const method = useForm<searchHistorySchema>({
 		defaultValues: {
@@ -375,7 +377,7 @@ const SearchDrawer: FC<SearchDrawerProps> = ({
 	});
 
 	const handleView = (id: string) => {
-		console.log("handle click view", id);
+		//console.log("handle click view", id);
 		navigate(`/pos-menu/view/${id}`);
 		setClose(!open);
 	};
@@ -388,7 +390,7 @@ const SearchDrawer: FC<SearchDrawerProps> = ({
 	};
 
 	const handleDeleteConfirm = () => {
-		console.log("handle click Delete", deleteRow);
+		//console.log("handle click Delete", deleteRow);
 		const deleteData: PrevDeleteRequestBodiesType = {
 			UserID: USERDATA.UserId || "",
 			Sih_Id_N: deleteRow,
@@ -402,7 +404,7 @@ const SearchDrawer: FC<SearchDrawerProps> = ({
 	};
 
 	const onSearch = (data: any) => {
-		console.log("search data", data);
+		//console.log("search data", data);
 		const searchData: PreviousSaleRequestBodiesType = {
 			InvoiceNumber: data?.invoiceNubmer?.InvoiceNumber || "",
 			CardNumber: data?.cardNumber?.CardNumber || "",
@@ -415,15 +417,21 @@ const SearchDrawer: FC<SearchDrawerProps> = ({
 			Cmp_ID_N: CmpID.toString(), //todo add later
 		};
 
+		setSearchQuery(
+			{
+				Rows: 10,
+				PageNo: 1,
+			} // //console.log("Data item ", data);
+		);
 		setSearch(searchData);
 		setEnable(true);
 
-		console.log("backend search data", searchData);
+		//console.log("backend search data", searchData);
 	};
 
 	const { data, isLoading, isFetched, refetch } = PreviousList(search!, enable);
 
-	const currentPageData = useMemo(() => {
+	let currentPageData = useMemo(() => {
 		if (!isFetched || !data || !Array.isArray(data.Data)) {
 			setTotalValues({
 				totalAmount: 0,
@@ -442,7 +450,7 @@ const SearchDrawer: FC<SearchDrawerProps> = ({
 			const endIndex = startIndex + searchQuery.Rows;
 			const slicedData = data.Data.slice(startIndex, endIndex);
 
-			console.log("sliced data", slicedData, data?.Data);
+			//console.log("sliced data", slicedData, data?.Data);
 
 			// Check if slicedData is empty, reset totals to 0 if it is
 			if (slicedData.length === 0) {
@@ -530,22 +538,36 @@ const SearchDrawer: FC<SearchDrawerProps> = ({
 			console.error("Error occurred while processing data:", error);
 			return [];
 		}
-	}, [data, searchQuery, isFetched, data?.Data, data?.status]);
+	}, [data, searchQuery, isFetched]);
 
 	useEffect(() => {
 		if (isFetched) {
 			setEnable(false);
-			// console.log("Data item ", data);
+			setSearchQuery(
+				{
+					Rows: 10,
+					PageNo: 1,
+				} // //console.log("Data item ", data);
+			);
 		}
 	}, [isFetched]);
 
 	// Add this useEffect to reset form and table data when drawer closes
 	useEffect(() => {
 		if (open) {
+			refetch();
 			setEnable(true);
 		}
 		if (!open) {
 			method.reset(); // Reset the form
+			queryClient.removeQueries({
+				queryKey: ["previousList"],
+			});
+			setSearchQuery({
+				Rows: 10,
+				PageNo: 1,
+			});
+			currentPageData=[],
 			setTotalValues({
 				totalAmount: 0,
 				netAmount: 0,

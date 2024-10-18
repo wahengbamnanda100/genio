@@ -38,23 +38,23 @@ const calculateTotalAmount = (menuTable: PosMenuItem[]): number => {
 	);
 };
 
-const calculateDiscountAmount = (
-	totalAmount: number,
-	discountPercentage: number
-): number => {
-	return parseFloat((totalAmount * (discountPercentage / 100)).toFixed(2));
-};
-
-// const calculateDiscountPercentage = (
-// 	discountAmount: number,
-// 	totalAmount: number
+// const calculateDiscountAmount = (
+// 	totalAmount: number,
+// 	discountPercentage: number
 // ): number => {
-// 	if (totalAmount === 0) {
-// 		return 0;
-// 	}
-// 	const discountPercentage = (discountAmount / totalAmount) * 100;
-// 	return parseFloat(discountPercentage.toFixed(2));
+// 	return parseFloat((totalAmount * (discountPercentage / 100)).toFixed(2));
 // };
+
+const calculateDiscountPercentage = (
+	discountAmount: number,
+	totalAmount: number
+): number => {
+	if (totalAmount === 0) {
+		return 0;
+	}
+	const discountPercentage = (discountAmount / totalAmount) * 100;
+	return parseFloat(discountPercentage.toFixed(2));
+};
 
 const calculateNetTotalAmount = (
 	totalAmount: number,
@@ -66,15 +66,29 @@ const calculateNetTotalAmount = (
 
 const recalculateTotals = (state: PosMenu) => {
 	state.totalAmount = calculateTotalAmount(state.menuTable);
-	state.discountAmount = calculateDiscountAmount(
-		state.totalAmount,
-		state.discountPercentage
+	state.discountPercentage = calculateDiscountPercentage(
+		state.discountAmount,
+		state.totalAmount
 	);
 	state.netTotal = calculateNetTotalAmount(
 		state.totalAmount,
 		state.discountPercentage
 	);
 };
+// const recalculateTotals = (state: PosMenu) => {
+// 	// Recalculate total amount from menu items
+// 	state.totalAmount = calculateTotalAmount(state.menuTable);
+
+// 	// Keep discountAmount fixed, recalculate discountPercentage based on totalAmount
+// 	if (state.totalAmount > 0 && state.discountAmount) {
+// 		state.discountPercentage = (state.discountAmount / state.totalAmount) * 100;
+// 	} else {
+// 		state.discountPercentage = 0; // Prevent division by zero
+// 	}
+
+// 	// Recalculate the net total amount using the discount amount
+// 	state.netTotal = state.totalAmount - state.discountAmount;
+// };
 
 const posMenuSlice = createSlice({
 	name: "posMenu",
@@ -84,7 +98,7 @@ const posMenuSlice = createSlice({
 			const existingItem = state.menuTable.find(
 				(item) => item.id === action.payload.id
 			);
-			console.log("call add item");
+			//console.log("call add item");
 
 			if (existingItem) {
 				existingItem.quantity += action.payload.quantity;
@@ -160,7 +174,7 @@ const posMenuSlice = createSlice({
 			recalculateTotals(state); // Recalculate after setting items
 		},
 		setNetTotalAmount: (state, action: PayloadAction<number>) => {
-			state.discountPercentage = action.payload;
+			state.discountAmount = action.payload;
 			recalculateTotals(state); // Recalculate after net total change
 		},
 
@@ -178,12 +192,8 @@ export const selectTotalAmount = createSelector(
 	(menuTable) => calculateTotalAmount(menuTable)
 );
 
-export const selectDiscountAmount = createSelector(
-	(state: RootState) => state.posMenuTable.totalAmount,
-	(state: RootState) => state.posMenuTable.discountPercentage,
-	(totalAmount, discountPercentage) =>
-		calculateDiscountAmount(totalAmount, discountPercentage)
-);
+export const selectDiscountAmount = (state: RootState) =>
+	state.posMenuTable.discountAmount;
 
 export const selectNetTotalAmount = createSelector(
 	(state: RootState) => state.posMenuTable.totalAmount,
@@ -192,8 +202,12 @@ export const selectNetTotalAmount = createSelector(
 		calculateNetTotalAmount(totalAmount, discountPercentage)
 );
 
-export const selectDiscountPercent = (state: RootState) =>
-	state.posMenuTable.discountPercentage;
+export const selectDiscountPercent = createSelector(
+	(state: RootState) => state.posMenuTable.discountAmount,
+	(state: RootState) => state.posMenuTable.totalAmount,
+	(discountAmount, totalAmount) =>
+		calculateDiscountPercentage(discountAmount, totalAmount)
+);
 
 export const selectDiscountDisable = (state: RootState) =>
 	state.posMenuTable.discountDisable;

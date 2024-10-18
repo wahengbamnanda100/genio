@@ -49,7 +49,7 @@ export const getStudentList = async (
 		requestBody
 	);
 
-	// console.log("🌍🌍 student list", response);
+	// //console.log("🌍🌍 student list", response);
 
 	if (response.statusText === "OK") {
 		return response.data;
@@ -66,7 +66,7 @@ export const getMenuList = async (
 		requestBody
 	);
 
-	// console.log("🔥🔥🔥 menu list", response);
+	// //console.log("🔥🔥🔥 menu list", response);
 
 	if (response.statusText === "OK") {
 		return response.data;
@@ -91,7 +91,7 @@ export const getPreviousSale = async (
 		requestBody
 	);
 
-	// console.log("🚀🚀🚀🚀 previous sale", response);
+	// //console.log("🚀🚀🚀🚀 previous sale", response);
 
 	if (response.statusText === "OK") {
 		return response.data;
@@ -108,7 +108,7 @@ export const getBussinessList = async (
 		requestBody
 	);
 
-	console.log("🎯🎯🎯🎯 bussiness listing", response);
+	//console.log("🎯🎯🎯🎯 bussiness listing", response);
 
 	if (response.statusText === "OK") {
 		return response.data;
@@ -125,7 +125,7 @@ export const getShowroomList = async (
 		requestBody
 	);
 
-	console.log("♨️♨️♨️ showroom listing", response);
+	//console.log("♨️♨️♨️ showroom listing", response);
 
 	if (response.statusText === "OK") {
 		return response.data;
@@ -142,7 +142,7 @@ export const getEmployeeList = async (
 		requestBody
 	);
 
-	// console.log("♨️♨️♨️ showroom listing", response);
+	// //console.log("♨️♨️♨️ showroom listing", response);
 
 	if (response.statusText === "OK") {
 		return response.data;
@@ -183,14 +183,14 @@ export const searchStudentList = async (
 			if (response.Status === "1") {
 				data = response.Data ?? [];
 			} else {
-				// console.log("else 🚀", isLoading);
+				// //console.log("else 🚀", isLoading);
 				data = [];
 			}
 		} catch (error) {
 			// console.error("Failed to fetch student list 🚨⚡:", error);
 			data = [];
 		} finally {
-			// console.log("finally 🚀", isLoading);
+			// //console.log("finally 🚀", isLoading);
 			isLoading = false;
 		}
 	};
@@ -199,7 +199,7 @@ export const searchStudentList = async (
 		await fetchData();
 	}
 
-	// console.log("🏓🚀", isEnable ? "IF" : "ELSE", data, isLoading);
+	// //console.log("🏓🚀", isEnable ? "IF" : "ELSE", data, isLoading);
 
 	return { data, isLoading };
 };
@@ -220,14 +220,14 @@ export const searchEmployeeList = async (
 			if (response.Status === "1") {
 				data = response.Data ?? [];
 			} else {
-				// console.log("else 🚀", isLoading);
+				// //console.log("else 🚀", isLoading);
 				data = [];
 			}
 		} catch (error) {
 			console.error("Failed to fetch student list 🚨⚡:", error);
 			data = [];
 		} finally {
-			// console.log("finally 🚀", isLoading);
+			// //console.log("finally 🚀", isLoading);
 			isLoading = false;
 		}
 	};
@@ -236,7 +236,7 @@ export const searchEmployeeList = async (
 		await fetchData();
 	}
 
-	// console.log("🏓🏅🚀", isEnable ? "IF" : "ELSE", data, isLoading);
+	// //console.log("🏓🏅🚀", isEnable ? "IF" : "ELSE", data, isLoading);
 
 	return { data, isLoading };
 };
@@ -257,14 +257,14 @@ export const searchPreviousList = async (
 			if (response.Status === "1") {
 				data = response.Data ?? [];
 			} else {
-				// console.log("else 🚀", isLoading);
+				// //console.log("else 🚀", isLoading);
 				data = [];
 			}
 		} catch (error) {
 			// console.error("Failed to fetch student list 🚨⚡:", error);
 			data = [];
 		} finally {
-			// console.log("finally 🚀", isLoading);
+			// //console.log("finally 🚀", isLoading);
 			isLoading = false;
 		}
 	};
@@ -273,7 +273,7 @@ export const searchPreviousList = async (
 		await fetchData();
 	}
 
-	// console.log("🏓🏅🚀", isEnable ? "IF" : "ELSE", data, isLoading);
+	// //console.log("🏓🏅🚀", isEnable ? "IF" : "ELSE", data, isLoading);
 
 	return { data, isLoading };
 };
@@ -419,7 +419,7 @@ export const GetCetagoryListing = (
 
 export const GetItemListing = (
 	data: ItemListingRequestBodiesType,
-	queryOptions?: Partial<UseQueryOptions>
+	queryOptions?: Partial<UseQueryOptions<ItemListingResponseType>>
 ) => {
 	return useQuery({
 		queryKey: ["item-list", data.ShowroomId, data.CategoryId],

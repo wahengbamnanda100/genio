@@ -99,10 +99,10 @@ const ScanUnitComponent: FC<ScanUnitComponentProps> = ({ resetFormValues }) => {
 	};
 
 	const handleShowCancel = () => {
-		console.log(
-			"previousShowroomRef?.current?.showroom",
-			previousShowroomRef?.current?.showroom
-		);
+		// //console.log(
+		// 	"previousShowroomRef?.current?.showroom",
+		// 	previousShowroomRef?.current?.showroom
+		// );
 		const preShow = previousShowroomRef?.current?.showroom || "";
 
 		setValue("showroom", preShow);

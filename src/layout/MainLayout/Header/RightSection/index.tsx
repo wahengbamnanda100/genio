@@ -15,8 +15,16 @@ const RightSection = () => {
 
 	const userData = JSON.parse(localStorage.getItem("userDetail")!);
 
+	const updatedImageUrl = userData?.EmpImage
+		? `${import.meta.env.VITE_API_URL}${
+				userData.EmpImage.startsWith("..")
+					? userData.EmpImage.replace(/^\.{1,2}/, "")
+					: userData.EmpImage
+			}`
+		: "";
+
 	const handleLogout = () => {
-		console.log("logout clickeds");
+		//console.log("logout clickeds");
 		setOpen(true);
 	};
 
@@ -40,7 +48,7 @@ const RightSection = () => {
 					gap: 2,
 				}}>
 				{/* //todo add url with user data */}
-				<UserImageAvatar src={userData?.EmpImage || ""} appBar={true} />
+				<UserImageAvatar src={updatedImageUrl} appBar={true} />
 				<ButtonBase sx={{ borderRadius: "12px", overflow: "hidden" }}>
 					<Avatar
 						variant="rounded"

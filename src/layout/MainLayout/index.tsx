@@ -54,7 +54,7 @@ const MainLayout: React.FC = () => {
 
 	const handleLeftDrawerToggle = () => {
 		setLeftDrawerOpened((prev: boolean) => !prev);
-		console.log("handle toggle sidebar clicked");
+		//console.log("handle toggle sidebar clicked");
 	};
 
 	return (

@@ -6,7 +6,7 @@ import {
 	ButtonBase,
 	IconButton,
 	Typography,
-	useMediaQuery,
+	// useMediaQuery,
 	useTheme,
 } from "@mui/material";
 import {
@@ -14,7 +14,8 @@ import {
 	// EditingCell,
 	// EditingState,
 	// EditingStateProps,
-	GridColumnExtension,
+	// GridColumnExtension,
+	TableColumnWidthInfo,
 } from "@devexpress/dx-react-grid";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
@@ -39,31 +40,41 @@ import ConfirmationDialog from "../../../../ModalComponent/ConfirmationDialog";
 
 const MenuTable = () => {
 	const dispatch: AppDispatch = useDispatch();
-	const theme = useTheme();
+	// const theme = useTheme();
 	const [open, setOpen] = useState<boolean>(false);
 	const menuTable = useSelector((state: RootState) => selectMenuTable(state));
 
 	// const mediaBetweenMd = useMediaQuery(theme.breakpoints.between(1023, 1301));
-	const mediaDownMd = useMediaQuery(theme.breakpoints.down(1300));
-	const mediaDownSm = useMediaQuery(theme.breakpoints.down(1024));
+	// const mediaDownMd = useMediaQuery(theme.breakpoints.down(1300));
+	// const mediaDownSm = useMediaQuery(theme.breakpoints.down(1024));
 
-	const [columnExtension] = useState<GridColumnExtension[]>([
-		{ columnName: "sl", width: 50 }, // Width as a number
-		mediaDownSm
-			? { columnName: "description", width: "auto", align: "left" }
-			: mediaDownMd
-				? { columnName: "description", width: 190, align: "left" }
-				: { columnName: "description", width: "auto", align: "left" },
-		{ columnName: "quantity", width: 50, align: "right" },
-		{ columnName: "unitPrice", width: 50, align: "right" },
-		{ columnName: "amount", width: 75, align: "right" },
-		{ columnName: "discount", width: 75, align: "right" },
-		{ columnName: "netAmount", width: 75, align: "right" },
-		{ columnName: "action", width: 60, align: "center" },
-	]);
+	// const [columnExtension] = useState<GridColumnExtension[]>([
+	// 	{ columnName: "sl", width: 50 }, // Width as a number
+	// 	mediaDownSm
+	// 		? { columnName: "description", width: "auto", align: "left" }
+	// 		: mediaDownMd
+	// 			? { columnName: "description", width: 190, align: "left" }
+	// 			: { columnName: "description", width: "auto", align: "left" },
+	// 	{ columnName: "quantity", width: 50, align: "right" },
+	// 	{ columnName: "unitPrice", width: 50, align: "right" },
+	// 	{ columnName: "amount", width: 75, align: "right" },
+	// 	{ columnName: "discount", width: 75, align: "right" },
+	// 	{ columnName: "netAmount", width: 75, align: "right" },
+	// 	{ columnName: "action", width: 60, align: "center" },
+	// ]);
 	const [selection, setSelection] = useState<(string | number)[]>([]);
 	const [deleteRow, setDeleteRow] = useState<MenuItem>();
 	const [rightColumns] = useState(["action"]);
+	const [columnWidths, setColumnWidths] = useState<TableColumnWidthInfo[]>([
+		{ columnName: "sl", width: 50 }, // Width as a number
+		{ columnName: "description", width: "300" },
+		{ columnName: "quantity", width: 50 },
+		{ columnName: "unitPrice", width: 50 },
+		{ columnName: "amount", width: 75 },
+		{ columnName: "discount", width: 75 },
+		{ columnName: "netAmount", width: 75 },
+		{ columnName: "action", width: 60 },
+	]);
 
 	const handleRowDelete = (row: MenuItem) => {
 		setDeleteRow(row);
@@ -137,7 +148,7 @@ const MenuTable = () => {
 			const _id = menuTable[selection[0] as number].id;
 			dispatch(incrementItemQuantity(_id));
 		} else {
-			console.log("Menu item is not slected");
+			//console.log("Menu item is not slected");
 		}
 	};
 
@@ -147,7 +158,7 @@ const MenuTable = () => {
 			dispatch(decrementItemQuantity(_id));
 			if (menuTable[selection[0] as number].quantity === 1) setSelection([]);
 		} else {
-			console.log("Menu item is not slected");
+			//console.log("Menu item is not slected");
 		}
 	};
 
@@ -174,13 +185,18 @@ const MenuTable = () => {
 				hasVerticalPadding={false}
 				hasBoxShadow={false}
 				isLoading={false}
+				dynamicResize={true}
 				grid={{
 					columns: column,
 					rows: menuTable,
 				}}
-				table={{
-					columnExtensions: columnExtension,
-				}}
+				table={
+					{
+						// columnExtensions: columnExtension,
+					}
+				}
+				columnWidths={columnWidths}
+				setColumnWidths={setColumnWidths}
 				// editingState={{
 				// 	onCommitChanges: commitChanges,
 				// 	editingCells: editingCells,

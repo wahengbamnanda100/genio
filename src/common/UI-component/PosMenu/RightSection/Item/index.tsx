@@ -47,7 +47,7 @@ export const Item: FC<ItemProps> = ({ label, onClick }) => {
 						// bgcolor: theme.palette.itemButton.main,
 						background: alpha(itemColor, 1),
 						// background: lighten(itemColor, 0.2),
-						boxShadow: theme.shadows[4],
+						// boxShadow: theme.shadows[4],
 						borderRadius: "10px",
 						// padding: "10px",
 						cursor: "pointer",

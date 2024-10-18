@@ -3,7 +3,7 @@ import { useAppProvider } from "../../AppProvider";
 import { useEffect } from "react";
 
 function SlideTransition(props: SlideProps) {
-	return <Slide {...props} direction="up" />;
+	return <Slide {...props} direction="down" />;
 }
 
 const CustomSnackbar = () => {
@@ -24,7 +24,7 @@ const CustomSnackbar = () => {
 	return (
 		<Snackbar
 			open={!!notify}
-			anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+			anchorOrigin={{ vertical: "top", horizontal: "center" }}
 			TransitionComponent={SlideTransition}
 			autoHideDuration={6000}
 			onClose={handleClose}>

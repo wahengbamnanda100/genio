@@ -195,7 +195,7 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 
 	const handleSetPreviousDetail = () => {
 		const previousData: (typeof data)[0] = data[0];
-		// console.log("previousData", previousData);
+		// //console.log("previousData", previousData);
 
 		const studentObj: Partial<Student> = {
 			CardNumber: previousData.CardNumber,
@@ -284,7 +284,7 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 	}, [checked, data, method]);
 
 	const handleSubmitClick = () => {
-		console.log("Submit button clicked");
+		//console.log("Submit button clicked");
 		// Add your custom logic here
 	};
 
@@ -293,13 +293,13 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 	};
 
 	const handlePreviousClick = () => {
-		console.log("Previous button clicked");
+		//console.log("Previous button clicked");
 		setDrawerOpen(true);
 		// Add your custom logic here
 	};
 
 	const handleBackClick = () => {
-		console.log("Back button clicked");
+		//console.log("Back button clicked");
 		// Add your custom logic here
 	};
 
@@ -330,10 +330,10 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 
 		if (!allowCard) {
 			if (Number(paidAmount) + Number(totalPaid) !== netTotalAmount) {
-				console.log(
-					"paidAmount + totalPaid",
-					Number(paidAmount) + Number(totalPaid)
-				);
+				// //console.log(
+				// 	"paidAmount + totalPaid",
+				// 	Number(paidAmount) + Number(totalPaid)
+				// );
 
 				return setNotify({
 					severity: "error",
@@ -378,7 +378,7 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 	};
 
 	const onSubmit: SubmitHandler<PosMenuFormSchema> = (data) => {
-		console.log("Form submitted:", data);
+		//console.log("Form submitted:", data);
 
 		// Validate that cardType is selected
 		if (data.allowCard && (!data.cardType || data.cardType.length === 0)) {
@@ -403,18 +403,18 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 			});
 			return;
 		}
-		console.log("card amount validate@@##", data.cardAmount);
+		//console.log("card amount validate@@##", data.cardAmount);
 		if (
 			data.allowCard &&
 			data.cardAmount &&
 			Number(data.cardAmount) !== data.netAmount
 		) {
-			console.log(
-				"data.cardAmount !== data.netAmount",
-				data.cardAmount,
-				data.netAmount,
-				Number(data.cardAmount) !== data.netAmount
-			);
+			// //console.log(
+			// 	"data.cardAmount !== data.netAmount",
+			// 	data.cardAmount,
+			// 	data.netAmount,
+			// 	Number(data.cardAmount) !== data.netAmount
+			// );
 			setNotify({
 				severity: "error",
 				message: `Card Amount should be equal to Net Amount`,
@@ -422,7 +422,7 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 			return;
 		}
 		if (data.allowCard && !data.cardAmount) {
-			console.log("card amount validate", data.cardAmount);
+			//console.log("card amount validate", data.cardAmount);
 
 			setNotify({
 				severity: "error",
@@ -433,7 +433,7 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 
 		// If validations pass, proceed to form validation and submission
 		validateForm();
-		// console.log("Form submitted successfully", data);
+		// //console.log("Form submitted successfully", data);
 	};
 
 	const transformMenuTableToItems = (menuTable: PosMenuItem[]): ItemsType[] => {
@@ -453,7 +453,7 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 
 	const handleModalConfirm = () => {
 		const formData: PosMenuFormSchema = method.getValues();
-		console.log("data🚀", formData.invoiceDate);
+		//console.log("data🚀", formData.invoiceDate);
 
 		const backendData: PosSaveRequsetBodiesType = {
 			Cmp_ID_N: CmpID,
@@ -467,6 +467,7 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 			Sih_ID_N: "",
 			CardID: (formData.name as Student)?.CardID || "",
 			Usr_ID_N: "1",
+			CitizenshipID: (formData.name as Student)?.CardID || "",
 			Emp_ID_N: (formData.salesPersonCode as EmployeeItem)?.Emp_ID_N || "",
 			Paymentdtl: [
 				{
@@ -481,13 +482,13 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 			],
 		};
 		console.log("Handle confirm", formData);
-		console.log("backend data", backendData);
+		//console.log("backend data", backendData);
 
 		mutateAsync(backendData);
 	};
 
 	const handleModalCancel = () => {
-		console.log("Handle cancel");
+		//console.log("Handle cancel");
 		setOpen(false);
 	};
 
@@ -521,7 +522,7 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 		if (effectRan.current === false) {
 			if (isView && data.length !== 0) {
 				handleSetPreviousDetail();
-				// console.log("cardName", isView);
+				// //console.log("cardName", isView);
 			}
 
 			effectRan.current = true; // Set the flag to true to prevent running again

@@ -9,6 +9,7 @@ import {
 	IntegratedFiltering,
 	SortingState,
 	SummaryItem,
+	TableColumnWidthInfo,
 	TableFixedColumnsProps,
 	// TableSummaryRowBase,
 } from "@devexpress/dx-react-grid";
@@ -17,6 +18,7 @@ import {
 	TableFilterRow,
 	TableColumnVisibility,
 	TableRowDetail,
+	// TableColumnResizing,
 	// TableSummaryRow,
 } from "@devexpress/dx-react-grid-material-ui";
 import { ComponentType, Dispatch, ReactNode, SetStateAction } from "react";
@@ -120,6 +122,11 @@ export interface EditTableProps {
 	leftColumns?: TableFixedColumnsProps["leftColumns"];
 	editingState?: EditingStateProps;
 	selection?: (string | number)[];
+	dynamicResize: boolean;
+	columnWidths?: TableColumnWidthInfo[] | undefined;
+	setColumnWidths?:
+		| ((nextColumnWidths: Array<TableColumnWidthInfo>) => void)
+		| undefined;
 	setSelection?:
 		| Dispatch<SetStateAction<(string | number)[]>>
 		| ((selection: (string | number)[]) => void);

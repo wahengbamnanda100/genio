@@ -19,6 +19,7 @@ export interface Student {
 	AvailableBalance: string;
 	ImageUrl: string;
 	DailyLimit: string;
+	CitizenshipID: string;
 	Class?: string;
 }
 
@@ -94,6 +95,7 @@ export interface PosSaveRequsetBodiesType {
 	Sih_ID_N: string;
 	Emp_ID_N: string;
 	Items: ItemsType[];
+	CitizenshipID: string;
 	Paymentdtl?: PaymentDtlType[];
 }
 

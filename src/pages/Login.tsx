@@ -34,7 +34,7 @@ const Login = () => {
 		mutationKey: ["login"],
 		mutationFn: loginUser,
 		onSuccess: (data) => {
-			console.log("user login in dasta", data);
+			//console.log("user login in dasta", data);
 			if (data.Status === "1") {
 				// setNotify({ severity: "success", message: "Login Successfully" });
 
@@ -54,7 +54,7 @@ const Login = () => {
 	});
 
 	const onsubmit = (data: LoginFormSchema) => {
-		console.log("login formdata", data);
+		//console.log("login formdata", data);
 
 		mutateAsync({
 			Usr_LoginID_V: data.userName,
@@ -82,7 +82,7 @@ const Login = () => {
 	// 		})
 	// 			.then(
 	// 				(data) => {
-	// 					console.log("data [login]", data);
+	// 					//console.log("data [login]", data);
 	// 				},
 	// 				(error) => {
 	// 					console.error("Error fetching data:", error.message);
@@ -95,14 +95,14 @@ const Login = () => {
 	// }, [mutateAsync]);
 
 	useEffect(() => {
-		console.log("isLoading [login]", isPending);
+		//console.log("isLoading [login]", isPending);
 		// if (error) {
 		// 	console.error("Error fetching data:", error.message);
 		// }
 	}, [isPending]);
 
 	// const onSubmit = (data: LoginFormSchema) => {
-	// 	console.log("lgoin data", data);
+	// 	//console.log("lgoin data", data);
 	// };
 
 	return (

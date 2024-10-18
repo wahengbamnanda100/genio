@@ -36,6 +36,8 @@ import {
 	resetPosMenu,
 	selectMenuTable,
 } from "../../../../../store/slices/posMenuSlice";
+import { useLocation } from "react-router";
+// import { FileDownloadSharp, RestartAltOutlined } from "@mui/icons-material";
 
 interface CardDetailProps {
 	resetFormValues: (resetFunc: () => void) => void;
@@ -44,6 +46,8 @@ interface CardDetailProps {
 const CardDetail: FC<CardDetailProps> = ({ resetFormValues }) => {
 	const theme = useTheme();
 	const dispatch = useDispatch();
+	const { pathname } = useLocation();
+	const isView = pathname.includes("view");
 	const { setImgUrl, setNotify } = useAppProvider();
 	const { control, setValue, setFocus } = useFormContext<
 		cardDetailSchema | ScanUnitSchema
@@ -80,7 +84,7 @@ const CardDetail: FC<CardDetailProps> = ({ resetFormValues }) => {
 	// 	[]
 	// );
 
-	// console.log("debsddfds", debouncedCardNumber(cardNumberWatch));
+	// //console.log("debsddfds", debouncedCardNumber(cardNumberWatch));
 
 	const { data, isFetched, isLoading } = SearchStudentList(
 		{
@@ -151,7 +155,7 @@ const CardDetail: FC<CardDetailProps> = ({ resetFormValues }) => {
 			const imgUrl = import.meta.env.VITE_API_URL + selectedValue.ImageUrl;
 			setImgUrl(imgUrl);
 
-			if (menuTable.length > 0) {
+			if (!isView && menuTable.length > 0) {
 				dispatch(resetPosMenu());
 			}
 			// Store previous values for future reference
@@ -243,7 +247,7 @@ const CardDetail: FC<CardDetailProps> = ({ resetFormValues }) => {
 		if (isFetched) {
 			if ((data as StudentListResponse).Status === "1") {
 				const student = (data as StudentListResponse).Data[0];
-				console.log("_data", student);
+				//console.log("_data", student);
 
 				setValue("familyId", student, { shouldValidate: true });
 				setValue("idNumbar", student, { shouldValidate: true });
@@ -257,7 +261,7 @@ const CardDetail: FC<CardDetailProps> = ({ resetFormValues }) => {
 				const imgUrl = import.meta.env.VITE_API_URL + student.ImageUrl;
 				setImgUrl(imgUrl);
 
-				if (menuTable.length > 0) {
+				if (!isView && menuTable.length > 0) {
 					dispatch(resetPosMenu());
 				}
 
@@ -277,8 +281,18 @@ const CardDetail: FC<CardDetailProps> = ({ resetFormValues }) => {
 					severity: "error",
 					message: "Card number is not found",
 				});
+
+				setValue("cardNumber", "");
+				setFocus("cardNumber");
+				setValue("familyId", "");
+				setValue("availableBalance", 0);
+				setValue("gardeLimit", "");
+				setValue("name", "");
+				setValue("idNumbar", "");
+				setValue("dailyLimit", "");
+				setValue("CardID", ""), dispatch(resetPosMenu());
 			}
-			console.log("data in cardnuber", data);
+			//console.log("data in cardnuber", data);
 		}
 	}, [isFetched, data]);
 
@@ -286,16 +300,16 @@ const CardDetail: FC<CardDetailProps> = ({ resetFormValues }) => {
 		if (gradeIsFetched) {
 			if ((gradeData as GradLimitResponse).Status === "1") {
 				const gradeLimit = (gradeData as GradLimitResponse).Data[0];
-				console.log("gradeLimit", gradeLimit);
+				//console.log("gradeLimit", gradeLimit);
 				setValue("dailyLimit", Number(gradeLimit.DailyLimit).toFixed(2));
 			} else {
 				// setNotify({
 				// 	severity: "error",
 				// 	message: "Grade limit is not found",
 				// });
-				console.log("error in grade limit");
+				//console.log("error in grade limit");
 			}
-			console.log("gradeData in cardnuber", gradeData);
+			//console.log("gradeData in cardnuber", gradeData);
 		}
 	}, [gradeIsFetched, gradeData]);
 

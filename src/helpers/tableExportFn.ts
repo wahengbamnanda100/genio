@@ -369,8 +369,8 @@ const exportPDF = ({
 		doc.text("Middle East", doc.internal.pageSize.width / 2, 11, {
 			align: "center",
 		});
-		let [_, section, type, tableName] = window.location.pathname.split("/");
-		console.log(section, type, tableName);
+		let [_, tableName] = window.location.pathname.split("/");
+		//console.log(section, type, tableName);
 		tableName = `${tableName[0].toUpperCase() + tableName.slice(1)}`;
 		doc.setFontSize(10);
 		doc.text(`${tableName}`, doc.internal.pageSize.width / 2, 17, {
@@ -410,7 +410,7 @@ const exportPDF = ({
 		addFooters(doc);
 		doc.save("a4.pdf");
 	} catch (err) {
-		console.log(err);
+		//console.log(err);
 	}
 };
 

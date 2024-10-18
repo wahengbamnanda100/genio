@@ -1,8 +1,17 @@
-import { Avatar, Box, ButtonBase, useTheme } from "@mui/material";
+import {
+	Avatar,
+	Box,
+	ButtonBase,
+	Divider,
+	Stack,
+	Typography,
+	useTheme,
+} from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import React from "react";
 import LogoSection from "./LogoSection";
 import RightSection from "./RightSection";
+import { placeholderUrl } from "./UserImage";
 
 // Define the prop types for the Header component
 interface HeaderProps {
@@ -11,6 +20,15 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ handleLeftDrawerToggle }) => {
 	const theme = useTheme();
+	const UserData = JSON.parse(localStorage.getItem("userDetail")!);
+
+	const updatedImageUrl = UserData?.CmpLogo
+		? `${import.meta.env.VITE_API_URL}${
+				UserData.CmpLogo.startsWith("..")
+					? UserData.CmpLogo.replace(/^\.{1,2}/, "")
+					: UserData.CmpLogo
+			}`
+		: "";
 
 	return (
 		<Box
@@ -51,7 +69,13 @@ const Header: React.FC<HeaderProps> = ({ handleLeftDrawerToggle }) => {
 				}}>
 				<LogoSection />
 			</Box>
-			<Box sx={{ flexGrow: 1 }} />
+			<Box sx={{ flexGrow: 1 }}>
+				<WelcomeScreen
+					username={UserData.EmpName || "admin"}
+					cmpName={UserData.CmpName || ""}
+					logoUrl={updatedImageUrl || placeholderUrl}
+				/>
+			</Box>
 			<Box sx={{ flexGrow: 1 }} />
 			<RightSection />
 		</Box>
@@ -59,3 +83,49 @@ const Header: React.FC<HeaderProps> = ({ handleLeftDrawerToggle }) => {
 };
 
 export default Header;
+
+const WelcomeScreen = ({
+	username,
+	cmpName,
+	logoUrl,
+}: {
+	username: string;
+	cmpName: string;
+	logoUrl: string;
+}) => {
+	const theme = useTheme();
+	return (
+		<Stack direction="row" gap={2} alignItems={"center"} color={"white"}>
+			<Box sx={{ overflow: "hidden", height: "40px", width: "60px" }}>
+				<img
+					src={logoUrl}
+					height={"100%"}
+					width={"100%"}
+					style={{ objectFit: "contain" }}
+				/>
+			</Box>
+			<Divider
+				flexItem
+				orientation="vertical"
+				sx={{
+					borderRightWidth: 1,
+					borderRightColor: theme.palette.secondary.light,
+				}}
+			/>
+			<Stack direction={"column"}>
+				<Typography>
+					Welcome{" "}
+					<span
+						style={{
+							color: theme.palette.secondary.light,
+							fontWeight: "400",
+							textTransform: "capitalize",
+						}}>
+						{username}
+					</span>
+				</Typography>
+				<Typography fontWeight={"500"}>{cmpName}</Typography>
+			</Stack>
+		</Stack>
+	);
+};

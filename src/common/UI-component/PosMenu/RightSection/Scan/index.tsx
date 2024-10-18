@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Button, ButtonBase, Collapse, Grid } from "@mui/material";
+import { ButtonBase, Collapse, Grid } from "@mui/material";
 import {
 	ScanComponentSchema,
 	scanField,
@@ -12,7 +12,7 @@ import { FC, useEffect, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { useFormContext, useFormState } from "react-hook-form";
-import { IoScanOutline } from "react-icons/io5";
+// import { IoScanOutline } from "react-icons/io5";
 // import _ from "lodash";
 
 import ScanUnitComponent from "./ScanUnitComponent";
@@ -31,31 +31,39 @@ const ScanComponent: FC<ScanComponentProps> = ({ resetFormValues }) => {
 	const { cmpName, showroom, salesPersonName, salesPersonCode } = errors as any;
 
 	useEffect(() => {
-		console.log("error in cam cmp", errors);
+		//console.log("error in cam cmp", errors);
 
 		const hasError = cmpName || showroom || salesPersonName || salesPersonCode;
 
 		setChecked(hasError);
 	}, [cmpName, showroom, salesPersonName, salesPersonCode, errors]);
 
-	const handleSubmitCLick = () => {
-		console.log("Clicked submit scan");
-	};
+	// const handleSubmitCLick = () => {
+	// 	//console.log("Clicked submit scan");
+	// };
 
 	const handleAddScan = () => {
-		console.log("Scan add clicked");
+		//console.log("Scan add clicked");
 		setChecked(!checked);
 	};
 
 	return (
-		<Grid container spacing={2} justifyContent={"center"} alignItems={"center"}>
-			<Grid item xs={3}>
+		<Grid
+			container
+			spacing={2}
+			justifyContent={"space-between"}
+			alignItems={"center"}>
+			<Grid
+				item
+				xs={1}
+				justifySelf={"flex-start"}
+				justifyContent={"flex-start"}>
 				<AddToggleBtn toggled={checked} handleAdd={handleAddScan} />
 			</Grid>
-			<Grid item xs={3}>
+			{/* <Grid item xs={3}>
 				<SubmitBtn handleSubmit={handleSubmitCLick} />
-			</Grid>
-			<Grid item container xs={6} spacing={2} justifyContent={"center"}>
+			</Grid> */}
+			<Grid item container xs={9} spacing={2} justifyContent={"end"}>
 				{scanField().map((field) => (
 					<Field key={field.name} {...field} {...control} />
 				))}
@@ -70,24 +78,24 @@ const ScanComponent: FC<ScanComponentProps> = ({ resetFormValues }) => {
 	);
 };
 
-interface SubmitBtnProps {
-	handleSubmit: () => void;
-}
+// interface SubmitBtnProps {
+// 	handleSubmit: () => void;
+// }
 
-const SubmitBtn: FC<SubmitBtnProps> = ({ handleSubmit }) => {
-	return (
-		<AnimateButton>
-			<Button
-				variant="contained"
-				color="secondary"
-				fullWidth
-				startIcon={<IoScanOutline />}
-				onClick={handleSubmit}>
-				Scan
-			</Button>
-		</AnimateButton>
-	);
-};
+// const SubmitBtn: FC<SubmitBtnProps> = ({ handleSubmit }) => {
+// 	return (
+// 		<AnimateButton>
+// 			<Button
+// 				variant="contained"
+// 				color="secondary"
+// 				fullWidth
+// 				startIcon={<IoScanOutline />}
+// 				onClick={handleSubmit}>
+// 				Scan
+// 			</Button>
+// 		</AnimateButton>
+// 	);
+// };
 
 interface AddBtnProps {
 	handleAdd: () => void;

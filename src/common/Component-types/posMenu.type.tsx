@@ -99,8 +99,8 @@ export type CardPaymentSchema = {
 };
 
 export type PosMenuFormSchema = cardDetailSchema &
-	MenuItem &
-	MenuTableSchema &
+	// MenuItem &
+	// MenuTableSchema &
 	DiscountAmountSchema &
 	NetAmountSchema &
 	PaidAmountSchema &
@@ -706,12 +706,12 @@ export const scanField = (): FieldProps[] => [
 		name: "invoiceDate",
 		label: "Invoice Date",
 		size: "small",
-		// disabled: true,
+		disabled: true,
 		// hasErrorMessage: true,
 		// rules: {
 		// 	required: "Please enter your Invoice Date",
 		// },
-		xs: 6,
+		xs: 4,
 	},
 	{
 		fieldType: "text",
@@ -772,7 +772,7 @@ export const scanUnitField = (
 			/>
 		),
 		onFocus: (name) => {
-			console.log("ffff", name);
+			//console.log("ffff", name);
 
 			setFocusField(name);
 		},
@@ -802,7 +802,7 @@ export const scanUnitField = (
 		label: "Sales Person Name",
 		size: "small",
 		onFocus: (name) => {
-			console.log("ffff", name);
+			//console.log("ffff", name);
 
 			setFocusField(name);
 		},
@@ -827,7 +827,7 @@ export const scanUnitField = (
 				},
 				keyStroke && keyStroke !== "" ? true : false
 			);
-			console.log("emp res", response);
+			//console.log("emp res", response);
 
 			return response;
 		},

@@ -40,7 +40,7 @@ const DotIndicator: React.FC<DotIndicatorProps> = ({
 	total,
 	activeIndex,
 	dotsize = 10,
-	maxVisibleDots = 25,
+	maxVisibleDots = 15,
 }) => {
 	const theme = useTheme();
 	const containerRef = useRef<HTMLDivElement | null>(null);

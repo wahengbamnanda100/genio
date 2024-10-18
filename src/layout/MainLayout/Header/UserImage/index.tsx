@@ -10,7 +10,7 @@ interface ImageComponentProps {
 	sxProps?: CSSProperties;
 }
 
-const placeholderUrl =
+export const placeholderUrl =
 	"https://placehold.jp/25/5b5b5b/ffffff/200x200.png?text=NO%20IMAGE%20AVAILABLE&css=%7B%22border-radius%22%3A%2215px%22%2C%22background%22%3A%22%20-webkit-gradient(linear%2C%20left%20top%2C%20left%20bottom%2C%20from(%235b5b5b)%2C%20to(%23cccccc))%22%2C%22font-weight%22%3A%22%20bold%22%7D";
 
 const UserImageAvatar: React.FC<ImageComponentProps> = ({
@@ -90,7 +90,7 @@ export const StudentImage: React.FC<ImageComponentProps> = ({
 		setLoading(false);
 	};
 
-	// console.log("src", src, "===", imgSrc);
+	// //console.log("src", src, "===", imgSrc);
 
 	const handleError = () => {
 		setLoading(false);
