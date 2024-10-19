@@ -31,6 +31,7 @@ import {
 	selectMenuTable,
 	selectNetTotalAmount,
 } from "../store/slices/posMenuSlice";
+import { queryCache } from "../utils/utils";
 
 interface PosMenuProps {
 	data: any[] | any;
@@ -467,7 +468,7 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 			Sih_ID_N: "",
 			CardID: (formData.name as Student)?.CardID || "",
 			Usr_ID_N: "1",
-			CitizenshipID: (formData.name as Student)?.CardID || "",
+			CitizenshipID: (formData.name as Student)?.CitizenshipID || "",
 			Emp_ID_N: (formData.salesPersonCode as EmployeeItem)?.Emp_ID_N || "",
 			Paymentdtl: [
 				{
@@ -503,6 +504,7 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 
 	const handleModalClearConfirm = () => {
 		method.reset();
+		setAvailBal(0);
 		dispatch(resetPosMenu());
 		setOpenClear(false);
 		focusCardNumber();
@@ -516,6 +518,13 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 
 	useEffect(() => {
 		method.setFocus("cardNumber" as any);
+		queryCache.clear();
+		setNotify((prev: any) => {
+			if (prev?.severity !== "success") {
+				return undefined;
+			}
+			return prev;
+		});
 	}, []);
 
 	useEffect(() => {
@@ -529,6 +538,7 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 		}
 		if (!isView) {
 			method.reset();
+			setAvailBal(0);
 			method.resetField("availableBalance" as any);
 			dispatch(addMenuItems([]));
 		}

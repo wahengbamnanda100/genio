@@ -101,14 +101,14 @@ const FormCard: FC<FormCardProps> = ({
 						</ButtonBase>
 					</AnimateButton>
 				</Box>
-				<Grid item xs={12} pb={2}>
+				{/* <Grid item xs={12} pb={2}>
 					<Typography
 						variant="subtitle2"
 						fontWeight={"medium"}
 						textAlign={"center"}>
 						Can't access your account?
 					</Typography>
-				</Grid>
+				</Grid> */}
 				<Grid item xs={12} pb={2}>
 					<Typography
 						variant="subtitle2"

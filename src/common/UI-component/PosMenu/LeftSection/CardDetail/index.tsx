@@ -37,6 +37,7 @@ import {
 	selectMenuTable,
 } from "../../../../../store/slices/posMenuSlice";
 import { useLocation } from "react-router";
+import { queryCache } from "../../../../../utils/utils";
 // import { FileDownloadSharp, RestartAltOutlined } from "@mui/icons-material";
 
 interface CardDetailProps {
@@ -316,6 +317,10 @@ const CardDetail: FC<CardDetailProps> = ({ resetFormValues }) => {
 	useEffect(() => {
 		refetch();
 	}, [refetch, (nameWatch as Student)?.StudentName]);
+
+	useEffect(() => {
+		queryCache.clear();
+	}, []);
 
 	return (
 		<Grid container spacing={1}>

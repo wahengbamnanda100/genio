@@ -447,6 +447,7 @@ export const discountAmountField = (
 					</span>
 				</InputAdornment>
 			),
+			inputComponent: NumericFormatCustom as any,
 		},
 		rules: {
 			required: "Please enter your Discount",
@@ -706,7 +707,7 @@ export const scanField = (): FieldProps[] => [
 		name: "invoiceDate",
 		label: "Invoice Date",
 		size: "small",
-		disabled: true,
+		// disabled: true,
 		// hasErrorMessage: true,
 		// rules: {
 		// 	required: "Please enter your Invoice Date",

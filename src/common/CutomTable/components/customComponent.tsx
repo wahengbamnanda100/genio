@@ -168,6 +168,27 @@ export const CustomTableCurrrencyCellFormatter: React.ComponentType<
 	);
 };
 
+export const CustomTableCellFormatter: React.ComponentType<
+	DataTypeProvider.ValueFormatterProps
+> = ({ value }) => {
+	const fixValues = Number(value).toFixed(2);
+
+	return (
+		<NumericFormat
+			displayType="text"
+			value={fixValues}
+			// thousandsGroupStyle="lakh"
+			thousandSeparator
+			valueIsNumericString
+			decimalScale={2}
+			fixedDecimalScale
+			// renderText={(fixValues) => (
+			// 	<CurrencyContent>{fixValues}</CurrencyContent>
+			// )}
+		/>
+	);
+};
+
 export const currencyFilterPredicate = (
 	value: number | string,
 	filterValue: string

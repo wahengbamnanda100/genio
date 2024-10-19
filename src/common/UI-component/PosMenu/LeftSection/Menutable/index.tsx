@@ -6,11 +6,13 @@ import {
 	ButtonBase,
 	IconButton,
 	Typography,
+	useMediaQuery,
 	// useMediaQuery,
 	useTheme,
 } from "@mui/material";
 import {
 	Column,
+	DataTypeProvider,
 	// EditingCell,
 	// EditingState,
 	// EditingStateProps,
@@ -37,16 +39,17 @@ import { MenuItem } from "../../../../Component-types/posMenu.type";
 // import CustomTable from "../../../../CutomTable/CustomTable";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import ConfirmationDialog from "../../../../ModalComponent/ConfirmationDialog";
+import { CustomTableCellFormatter } from "../../../../CutomTable/components/customComponent";
 
 const MenuTable = () => {
 	const dispatch: AppDispatch = useDispatch();
-	// const theme = useTheme();
+	const theme = useTheme();
 	const [open, setOpen] = useState<boolean>(false);
 	const menuTable = useSelector((state: RootState) => selectMenuTable(state));
 
 	// const mediaBetweenMd = useMediaQuery(theme.breakpoints.between(1023, 1301));
 	// const mediaDownMd = useMediaQuery(theme.breakpoints.down(1300));
-	// const mediaDownSm = useMediaQuery(theme.breakpoints.down(1024));
+	const mediaDownSm = useMediaQuery(theme.breakpoints.down(1025));
 
 	// const [columnExtension] = useState<GridColumnExtension[]>([
 	// 	{ columnName: "sl", width: 50 }, // Width as a number
@@ -65,16 +68,29 @@ const MenuTable = () => {
 	const [selection, setSelection] = useState<(string | number)[]>([]);
 	const [deleteRow, setDeleteRow] = useState<MenuItem>();
 	const [rightColumns] = useState(["action"]);
-	const [columnWidths, setColumnWidths] = useState<TableColumnWidthInfo[]>([
-		{ columnName: "sl", width: 50 }, // Width as a number
-		{ columnName: "description", width: "300" },
-		{ columnName: "quantity", width: 50 },
-		{ columnName: "unitPrice", width: 50 },
-		{ columnName: "amount", width: 75 },
-		{ columnName: "discount", width: 75 },
-		{ columnName: "netAmount", width: 75 },
-		{ columnName: "action", width: 60 },
-	]);
+	const [columnWidths, setColumnWidths] = useState<TableColumnWidthInfo[]>(
+		mediaDownSm
+			? [
+					{ columnName: "sl", width: 50 }, // Width as a number
+					{ columnName: "description", width: 190 },
+					{ columnName: "quantity", width: 50 },
+					{ columnName: "unitPrice", width: 60 },
+					{ columnName: "amount", width: 75 },
+					{ columnName: "discount", width: 75 },
+					{ columnName: "netAmount", width: 75 },
+					{ columnName: "action", width: 60 },
+				]
+			: [
+					{ columnName: "sl", width: 50 }, // Width as a number
+					{ columnName: "description", width: 270 },
+					{ columnName: "quantity", width: 50 },
+					{ columnName: "unitPrice", width: 60 },
+					{ columnName: "amount", width: 75 },
+					{ columnName: "discount", width: 75 },
+					{ columnName: "netAmount", width: 75 },
+					{ columnName: "action", width: 60 },
+				]
+	);
 
 	const handleRowDelete = (row: MenuItem) => {
 		setDeleteRow(row);
@@ -173,6 +189,17 @@ const MenuTable = () => {
 		setOpen(false);
 	};
 
+	// useEffect(() => {
+	// 	if (mediaDownSm) {
+	// 		console.log("this si media md", mediaDownSm);
+
+	// 		setColumnWidths((prev) => [
+	// 			...prev,
+	// 			{ columnName: "description", width: "140" },
+	// 		]);
+	// 	}
+	// }, [mediaDownSm, mediaDownMd]);
+
 	return (
 		<Box>
 			<TableHeader
@@ -206,8 +233,12 @@ const MenuTable = () => {
 				// hasSelect={true}
 				selection={selection}
 				rightColumns={rightColumns}
-				setSelection={handleSelectionChange}
-			/>
+				setSelection={handleSelectionChange}>
+				<DataTypeProvider
+					for={["unitPrice", "amount", "discount", "netAmount"]}
+					formatterComponent={CustomTableCellFormatter}
+				/>
+			</EditingCustomTable>
 
 			<ConfirmationDialog
 				dialogType="delete"

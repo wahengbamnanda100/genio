@@ -140,6 +140,8 @@ const PaidAmount: FC<PaidAmountProps> = () => {
 			// if (refresh) {
 			// 	setAvailBal(0);
 			// }
+		} else {
+			setAvailBal(0);
 		}
 	}, [(nameWatch as Student)?.StudentName]);
 
@@ -194,6 +196,7 @@ const PaidAmount: FC<PaidAmountProps> = () => {
 				} else {
 					setDisableCashAmt(true); // Disable if already at the correct amount
 					// setCheckDisabled(true);
+					// setValue("totalPaid", 0); //todo
 				}
 			}
 		};
@@ -224,6 +227,7 @@ const PaidAmount: FC<PaidAmountProps> = () => {
 					setDisableCashAmt(false);
 				} else {
 					setDisableCashAmt(true);
+					setValue("totalPaid", 0);
 				}
 				setValue("cardType", []); // Reset card type
 				setValue("cardTypeNumber", ""); // Reset card number

@@ -18,6 +18,7 @@ import {
 } from "../../../../../store/slices/posMenuSlice";
 import { RootState } from "../../../../../store";
 import { useLocation } from "react-router";
+import { queryCache } from "../../../../../utils/utils";
 
 interface ScanUnitComponentProps {
 	resetFormValues: (resetFunc: () => void) => void;
@@ -133,6 +134,10 @@ const ScanUnitComponent: FC<ScanUnitComponentProps> = ({ resetFormValues }) => {
 			setShowConfirm(true);
 		}
 	}, [showroomWatch]);
+
+	useEffect(() => {
+		queryCache.clear();
+	}, []);
 
 	return (
 		<>

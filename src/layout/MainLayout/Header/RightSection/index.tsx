@@ -1,10 +1,20 @@
-import { Avatar, Box, ButtonBase, useTheme } from "@mui/material";
+import {
+	Avatar,
+	Box,
+	ButtonBase,
+	Divider,
+	Stack,
+	Typography,
+	useTheme,
+} from "@mui/material";
 
 import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
 import UserImageAvatar from "../UserImage";
 import { useNavigate } from "react-router";
 import ConfirmationDialog from "../../../../common/ModalComponent/ConfirmationDialog";
 import { useState } from "react";
+import moment from "moment";
+import { queryCache } from "../../../../utils/utils";
 // import { useAppProvider } from "../../../../AppProvider";
 
 const RightSection = () => {
@@ -20,7 +30,7 @@ const RightSection = () => {
 				userData.EmpImage.startsWith("..")
 					? userData.EmpImage.replace(/^\.{1,2}/, "")
 					: userData.EmpImage
-			}`
+			}?timestamp=${new Date().getTime()}` // Cache-busting query param
 		: "";
 
 	const handleLogout = () => {
@@ -28,8 +38,9 @@ const RightSection = () => {
 		setOpen(true);
 	};
 
-	const handleConfirm = () => {
+	const handleConfirm = async () => {
 		localStorage.clear();
+		await queryCache.clear();
 		navigate("/login");
 		setOpen(false);
 	};
@@ -48,7 +59,34 @@ const RightSection = () => {
 					gap: 2,
 				}}>
 				{/* //todo add url with user data */}
-				<UserImageAvatar src={updatedImageUrl} appBar={true} />
+				<Stack direction="row" gap={2} alignItems={"center"} color={"white"}>
+					<UserImageAvatar src={updatedImageUrl} appBar={true} />
+					<Divider
+						flexItem
+						orientation="vertical"
+						sx={{
+							borderRightWidth: 1,
+							borderRightColor: theme.palette.secondary.light,
+						}}
+					/>
+					<Stack direction={"column"}>
+						<Typography>
+							Welcome{" "}
+							<span
+								style={{
+									color: theme.palette.secondary.light,
+									fontWeight: "500",
+									textTransform: "capitalize",
+								}}>
+								{userData.EmpName || "admin"}
+							</span>
+						</Typography>
+						<Typography fontWeight={"400"}>
+							{moment(new Date()).format("DD-MMM-YYYY")}
+						</Typography>
+					</Stack>
+				</Stack>
+
 				<ButtonBase sx={{ borderRadius: "12px", overflow: "hidden" }}>
 					<Avatar
 						variant="rounded"

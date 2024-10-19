@@ -27,7 +27,7 @@ const Header: React.FC<HeaderProps> = ({ handleLeftDrawerToggle }) => {
 				UserData.CmpLogo.startsWith("..")
 					? UserData.CmpLogo.replace(/^\.{1,2}/, "")
 					: UserData.CmpLogo
-			}`
+			}?timestamp=${new Date().getTime()}` // Cache-busting query param
 		: "";
 
 	return (
@@ -71,7 +71,7 @@ const Header: React.FC<HeaderProps> = ({ handleLeftDrawerToggle }) => {
 			</Box>
 			<Box sx={{ flexGrow: 1 }}>
 				<WelcomeScreen
-					username={UserData.EmpName || "admin"}
+					// username={UserData.EmpName || "admin"}
 					cmpName={UserData.CmpName || ""}
 					logoUrl={updatedImageUrl || placeholderUrl}
 				/>
@@ -85,11 +85,9 @@ const Header: React.FC<HeaderProps> = ({ handleLeftDrawerToggle }) => {
 export default Header;
 
 const WelcomeScreen = ({
-	username,
 	cmpName,
 	logoUrl,
 }: {
-	username: string;
 	cmpName: string;
 	logoUrl: string;
 }) => {
@@ -112,20 +110,7 @@ const WelcomeScreen = ({
 					borderRightColor: theme.palette.secondary.light,
 				}}
 			/>
-			<Stack direction={"column"}>
-				<Typography>
-					Welcome{" "}
-					<span
-						style={{
-							color: theme.palette.secondary.light,
-							fontWeight: "400",
-							textTransform: "capitalize",
-						}}>
-						{username}
-					</span>
-				</Typography>
-				<Typography fontWeight={"500"}>{cmpName}</Typography>
-			</Stack>
+			<Typography fontWeight={"500"}>{cmpName}</Typography>
 		</Stack>
 	);
 };

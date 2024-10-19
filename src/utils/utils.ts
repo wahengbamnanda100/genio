@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { QueryCache } from "@tanstack/react-query";
 import { PosMenuFormSchema } from "../common/Component-types/posMenu.type";
 
 export function getDropDownValues<T>(
@@ -84,3 +85,12 @@ export const generateResetValues = (
 
 	return resetValues;
 };
+
+export const queryCache = new QueryCache({
+	onError: (error) => {
+		console.log(error);
+	},
+	onSuccess: (data) => {
+		console.log(data);
+	},
+});

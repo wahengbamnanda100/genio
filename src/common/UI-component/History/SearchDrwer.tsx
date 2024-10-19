@@ -44,6 +44,7 @@ import { useNavigate } from "react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAppProvider } from "../../../AppProvider";
 import ConfirmationDialog from "../../ModalComponent/ConfirmationDialog";
+import { queryCache } from "../../../utils/utils";
 
 interface SearchDrawerProps extends SwipeableDrawerProps {
 	setClose: React.Dispatch<React.SetStateAction<boolean>>;
@@ -556,6 +557,7 @@ const SearchDrawer: FC<SearchDrawerProps> = ({
 	useEffect(() => {
 		if (open) {
 			refetch();
+			queryCache.clear();
 			setEnable(true);
 		}
 		if (!open) {
@@ -567,15 +569,15 @@ const SearchDrawer: FC<SearchDrawerProps> = ({
 				Rows: 10,
 				PageNo: 1,
 			});
-			currentPageData=[],
-			setTotalValues({
-				totalAmount: 0,
-				netAmount: 0,
-				discountAmount: 0,
-				totalGenioWalletAmount: 0,
-				totalCashAmount: 0,
-				totalCardAmount: 0,
-			});
+			(currentPageData = []),
+				setTotalValues({
+					totalAmount: 0,
+					netAmount: 0,
+					discountAmount: 0,
+					totalGenioWalletAmount: 0,
+					totalCashAmount: 0,
+					totalCardAmount: 0,
+				});
 			setSearch({
 				InvoiceNumber: "",
 				CardNumber: "",
@@ -591,6 +593,10 @@ const SearchDrawer: FC<SearchDrawerProps> = ({
 			setExpanded(false);
 		}
 	}, [open]);
+
+	useEffect(() => {
+		queryCache.clear();
+	}, []);
 
 	return (
 		<SwipeableDrawer
