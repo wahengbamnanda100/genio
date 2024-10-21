@@ -80,6 +80,7 @@ const AsyncSearchField = ({
 	renderItem,
 	onFocus,
 	highlightColor = "#61c2ff",
+	disabled = false,
 	...restProps
 }: AsyncSearchFieldProps) => {
 	const [keyStroke, setKeyStroke] = useState("");
@@ -103,7 +104,7 @@ const AsyncSearchField = ({
 
 		const debouncedFetchData = _.debounce(fetchData, 500);
 
-		if (keyStroke !== "" && isFocused) {
+		if (keyStroke !== "" && isFocused && !disabled) {
 			debouncedFetchData();
 		} else {
 			setSearchData([]);
@@ -114,7 +115,7 @@ const AsyncSearchField = ({
 		return () => {
 			debouncedFetchData.cancel();
 		};
-	}, [keyStroke, isFocused, searchApi]);
+	}, [keyStroke, isFocused, searchApi, disabled]);
 
 	useEffect(() => {
 		if (isFocused && onFocus) {
@@ -164,7 +165,8 @@ const AsyncSearchField = ({
 						onInputChange={(_, value) => {
 							setKeyStroke(value);
 						}}
-						options={restProps.disabled ? [] : options(searchData)}
+						disabled={disabled}
+						options={disabled ? [] : options(searchData)}
 						getOptionLabel={getOptionLabel}
 						filterOptions={filterOptions}
 						PopperComponent={renderItem ? StyledPoper : undefined}

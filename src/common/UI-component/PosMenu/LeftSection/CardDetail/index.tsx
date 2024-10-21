@@ -260,13 +260,21 @@ const CardDetail: FC<CardDetailProps> = ({ resetFormValues }) => {
 		queryCache.clear();
 
 		if (cardNumberWatch !== "") {
-			const resquestBody = {
+			const requestBody = {
 				...studentSearchRequestBodies,
 				ShowroomId: showRoom,
 				CardNumber: cardNumberWatch!,
 			};
-			!isView && mutateAsync(resquestBody);
+
+			// Debounce to prevent multiple mutations when the scanner sends multiple inputs
+			const debouncedMutate = setTimeout(() => {
+				!isView && mutateAsync(requestBody);
+			}, 500); // Debounce delay (adjust as needed)
+
+			// Cleanup timer if cardNumberWatch changes before the timeout completes
+			return () => clearTimeout(debouncedMutate);
 		}
+
 		if (isView) {
 			setValue("cardNumber", "");
 		}

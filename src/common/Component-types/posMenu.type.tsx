@@ -366,10 +366,10 @@ export const cardDetailFields = (
 				/>
 			),
 			disabled: true,
-			hasErrorMessage: true,
-			rules: {
-				required: "Please enter your family ID",
-			},
+			// hasErrorMessage: true,
+			// rules: {
+			// 	required: "Please enter your family ID",
+			// },
 			searchApi: (keyStroke: string) => {
 				return searchStudentList(
 					{
