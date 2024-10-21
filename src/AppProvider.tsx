@@ -12,6 +12,7 @@ type ImgUrlType = string;
 type DisableType = boolean;
 type AvailBalType = number;
 type ScannNubmerType = string;
+type FocusInput = string;
 
 type AppContextType = {
 	notify: NotifyStateType;
@@ -32,6 +33,8 @@ type AppContextType = {
 	setChecked: React.Dispatch<React.SetStateAction<DisableType>>;
 	scanNubmer: ScannNubmerType;
 	setScanNumber: React.Dispatch<React.SetStateAction<ScannNubmerType>>;
+	focusInput: FocusInput;
+	setFocusInput: React.Dispatch<React.SetStateAction<FocusInput>>;
 };
 
 const app = React.createContext<AppContextType>({} as AppContextType);
@@ -50,6 +53,7 @@ const AppProvider = ({ children }: AppProviderProps) => {
 		React.useState<DisableType>(false);
 	const [itemColor, setItemColor] = React.useState<ItemColorType>("#bd4186");
 	const [scanNubmer, setScanNumber] = React.useState<ScannNubmerType>("");
+	const [focusInput, setFocusInput] = React.useState<FocusInput>("");
 
 	return (
 		<app.Provider
@@ -72,6 +76,8 @@ const AppProvider = ({ children }: AppProviderProps) => {
 				setDisableCashAmount,
 				disableAvailableBalance,
 				setDisableAvailBalance,
+				focusInput,
+				setFocusInput,
 			}}>
 			{children}
 		</app.Provider>

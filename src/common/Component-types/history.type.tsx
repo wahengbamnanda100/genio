@@ -80,7 +80,7 @@ export const searchHistoryFields = (
 		{
 			fieldType: "search",
 			name: "invoiceNubmer",
-			label: "Invoide Number",
+			label: "Invoice Number",
 			size: "small",
 			hasErrorMessage: true,
 			// rules: {
@@ -146,7 +146,7 @@ export const searchHistoryFields = (
 		{
 			fieldType: "search",
 			name: "studentName",
-			label: "Studnet Name",
+			label: "Student Name",
 			size: "small",
 			searchApi: async (keyStroke: string) => {
 				const response = await searchPreviousList(
@@ -175,7 +175,7 @@ export const searchHistoryFields = (
 		{
 			fieldType: "search",
 			name: "admissionNumber",
-			label: "Admission Nubmer",
+			label: "Admission Number",
 			size: "small",
 			searchApi: async (keyStroke: string) => {
 				const response = await searchPreviousList(

@@ -134,7 +134,13 @@ const DiscountAmount: FC<DiscountAmountProps> = ({ isView }) => {
 			changeDiscountAmount !== discountAmount
 		) {
 			updateDiscount(changeDiscountAmount); // Use debounced function
+		} else if (!changeDiscountPercentAmount) {
+			console.log("discount amount !!! % == ", changeDiscountPercentAmount);
+			setValue("discount", 0);
+			setValue("discountAmount", 0);
 		}
+
+		console.log("discount amount % == ", changeDiscountPercentAmount);
 	}, [changeDiscountPercentAmount]);
 
 	useEffect(() => {

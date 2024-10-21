@@ -96,7 +96,7 @@ const renderScrollableList = <T,>(
 		}}>
 		{loading ? (
 			<ListItem disablePadding divider>
-				<Skeleton variant="text" width="80%" height={40} />
+				<Skeleton variant="text" width="90%" height={40} sx={{ mx: 2 }} />
 			</ListItem>
 		) : items.length === 0 ? (
 			<ListItem disablePadding>

@@ -78,7 +78,7 @@ const RightSection = () => {
 									fontWeight: "500",
 									textTransform: "capitalize",
 								}}>
-								{userData.EmpName || "admin"}
+								{userData?.EmpName || "admin"}
 							</span>
 						</Typography>
 						<Typography fontWeight={"400"}>

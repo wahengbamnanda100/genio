@@ -121,6 +121,7 @@ const NumericFormatCustom = forwardRef<NumericFormatProps, CustomProps>(
 			<NumericFormat
 				{...other}
 				getInputRef={ref}
+				onFocus={(e) => e.target.select()}
 				onValueChange={(values) => {
 					onChange({
 						target: {

@@ -133,15 +133,13 @@ const PaidAmount: FC<PaidAmountProps> = () => {
 	}, [availBal, netTotalAmount, setCheckDisable]);
 
 	useEffect(() => {
-		if (nameWatch) {
+		if (!isView && nameWatch) {
 			const value = nameWatch as Student;
 			setAvailBal(Number(value.AvailableBalance));
 			//console.log("(nameWatch as Student)", value);
 			// if (refresh) {
 			// 	setAvailBal(0);
 			// }
-		} else {
-			setAvailBal(0);
 		}
 	}, [(nameWatch as Student)?.StudentName]);
 
@@ -174,7 +172,7 @@ const PaidAmount: FC<PaidAmountProps> = () => {
 				// Update balance amount and availability
 				setValue("balanceAmount", remainingBalance);
 				setDisableAvalBal(false);
-				setValue("availableBalance", availBal);
+				!isView && setValue("availableBalance", availBal);
 
 				updateCashAndBalance(); // Trigger update for cash/card amounts based on remaining balance
 			}

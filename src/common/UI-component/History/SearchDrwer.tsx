@@ -297,11 +297,11 @@ const SearchDrawer: FC<SearchDrawerProps> = ({
 			},
 		},
 		{
-			title: "Invoice Nubmer",
+			title: "Invoice Number",
 			name: "InvoiceNumber",
 		},
 		{
-			title: "Invoic Date",
+			title: "Invoice Date",
 			name: "InvoiceDate",
 			getCellValue: (row) =>
 				moment(row.InvoiceDate, "M/D/YYYY h:mm:ss A").format(

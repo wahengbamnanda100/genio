@@ -41,7 +41,7 @@ import { getDropDownValues } from "../../../utils/utils";
 
 interface ActionButtonProps {
 	//todo refactor all animate button to one compoennt
-	varient: "serach" | "cancel";
+	varient: "search" | "cancel";
 	onClick: any;
 }
 
@@ -60,10 +60,10 @@ const ActionButton: FC<ActionButtonProps> = ({ varient, onClick }) => {
 	return (
 		<AnimateButton>
 			<Button
-				variant={varient === "serach" ? "contained" : "outlined"}
+				variant={varient === "search" ? "contained" : "outlined"}
 				color={"secondary"}
 				fullWidth
-				type={varient === "serach" ? "submit" : "button"}
+				type={varient === "search" ? "submit" : "button"}
 				sx={{
 					borderRadius: 1,
 					px: 2,
@@ -71,7 +71,7 @@ const ActionButton: FC<ActionButtonProps> = ({ varient, onClick }) => {
 					// minWidth: "40px",
 					// maxHeight: "40px",
 				}}
-				startIcon={varient === "serach" ? <SearchIcon /> : <ClearIcon />}
+				startIcon={varient === "search" ? <SearchIcon /> : <ClearIcon />}
 				onClick={onClick}>
 				{varient}
 			</Button>
@@ -82,7 +82,7 @@ const ActionButton: FC<ActionButtonProps> = ({ varient, onClick }) => {
 const SearchButtonGroup: FC<SeachButtonProps> = ({ onSearch, onCancel }) => {
 	return (
 		<Stack direction={"row"} gap={2}>
-			<ActionButton varient="serach" onClick={onSearch} />
+			<ActionButton varient="search" onClick={onSearch} />
 			<ActionButton varient="cancel" onClick={onCancel} />
 		</Stack>
 	);

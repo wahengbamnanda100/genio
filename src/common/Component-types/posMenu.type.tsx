@@ -183,6 +183,7 @@ export const studentSearchRequestBodies = {
 	FamilyId: "",
 	CardNumber: "",
 	StudentName: "",
+	Admissionno: "",
 	ShowroomId: "", //todo change it later
 	Cmp_ID_N: JSON.parse(localStorage.getItem("CmpId")!) || "", //todo change it later
 };
@@ -266,7 +267,11 @@ export const cardDetailFields = (
 			},
 			searchApi: (keyStroke: string) => {
 				return searchStudentList(
-					{ ...studentSearchRequestBodies, ShowroomId, StudentName: keyStroke },
+					{
+						...studentSearchRequestBodies,
+						ShowroomId,
+						StudentName: keyStroke,
+					},
 					keyStroke && keyStroke !== "" ? true : false
 				);
 			},
@@ -296,7 +301,7 @@ export const cardDetailFields = (
 					highlightColor={highlightColor}
 				/>
 			),
-			disabled: true,
+			// disabled: true,
 			hasErrorMessage: true,
 			rules: {
 				required: "Please enter ID Number",
@@ -306,7 +311,7 @@ export const cardDetailFields = (
 					{
 						...studentSearchRequestBodies,
 						ShowroomId,
-						CardNumber: keyStroke,
+						Admissionno: keyStroke,
 					},
 					keyStroke && keyStroke !== "" ? true : false
 				);
@@ -360,6 +365,7 @@ export const cardDetailFields = (
 					highlightColor={highlightColor}
 				/>
 			),
+			disabled: true,
 			hasErrorMessage: true,
 			rules: {
 				required: "Please enter your family ID",
@@ -432,7 +438,7 @@ export const discountAmountField = (
 		name: "discount",
 		label: "Discount %",
 		size: "small",
-		hasErrorMessage: true,
+		// hasErrorMessage: true,
 		condition: /^-?\d*\.?\d{0,2}$/,
 		disabled,
 		InputProps: {
@@ -449,9 +455,9 @@ export const discountAmountField = (
 			),
 			inputComponent: NumericFormatCustom as any,
 		},
-		rules: {
-			required: "Please enter your Discount",
-		},
+		// rules: {
+		// 	required: "Please enter your Discount",
+		// },
 		inputProps: {
 			maxLength: 7,
 			style: { textAlign: "end" },
@@ -463,12 +469,12 @@ export const discountAmountField = (
 		name: "discountAmount",
 		label: "Discount Amount",
 		size: "small",
-		hasErrorMessage: true,
+		// hasErrorMessage: true,
 		condition: /^-?\d*\.?\d{0,2}$/,
 		disabled,
-		rules: {
-			required: "Please enter your Net Amount",
-		},
+		// rules: {
+		// 	required: "Please enter your Net Amount",
+		// },
 		InputProps: {
 			inputComponent: NumericFormatCustom as any,
 		},
@@ -712,7 +718,7 @@ export const scanField = (): FieldProps[] => [
 		// rules: {
 		// 	required: "Please enter your Invoice Date",
 		// },
-		xs: 4,
+		xs: 6,
 	},
 	{
 		fieldType: "text",

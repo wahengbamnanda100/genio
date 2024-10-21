@@ -24,10 +24,11 @@ import { useAppProvider } from "../../../../../AppProvider";
 import { StudentImage } from "../../../../../layout/MainLayout/Header/UserImage";
 import {
 	GetGradeLimit,
+	getStudentList,
 	// GradeLimitParamType,
 	GradLimitResponse,
 	// getStudentList,
-	SearchStudentList,
+	// SearchStudentList,
 	// searchStudentList,
 } from "../../../../../services";
 import { useDispatch, useSelector } from "react-redux";
@@ -38,6 +39,8 @@ import {
 } from "../../../../../store/slices/posMenuSlice";
 import { useLocation } from "react-router";
 import { queryCache } from "../../../../../utils/utils";
+import { useMutation } from "@tanstack/react-query";
+// import { useQueryClient } from "@tanstack/react-query";
 // import { FileDownloadSharp, RestartAltOutlined } from "@mui/icons-material";
 
 interface CardDetailProps {
@@ -48,17 +51,22 @@ const CardDetail: FC<CardDetailProps> = ({ resetFormValues }) => {
 	const theme = useTheme();
 	const dispatch = useDispatch();
 	const { pathname } = useLocation();
+	// const clientQuery = useQueryClient();
 	const isView = pathname.includes("view");
-	const { setImgUrl, setNotify } = useAppProvider();
+	const { focusInput, setImgUrl, setNotify, setAvailBal, setFocusInput } =
+		useAppProvider();
 	const { control, setValue, setFocus } = useFormContext<
 		cardDetailSchema | ScanUnitSchema
 	>();
 	const [focusField, setFocusField] = useState<string>("");
+	const [focusIdNum, setFocusIdNumField] = useState<string>("");
 	const [showRoom, setShowRoom] = useState<string>("");
 	const [params, setParmas] = useState<any>({
 		strCust_ID_N: undefined,
 		strShm_ID_N: showRoom,
 	});
+
+	// const [data, setData] = useState<unknown>(null);
 
 	const menuTable = useSelector((state: RootState) => selectMenuTable(state));
 
@@ -73,11 +81,11 @@ const CardDetail: FC<CardDetailProps> = ({ resetFormValues }) => {
 		cardNumberWatch,
 		idNumberWatch,
 		nameWatch,
-		familyIdWatch,
+		// familyIdWatch,
 		showroomWatch,
 	] = useWatch({
 		control,
-		name: ["cardNumber", "idNumbar", "name", "familyId", "showroom"],
+		name: ["cardNumber", "idNumbar", "name", "showroom"],
 	});
 
 	// const debouncedCardNumber = useCallback(
@@ -87,16 +95,80 @@ const CardDetail: FC<CardDetailProps> = ({ resetFormValues }) => {
 
 	// //console.log("debsddfds", debouncedCardNumber(cardNumberWatch));
 
-	const { data, isFetched, isLoading } = SearchStudentList(
-		{
-			...studentSearchRequestBodies,
-			ShowroomId: showRoom,
-			CardNumber: cardNumberWatch!,
+	// const { data, isFetched, isLoading } = SearchStudentList(
+	// 	{
+	// 		...studentSearchRequestBodies,
+	// 		ShowroomId: showRoom,
+	// 		CardNumber: cardNumberWatch!,
+	// 	},
+	// 	{
+	// 		enabled: !!cardNumberWatch,
+	// 	}
+	// );
+
+	const { mutateAsync, isPending } = useMutation({
+		mutationKey: ["studen-card"],
+		mutationFn: getStudentList,
+		onSuccess: (data) => {
+			if (data.Status === "1") {
+				console.log("student dasta", data);
+				// setData(data.Data);
+
+				const student = (data as StudentListResponse).Data[0];
+				//console.log("_data", student);
+
+				setValue("familyId", student, { shouldValidate: true });
+				setValue("idNumbar", student, { shouldValidate: true });
+				setValue("name", student, { shouldValidate: true });
+				// setValue("dailyLimit", Number(student.DailyLimit).toFixed(2), {
+				// 	shouldValidate: true,
+				// });
+				setValue("gardeLimit", student.Grade, { shouldValidate: true });
+				setAvailBal(Number(student.AvailableBalance));
+				console.log("available balance ", data);
+
+				// Update the image URL
+				const imgUrl = import.meta.env.VITE_API_URL + student.ImageUrl;
+				setImgUrl(imgUrl);
+
+				if (!isView && menuTable.length > 0) {
+					dispatch(resetPosMenu());
+				}
+
+				// Store previous values
+				previousValuesRef.current = {
+					cardNumber: student.CardNumber,
+					familyId: student.FamilyId,
+					idNumbar: student.AdmissionNumber,
+					name: student.StudentName,
+					dailyLimit: Number(student.DailyLimit).toFixed(2),
+					gardeLimit: student.Grade,
+				};
+				setValue("cardNumber", "");
+				setFocus("cardNumber");
+			} else {
+				setNotify({
+					severity: "error",
+					message: "Card number not found",
+				});
+				setValue("cardNumber", "");
+				setFocus("cardNumber");
+				setValue("familyId", "");
+				setValue("availableBalance", 0);
+				setValue("gardeLimit", "");
+				setValue("name", "");
+				setValue("idNumbar", "");
+				setValue("dailyLimit", "");
+				setValue("CardID", ""), dispatch(resetPosMenu());
+			}
 		},
-		{
-			enabled: !!cardNumberWatch,
-		}
-	);
+		onError: () => {
+			setNotify({
+				severity: "error",
+				message: "Card number not found",
+			});
+		},
+	});
 
 	// const params: GradeLimitParamType = {
 	// 	strCust_ID_N: (nameWatch as Student)?.CardID || undefined,
@@ -114,7 +186,9 @@ const CardDetail: FC<CardDetailProps> = ({ resetFormValues }) => {
 	// Memoized updateValues function to avoid unnecessary re-creations
 	const updateValues = useCallback(
 		(selectedKey: keyof cardDetailSchema, selectedValue: Student) => {
-			if (!selectedValue || focusField !== selectedKey) return;
+			console.log({ selectedKey, focusField });
+
+			if (!selectedValue || focusInput !== selectedKey) return;
 
 			// Update the form only if values have changed
 			if (
@@ -169,65 +243,60 @@ const CardDetail: FC<CardDetailProps> = ({ resetFormValues }) => {
 				gardeLimit: selectedValue.Grade,
 			};
 		},
-		[focusField, setImgUrl, setValue]
+		[focusInput, setImgUrl, setValue]
 	);
-
-	// Debounced update handler
-	// const debouncedUpdate = useCallback(
-	// 	debounce(
-	// 		(field: keyof cardDetailSchema, value: Student) =>
-	// 			updateValues(field, value),
-	// 		0
-	// 	),
-	// 	[updateValues]
-	// );
 
 	// Reset function to be triggered by parent
 	const resetFormAndRefs = () => {
 		previousValuesRef.current = {};
 		// Reset focused field if needed
 		setFocusField("");
+		setFocusIdNumField("");
+		setFocusInput("");
 		setFocus("cardNumber");
 	};
-	// Unified effect for field watchers
-	// useEffect(() => {
-	// 	// if (cardNumberWatch && focusField === "cardNumber") {
-	// 	// 	debouncedUpdate("cardNumber", cardNumberWatch as Student);
-	// 	// }
-	// 	if (idNumberWatch && focusField === "idNumbar") {
-	// 		debouncedUpdate("idNumbar", idNumberWatch as Student);
-	// 	}
-	// 	if (nameWatch && focusField === "name") {
-	// 		debouncedUpdate("name", nameWatch as Student);
-	// 	}
-	// 	if (familyIdWatch && focusField === "familyId") {
-	// 		debouncedUpdate("familyId", familyIdWatch as Student);
-	// 	}
-	// 	setFocusField("");
-	// 	return () => {
-	// 		debouncedUpdate.cancel(); // Cancel debounce on unmount
-	// 	};
-	// }, [
-	// 	// cardNumberWatch,
-	// 	idNumberWatch,
-	// 	nameWatch,
-	// 	familyIdWatch,
-	// 	debouncedUpdate,
-	// ]);
+
+	useEffect(() => {
+		queryCache.clear();
+
+		if (cardNumberWatch !== "") {
+			const resquestBody = {
+				...studentSearchRequestBodies,
+				ShowroomId: showRoom,
+				CardNumber: cardNumberWatch!,
+			};
+			!isView && mutateAsync(resquestBody);
+		}
+		if (isView) {
+			setValue("cardNumber", "");
+		}
+	}, [cardNumberWatch]);
 
 	useEffect(() => {
 		// Directly update values without debounce
-		if (idNumberWatch && focusField === "idNumbar") {
+		if (idNumberWatch && focusInput === "idNumbar") {
+			console.log("idNumber watch", idNumberWatch, focusIdNum);
 			updateValues("idNumbar", idNumberWatch as Student);
 		}
-		if (nameWatch && focusField === "name") {
+		if (nameWatch && focusInput === "name") {
+			console.log("name watch", nameWatch, focusField);
 			updateValues("name", nameWatch as Student);
 		}
-		if (familyIdWatch && focusField === "familyId") {
-			updateValues("familyId", familyIdWatch as Student);
-		}
+		console.log(
+			"focus fuled @@ ",
+			focusField,
+			"%%",
+			focusIdNum,
+			"&&",
+			focusInput
+		);
+
 		setFocusField("");
-	}, [idNumberWatch, nameWatch, familyIdWatch, updateValues]);
+		setFocusIdNumField("");
+		return () => {
+			setFocusInput("");
+		};
+	}, [idNumberWatch, nameWatch, updateValues]);
 
 	useEffect(() => {
 		if (showroomWatch !== "") {
@@ -243,59 +312,6 @@ const CardDetail: FC<CardDetailProps> = ({ resetFormValues }) => {
 	useEffect(() => {
 		resetFormValues(resetFormAndRefs);
 	}, [resetFormValues]);
-
-	useEffect(() => {
-		if (isFetched) {
-			if ((data as StudentListResponse).Status === "1") {
-				const student = (data as StudentListResponse).Data[0];
-				//console.log("_data", student);
-
-				setValue("familyId", student, { shouldValidate: true });
-				setValue("idNumbar", student, { shouldValidate: true });
-				setValue("name", student, { shouldValidate: true });
-				// setValue("dailyLimit", Number(student.DailyLimit).toFixed(2), {
-				// 	shouldValidate: true,
-				// });
-				setValue("gardeLimit", student.Grade, { shouldValidate: true });
-
-				// Update the image URL
-				const imgUrl = import.meta.env.VITE_API_URL + student.ImageUrl;
-				setImgUrl(imgUrl);
-
-				if (!isView && menuTable.length > 0) {
-					dispatch(resetPosMenu());
-				}
-
-				// Store previous values
-				previousValuesRef.current = {
-					cardNumber: student.CardNumber,
-					familyId: student.FamilyId,
-					idNumbar: student.AdmissionNumber,
-					name: student.StudentName,
-					dailyLimit: Number(student.DailyLimit).toFixed(2),
-					gardeLimit: student.Grade,
-				};
-				setValue("cardNumber", "");
-				setFocus("cardNumber");
-			} else {
-				setNotify({
-					severity: "error",
-					message: "Card number is not found",
-				});
-
-				setValue("cardNumber", "");
-				setFocus("cardNumber");
-				setValue("familyId", "");
-				setValue("availableBalance", 0);
-				setValue("gardeLimit", "");
-				setValue("name", "");
-				setValue("idNumbar", "");
-				setValue("dailyLimit", "");
-				setValue("CardID", ""), dispatch(resetPosMenu());
-			}
-			//console.log("data in cardnuber", data);
-		}
-	}, [isFetched, data]);
 
 	useEffect(() => {
 		if (gradeIsFetched) {
@@ -365,11 +381,11 @@ const CardDetail: FC<CardDetailProps> = ({ resetFormValues }) => {
 							</Typography>
 						</Box>
 						<Box sx={{ flex: 2 }}>
-							<Field {...cardNumberField(isLoading)} {...control} />
+							<Field {...cardNumberField(isPending)} {...control} />
 						</Box>
 					</Stack>
 				</Grid>
-				{cardDetailFields(showroomWatch, setFocusField).map((field) => (
+				{cardDetailFields(showroomWatch, setFocusInput).map((field) => (
 					<Field key={field.name} {...field} {...control} />
 				))}
 			</Grid>

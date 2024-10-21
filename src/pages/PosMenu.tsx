@@ -69,11 +69,11 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 	const CmpID = JSON.parse(localStorage.getItem("CmpId")!);
 
 	const employeeData =
-		!cmpId.EmpCode || !cmpId.EmpName || !cmpId.EmpId
+		!cmpId.EmpCode || !cmpId?.EmpName || !cmpId.EmpId
 			? "" // If any of the fields are null or empty, set employeeData to an empty string
 			: {
 					EmployeeCode: cmpId.EmpCode,
-					EmployeeName: cmpId.EmpName,
+					EmployeeName: cmpId?.EmpName,
 					Emp_ID_N: cmpId.EmpId,
 				};
 
@@ -232,6 +232,7 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 			"availableBalance" as any,
 			previousData.AvailableBalance as any
 		);
+		setAvailBal(Number(previousData.AvailableBalance));
 		method.setValue("netAmount" as any, previousData.NetAmount as any);
 		method.setValue("total" as any, previousData.Total as any);
 		method.setValue("discount" as any, previousData.DiscountPercentage as any);
@@ -273,7 +274,7 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 
 	useEffect(() => {
 		const previousData: (typeof data)[0] = data[0];
-		if (checked) {
+		if (isView && checked) {
 			// Set values after check is complete
 			method.setValue("cardType" as any, previousData?.Gem_ID_N as any);
 			method.setValue(
@@ -282,7 +283,7 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 			);
 			method.setValue("cardAmount" as any, previousData?.CardAmount as any);
 		}
-	}, [checked, data, method]);
+	}, [checked, data, method, isView]);
 
 	const handleSubmitClick = () => {
 		//console.log("Submit button clicked");
@@ -459,7 +460,7 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 		const backendData: PosSaveRequsetBodiesType = {
 			Cmp_ID_N: CmpID,
 			CurrencyId: "1", //todo check with vini
-			DiscountAmount: Number(formData.discountAmount)?.toFixed(2) || "",
+			DiscountAmount: Number(formData.discountAmount)?.toFixed(2) || "0",
 			GrossAmount: formData.total.toString() || "",
 			InvoiceDate: moment(formData.invoiceDate).format("DD-MMM-YYYY"),
 			Items: transformMenuTableToItems(menuTable),

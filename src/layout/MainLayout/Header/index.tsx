@@ -72,7 +72,7 @@ const Header: React.FC<HeaderProps> = ({ handleLeftDrawerToggle }) => {
 			<Box sx={{ flexGrow: 1 }}>
 				<WelcomeScreen
 					// username={UserData.EmpName || "admin"}
-					cmpName={UserData.CmpName || ""}
+					cmpName={UserData?.CmpName || ""}
 					logoUrl={updatedImageUrl || placeholderUrl}
 				/>
 			</Box>

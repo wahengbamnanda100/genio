@@ -3,6 +3,7 @@
 export interface StudentListRequest {
 	FamilyId: string;
 	CardNumber: string;
+	Admissionno: string;
 	StudentName: string;
 	ShowroomId: string;
 	Cmp_ID_N: string;
