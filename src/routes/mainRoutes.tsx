@@ -14,7 +14,6 @@ const MainRoutes: RouteObject = {
 	element: <MainLayout />,
 
 	children: [
-		// {
 		{
 			path: "/",
 			element: (
@@ -24,16 +23,6 @@ const MainRoutes: RouteObject = {
 			),
 			errorElement: <ErrorElement />,
 		},
-		// 	path: "/",
-		// 	element: <Dashboard />,
-		// 	errorElement: <ErrorElement />,
-		// },
-		// {
-		// 	index: true,
-		// 	path: "dashboard",
-		// 	element: <Dashboard />,
-		// 	errorElement: <ErrorElement />,
-		// },
 		{
 			path: "pos-menu",
 			element: (
@@ -54,7 +43,7 @@ const MainRoutes: RouteObject = {
 		},
 		{
 			path: "*",
-			element: <PageNotFound />, // replace with 404 page component or custom error page component if needed. For example, <PageNotFound /> from "react-router-dom" package.
+			element: <PageNotFound />,
 		},
 	],
 };

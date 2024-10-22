@@ -206,11 +206,14 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 			DailyLimit: previousData.DailyLimit.toString(),
 			Grade: previousData.Grade.toString(),
 			AvailableBalance: previousData.AvailableBalance.toString(),
+			StudentImage: previousData.StudentImage, //todo add image url
 		};
 		method.setValue(
 			"allowCard" as any,
 			previousData.CreditCardNumber !== "" ? true : (false as any)
 		);
+
+		console.log("studentObh", studentObj);
 
 		setChecked(previousData?.CreditCardNumber !== "" ? true : false);
 
@@ -226,7 +229,15 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 		method.setValue("gardeLimit" as any, studentObj.Grade as any);
 		method.setValue("dailyLimit" as any, studentObj.DailyLimit as any);
 
-		setImgUrl(studentObj?.ImageUrl || "");
+		const imgUrl = studentObj?.StudentImage
+			? `${import.meta.env.VITE_API_URL}${
+					studentObj.StudentImage.startsWith("..")
+						? studentObj.StudentImage.replace(/^\.{1,2}/, "")
+						: studentObj.StudentImage
+				}`
+			: "";
+
+		setImgUrl(imgUrl);
 
 		method.setValue(
 			"availableBalance" as any,
@@ -520,12 +531,14 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 	useEffect(() => {
 		method.setFocus("cardNumber" as any);
 		queryCache.clear();
+		setImgUrl("");
 		setNotify((prev: any) => {
 			if (prev?.severity !== "success") {
 				return undefined;
 			}
 			return prev;
 		});
+		return () => setImgUrl("");
 	}, []);
 
 	useEffect(() => {

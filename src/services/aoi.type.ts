@@ -20,6 +20,7 @@ export interface Student {
 	AvailableBalance: string;
 	ImageUrl: string;
 	DailyLimit: string;
+	StudentImage: string;
 	CitizenshipID: string;
 	Class?: string;
 }

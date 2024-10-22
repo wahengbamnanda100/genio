@@ -94,24 +94,24 @@ const DiscountAmount: FC<DiscountAmountProps> = ({ isView }) => {
 	// }, [changeNameAmount, netTotalAmount]);
 
 	useEffect(() => {
-		setValue("total", totalAmount);
+		!isView && setValue("total", totalAmount);
 	}, [totalAmount]);
 
 	useEffect(() => {
-		setValue("netAmount", netTotalAmount);
+		!isView && setValue("netAmount", netTotalAmount);
 	}, [netTotalAmount]);
 
 	useEffect(() => {
-		setValue("discountAmount", discountAmount);
+		!isView && setValue("discountAmount", discountAmount);
 	}, [discountAmount]);
 
 	useEffect(() => {
-		setValue("discount", discountPercent);
+		!isView && setValue("discount", discountPercent);
 	}, [discountPercent]);
 
 	useEffect(() => {
 		if (changeDiscountPercentAmount && changeDiscountPercentAmount > 100) {
-			setValue("discount", 100);
+			!isView && setValue("discount", 100);
 		}
 
 		if (changeDiscountPercentAmount && changeDiscountPercentAmount <= 100) {
@@ -122,10 +122,10 @@ const DiscountAmount: FC<DiscountAmountProps> = ({ isView }) => {
 
 			if (percentage !== discountAmount) {
 				if (percentage > totalAmount) {
-					setValue("discountAmount", totalAmount);
+					!isView && setValue("discountAmount", totalAmount);
 					dispatch(setNetTotalAmount(totalAmount));
 				} else {
-					setValue("discountAmount", percentage);
+					!isView && setValue("discountAmount", percentage);
 					updateDiscount(percentage); // Use debounced function
 				}
 			}
@@ -136,8 +136,8 @@ const DiscountAmount: FC<DiscountAmountProps> = ({ isView }) => {
 			updateDiscount(changeDiscountAmount); // Use debounced function
 		} else if (!changeDiscountPercentAmount) {
 			console.log("discount amount !!! % == ", changeDiscountPercentAmount);
-			setValue("discount", 0);
-			setValue("discountAmount", 0);
+			!isView && setValue("discount", 0);
+			!isView && setValue("discountAmount", 0);
 		}
 
 		console.log("discount amount % == ", changeDiscountPercentAmount);
@@ -148,7 +148,7 @@ const DiscountAmount: FC<DiscountAmountProps> = ({ isView }) => {
 		const total = totalAmount ?? 0;
 
 		if (discountAmount > total && discountAmount !== total) {
-			setValue("discountAmount", total);
+			!isView && setValue("discountAmount", total);
 		} else if (discountAmount !== 0 && discountAmount !== netTotalAmount) {
 			updateDiscount(discountAmount); // Use debounced function
 		} else if (discountAmount === 0 && netTotalAmount !== 0) {

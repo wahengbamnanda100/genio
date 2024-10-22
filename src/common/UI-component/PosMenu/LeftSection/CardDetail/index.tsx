@@ -53,8 +53,14 @@ const CardDetail: FC<CardDetailProps> = ({ resetFormValues }) => {
 	const { pathname } = useLocation();
 	// const clientQuery = useQueryClient();
 	const isView = pathname.includes("view");
-	const { focusInput, setImgUrl, setNotify, setAvailBal, setFocusInput } =
-		useAppProvider();
+	const {
+		focusInput,
+		imgUrl,
+		setImgUrl,
+		setNotify,
+		setAvailBal,
+		setFocusInput,
+	} = useAppProvider();
 	const { control, setValue, setFocus } = useFormContext<
 		cardDetailSchema | ScanUnitSchema
 	>();
@@ -227,8 +233,17 @@ const CardDetail: FC<CardDetailProps> = ({ resetFormValues }) => {
 			}
 
 			// Update the image URL
-			const imgUrl = import.meta.env.VITE_API_URL + selectedValue.ImageUrl;
-			setImgUrl(imgUrl);
+			const imageUrl = selectedValue?.ImageUrl;
+
+			const imgUrl =
+				imageUrl && imageUrl.trim() !== ""
+					? `${import.meta.env.VITE_API_URL}${
+							imageUrl.startsWith("..")
+								? imageUrl.replace(/^\.{1,2}/, "")
+								: imageUrl
+						}`
+					: "";
+			!isView && setImgUrl(imgUrl);
 
 			if (!isView && menuTable.length > 0) {
 				dispatch(resetPosMenu());
@@ -407,7 +422,18 @@ const CardDetail: FC<CardDetailProps> = ({ resetFormValues }) => {
 					}}>
 					<StudentImage
 						src={
-							import.meta.env.VITE_API_URL + (nameWatch as Student)?.ImageUrl
+							isView && imgUrl
+								? imgUrl
+								: (nameWatch as Student)?.ImageUrl
+									? `${import.meta.env.VITE_API_URL}${
+											(nameWatch as Student).ImageUrl.startsWith("..")
+												? (nameWatch as Student).ImageUrl.replace(
+														/^\.{1,2}/,
+														""
+													)
+												: (nameWatch as Student).ImageUrl
+										}`
+									: "" // Fallback to empty string if ImageUrl is not available
 						}
 						alt={(nameWatch as Student)?.StudentName}
 						width="100%"

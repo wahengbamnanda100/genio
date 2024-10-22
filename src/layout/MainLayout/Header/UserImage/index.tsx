@@ -36,10 +36,16 @@ const UserImageAvatar: React.FC<ImageComponentProps> = ({
 	};
 
 	React.useEffect(() => {
-		src && src !== "" && setImgSrc(src);
-		setLoading(true);
+		if (src) {
+			const updatedSrc = `${src}?timestamp=${new Date().getTime()}`;
+			console.log("fasdfads SRC", updatedSrc);
+			setImgSrc(updatedSrc);
+			setLoading(true); // Only set loading true when src changes
+		} else {
+			setImgSrc(placeholderUrl);
+			setLoading(false);
+		}
 	}, [src, appBar]);
-
 	return (
 		<Box
 			position="relative"
@@ -48,11 +54,12 @@ const UserImageAvatar: React.FC<ImageComponentProps> = ({
 			height={height}>
 			{loading && (
 				<CircularProgress
-					size={width}
+					size={Number(width) / 2}
 					sx={{
 						position: "absolute",
-						top: 0,
-						left: 0,
+						top: "50%",
+						left: "30%",
+						transform: "translate(-30%, -50%)",
 						zIndex: 1,
 					}}
 				/>
@@ -87,8 +94,12 @@ export const StudentImage: React.FC<ImageComponentProps> = ({
 	const [loading, setLoading] = React.useState<boolean>(appBar);
 
 	const handleLoad = () => {
+		console.log("loaded iage");
+
 		setLoading(false);
 	};
+
+	console.log("imgae safsdf", src);
 
 	// //console.log("src", src, "===", imgSrc);
 
@@ -99,7 +110,12 @@ export const StudentImage: React.FC<ImageComponentProps> = ({
 
 	useEffect(() => {
 		if (src) {
-			setImgSrc(src);
+			const updatedSrc = `${src}?timestamp=${new Date().getTime()}`;
+			setImgSrc(updatedSrc);
+			setLoading(true);
+		} else {
+			setImgSrc(placeholderUrl);
+			setLoading(false);
 		}
 	}, [src]);
 
@@ -111,7 +127,7 @@ export const StudentImage: React.FC<ImageComponentProps> = ({
 			height={height}>
 			{loading && (
 				<CircularProgress
-					size={width}
+					size={Number(width)}
 					sx={{
 						position: "absolute",
 						top: 0,
