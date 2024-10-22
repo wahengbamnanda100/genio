@@ -11,7 +11,11 @@ const PosMenu = Loadable(lazy(() => import("../pages/PosMenu")));
 
 const MainRoutes: RouteObject = {
 	path: "/",
-	element: <MainLayout />,
+	element: (
+		<PrivateRoute>
+			<MainLayout />
+		</PrivateRoute>
+	),
 
 	children: [
 		{

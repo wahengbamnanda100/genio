@@ -8,6 +8,7 @@ import {
 	selectDiscountAmount,
 	selectDiscountDisable,
 	selectDiscountPercent,
+	selectMenuTable,
 	selectNetTotalAmount,
 	selectTotalAmount,
 	setNetTotalAmount,
@@ -57,6 +58,8 @@ const DiscountAmount: FC<DiscountAmountProps> = ({ isView }) => {
 	const USERDATA = localUserData
 		? (JSON.parse(localUserData) as UserDetailsType)
 		: null;
+
+	const menuTable = useSelector((state: RootState) => selectMenuTable(state));
 
 	const totalAmount = useSelector((state: RootState) =>
 		selectTotalAmount(state)
@@ -165,6 +168,15 @@ const DiscountAmount: FC<DiscountAmountProps> = ({ isView }) => {
 			dispatch(setNetTotalAmount(0));
 		}
 	}, [changeDiscountAmount]);
+
+	useEffect(() => {
+		if (menuTable.length === 0) {
+			setValue("discount", 0);
+			setValue("discountAmount", 0);
+			dispatch(setNetTotalAmount(totalAmount));
+			updateDiscount(0);
+		}
+	}, [menuTable]);
 
 	const disableSubmit = isView || !USERDATA?.IsInsertable;
 
