@@ -50,7 +50,13 @@ const AuthoriseModal: React.FC<AuthoriseModalProps> = ({ open, onCancel }) => {
 		<DialogStyled
 			open={open}
 			onClose={handleClose}
-			aria-labelledby="authorize-dialog">
+			aria-labelledby="authorize-dialog"
+			sx={{
+				"& .MuiDialog-paperWidthSm": {
+					minWidth: "450px",
+					maxWidth: "450px",
+				},
+			}}>
 			<DialogCloseIconStyled onClick={onCancel}>
 				{/* <div style={{ position: "relative" }}>
 					<CloseIcon />
@@ -58,7 +64,9 @@ const AuthoriseModal: React.FC<AuthoriseModalProps> = ({ open, onCancel }) => {
 			</DialogCloseIconStyled>
 			<DialogTitleStyled dialogType="warning">
 				<BlockIcon color="warning" style={{ width: "50px", height: "60px" }} />
-				<Typography>{`Unauthorised User`}</Typography>
+				<Typography
+					variant="h6"
+					color={"warning"}>{`Unauthorised User`}</Typography>
 			</DialogTitleStyled>
 			<DialogContentStyled
 				sx={{
@@ -66,7 +74,13 @@ const AuthoriseModal: React.FC<AuthoriseModalProps> = ({ open, onCancel }) => {
 					textAlign: "center",
 					fontWeight: "400",
 				}}>
-				<Typography>{`User ${USERDATA?.EmpName} is not authorised to access this page, please contact admin`}</Typography>
+				<Typography>
+					{`User `}
+					<Typography fontWeight={"500"} component="span" color="primary">
+						{USERDATA?.EmpName}
+					</Typography>
+					{` is not authorised to access this page, please contact admin`}
+				</Typography>
 			</DialogContentStyled>
 			<DialogActionsStyled dialogType={"warning"}>
 				<LoadingButton

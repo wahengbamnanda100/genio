@@ -44,7 +44,7 @@ import { useNavigate } from "react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAppProvider } from "../../../AppProvider";
 import ConfirmationDialog from "../../ModalComponent/ConfirmationDialog";
-import { queryCache } from "../../../utils/utils";
+import { anyOneIsTrue, queryCache } from "../../../utils/utils";
 import { UserDetailsType } from "../../Component-types/localStorageData.type";
 
 interface SearchDrawerProps extends SwipeableDrawerProps {
@@ -134,6 +134,15 @@ const ActionBtnGroup: FC<ActionBtnGroupProps> = ({
 		? (JSON.parse(localUserData) as UserDetailsType)
 		: null;
 
+	const viewEnable = USERDATA
+		? anyOneIsTrue(
+				USERDATA?.IsDeletable,
+				USERDATA?.IsEditable,
+				USERDATA?.IsInsertable,
+				USERDATA?.IsViewable
+			)
+		: false;
+
 	return (
 		<Stack
 			direction={"row"}
@@ -146,10 +155,7 @@ const ActionBtnGroup: FC<ActionBtnGroupProps> = ({
 				onClick={() => onClickPrint && onClickPrint(id)}>
 				<ReceiptIcon fontSize="small" />
 			</ActionIconBtn> */}
-			{(USERDATA?.IsDeletable ||
-				USERDATA?.IsInsertable ||
-				USERDATA?.IsViewable ||
-				USERDATA?.IsEditable) && (
+			{viewEnable && (
 				<ActionIconBtn
 					varient="view"
 					onClick={() => onClickView && onClickView(id)}>
