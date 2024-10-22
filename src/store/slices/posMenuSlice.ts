@@ -53,7 +53,7 @@ const calculateDiscountPercentage = (
 		return 0;
 	}
 	const discountPercentage = (discountAmount / totalAmount) * 100;
-	return parseFloat(discountPercentage.toFixed(2));
+	return parseFloat(discountPercentage.toFixed(5));
 };
 
 const calculateNetTotalAmount = (

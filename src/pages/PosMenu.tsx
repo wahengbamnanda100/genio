@@ -374,6 +374,7 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 
 	const handleResetpage = () => {
 		method.reset();
+		setImgUrl("");
 		dispatch(resetPosMenu());
 		setAvailBal(0);
 		setDisableAvailBalance(false);
@@ -471,6 +472,7 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 		const backendData: PosSaveRequsetBodiesType = {
 			Cmp_ID_N: CmpID,
 			CurrencyId: "1", //todo check with vini
+			DiscountPercentage: formData?.discount.toString() || "0",
 			DiscountAmount: Number(formData.discountAmount)?.toFixed(2) || "0",
 			GrossAmount: formData.total.toString() || "",
 			InvoiceDate: moment(formData.invoiceDate).format("DD-MMM-YYYY"),
@@ -517,6 +519,7 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 	const handleModalClearConfirm = () => {
 		method.reset();
 		setAvailBal(0);
+		setImgUrl("");
 		dispatch(resetPosMenu());
 		setOpenClear(false);
 		focusCardNumber();

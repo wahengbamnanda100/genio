@@ -7,11 +7,16 @@ import {
 	Theme,
 	alpha,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Outlet } from "react-router";
 import Header from "./Header";
 import { useAppProvider } from "../../AppProvider";
 import CustomSnackbar from "../../common/UI-component/Notification";
+import { UserDetailsType } from "../../common/Component-types/localStorageData.type";
+import { anyOneIsTrue } from "../../utils/utils";
+import AuthoriseModal from "../../common/ModalComponent/AuthoriseModal";
+// import { UserDetailsType } from "../../common/Component-types/localStorageData.type";
+// import { anyOneIsTrue } from "../../utils/utils";
 
 const drawerWidth: number = 150;
 
@@ -51,11 +56,32 @@ const MainLayout: React.FC = () => {
 	const { notify } = useAppProvider();
 	//  const leftDrawerOpened = useSelector((state) => state.customization.opened);
 	const [leftDrawerOpened, setLeftDrawerOpened] = useState<boolean>(false);
+	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
 	const handleLeftDrawerToggle = () => {
 		setLeftDrawerOpened((prev: boolean) => !prev);
 		//console.log("handle toggle sidebar clicked");
 	};
+
+	const localUserData = localStorage.getItem("userDetail") as string | null;
+
+	const USERDATA = localUserData
+		? (JSON.parse(localUserData) as UserDetailsType)
+		: null;
+
+	const accessGranted = USERDATA
+		? anyOneIsTrue(
+				USERDATA.IsDeletable,
+				USERDATA.IsInsertable,
+				USERDATA.IsViewable
+			)
+		: false;
+
+	useEffect(() => {
+		if (!accessGranted) {
+			setIsModalOpen(true);
+		}
+	}, [accessGranted]);
 
 	return (
 		<Box sx={{ display: "flex" }}>
@@ -93,34 +119,16 @@ const MainLayout: React.FC = () => {
 				<Box sx={{ padding: "1.1rem" }}>
 					<CustomSnackbar />
 				</Box>
-				{/* <Toolbar
-					sx={{
-						// height: "44px",
-						minHeight: "20px",
-						border: "1px solid red",
-						[theme.breakpoints.down(1280)]: {
-							// height: "44px",
-							minHeight: "36px", // Apply on smaller screens as well
-						},
-						[theme.breakpoints.down(1025)]: {
-							// height: "44px",
-							minHeight: "36px", // Apply on smaller screens as well
-						},
-					}}
-				/> */}
-				{/* breadcrumb */}
-				{/* <Breadcrumbs
-          separator={IconChevronRight}
-          navigation={navigation}
-          icon
-          title
-          rightAlign
-        /> */}
 
-				<Outlet />
+				{accessGranted && <Outlet />}
+				{/* <Outlet /> */}
 			</Main>
 
 			{notify && <CustomSnackbar />}
+			<AuthoriseModal
+				open={isModalOpen}
+				onCancel={() => setIsModalOpen(false)}
+			/>
 		</Box>
 	);
 };

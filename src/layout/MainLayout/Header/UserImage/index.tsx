@@ -38,7 +38,7 @@ const UserImageAvatar: React.FC<ImageComponentProps> = ({
 	React.useEffect(() => {
 		if (src) {
 			const updatedSrc = `${src}?timestamp=${new Date().getTime()}`;
-			console.log("fasdfads SRC", updatedSrc);
+			// console.log("fasdfads SRC", updatedSrc);
 			setImgSrc(updatedSrc);
 			setLoading(true); // Only set loading true when src changes
 		} else {
@@ -94,12 +94,12 @@ export const StudentImage: React.FC<ImageComponentProps> = ({
 	const [loading, setLoading] = React.useState<boolean>(appBar);
 
 	const handleLoad = () => {
-		console.log("loaded iage");
+		// console.log("loaded iage");
 
 		setLoading(false);
 	};
 
-	console.log("imgae safsdf", src);
+	// console.log("imgae safsdf", src);
 
 	// //console.log("src", src, "===", imgSrc);
 

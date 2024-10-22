@@ -137,7 +137,7 @@ const CardDetail: FC<CardDetailProps> = ({ resetFormValues }) => {
 				const imgUrl = import.meta.env.VITE_API_URL + student.ImageUrl;
 				setImgUrl(imgUrl);
 
-				if (!isView && menuTable.length > 0) {
+				if (!isView) {
 					dispatch(resetPosMenu());
 				}
 
@@ -245,7 +245,13 @@ const CardDetail: FC<CardDetailProps> = ({ resetFormValues }) => {
 					: "";
 			!isView && setImgUrl(imgUrl);
 
-			if (!isView && menuTable.length > 0) {
+			console.log(
+				"check !isView && menuTable.length > 0",
+				isView,
+				menuTable.length
+			);
+
+			if (!isView) {
 				dispatch(resetPosMenu());
 			}
 			// Store previous values for future reference
@@ -335,6 +341,8 @@ const CardDetail: FC<CardDetailProps> = ({ resetFormValues }) => {
 	useEffect(() => {
 		resetFormValues(resetFormAndRefs);
 	}, [resetFormValues]);
+
+	// useEffect(() => {},[])
 
 	useEffect(() => {
 		if (gradeIsFetched) {

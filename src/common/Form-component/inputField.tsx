@@ -140,6 +140,35 @@ const NumericFormatCustom = forwardRef<NumericFormatProps, CustomProps>(
 	}
 );
 
+const NumericPercnetageFormatCustom = forwardRef<
+	NumericFormatProps,
+	CustomProps
+>(function NumericFormatCustom(props, ref) {
+	const { onChange, ...other } = props;
+
+	return (
+		<NumericFormat
+			{...other}
+			getInputRef={ref}
+			onFocus={(e) => e.target.select()}
+			onValueChange={(values) => {
+				onChange({
+					target: {
+						name: props.name,
+						value: values.value,
+					},
+				});
+			}}
+			decimalScale={5}
+			thousandSeparator
+			valueIsNumericString
+			fixedDecimalScale
+			suffix="%"
+			// prefix="$"
+		/>
+	);
+});
+
 const CeditCardNubmer = forwardRef<NumericFormatProps, CustomProps>(
 	function NumericFormatCustom(props, ref) {
 		const { onChange, ...other } = props;
@@ -165,4 +194,4 @@ const CeditCardNubmer = forwardRef<NumericFormatProps, CustomProps>(
 );
 
 export default InputField;
-export { NumericFormatCustom, CeditCardNubmer };
+export { NumericFormatCustom, CeditCardNubmer, NumericPercnetageFormatCustom };

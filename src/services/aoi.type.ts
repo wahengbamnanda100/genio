@@ -91,6 +91,7 @@ export interface PosSaveRequsetBodiesType {
 	InvoiceDate: string;
 	CurrencyId: string;
 	GrossAmount: string;
+	DiscountPercentage: string;
 	DiscountAmount: string;
 	NetAmount: string;
 	Usr_ID_N: string;

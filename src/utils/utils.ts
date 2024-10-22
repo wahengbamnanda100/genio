@@ -95,6 +95,6 @@ export const queryCache = new QueryCache({
 	},
 });
 
-export function anyOneIsTrue(...params: ("0" | "1")[]): boolean {
-	return params.includes("1");
+export function anyOneIsTrue(...params: boolean[]): boolean {
+	return params.includes(true);
 }

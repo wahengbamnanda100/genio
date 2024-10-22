@@ -22,6 +22,7 @@ import {
 } from "../../../../Component-types/posMenu.type";
 import Field from "../../../../Form-component/field";
 import AnimateButton from "../../../Extended/AnimateButton";
+import { UserDetailsType } from "../../../../Component-types/localStorageData.type";
 // import { Student } from "../../../../Form-component/formField.type";
 
 interface DiscountAmountProps {
@@ -36,7 +37,8 @@ const calculateDiscountPercentage = (
 		return 0;
 	}
 	const discountAmount = (totalAmount * discountPercentage) / 100;
-	return parseFloat(discountAmount.toFixed(2)); // Limit to two decimal places
+	return parseFloat(discountAmount.toString()); // Limit to two decimal places
+	// return Math.floor(discountAmount * 100) / 100;
 };
 
 const DiscountAmount: FC<DiscountAmountProps> = ({ isView }) => {
@@ -49,6 +51,12 @@ const DiscountAmount: FC<DiscountAmountProps> = ({ isView }) => {
 		| NetAmountSchema
 	>();
 	// const [balanceAmount, setBalanceAmount] = useState<number>(0);
+
+	const localUserData = localStorage.getItem("userDetail") as string | null;
+
+	const USERDATA = localUserData
+		? (JSON.parse(localUserData) as UserDetailsType)
+		: null;
 
 	const totalAmount = useSelector((state: RootState) =>
 		selectTotalAmount(state)
@@ -120,6 +128,8 @@ const DiscountAmount: FC<DiscountAmountProps> = ({ isView }) => {
 				changeDiscountPercentAmount
 			);
 
+			// console.log("🖍️🖍️🖍️", percentage);
+
 			if (percentage !== discountAmount) {
 				if (percentage > totalAmount) {
 					!isView && setValue("discountAmount", totalAmount);
@@ -135,12 +145,12 @@ const DiscountAmount: FC<DiscountAmountProps> = ({ isView }) => {
 		) {
 			updateDiscount(changeDiscountAmount); // Use debounced function
 		} else if (!changeDiscountPercentAmount) {
-			console.log("discount amount !!! % == ", changeDiscountPercentAmount);
+			// console.log("discount amount !!! % == ", changeDiscountPercentAmount);
 			!isView && setValue("discount", 0);
 			!isView && setValue("discountAmount", 0);
 		}
 
-		console.log("discount amount % == ", changeDiscountPercentAmount);
+		// console.log("discount amount % == ", changeDiscountPercentAmount);
 	}, [changeDiscountPercentAmount]);
 
 	useEffect(() => {
@@ -155,6 +165,8 @@ const DiscountAmount: FC<DiscountAmountProps> = ({ isView }) => {
 			dispatch(setNetTotalAmount(0));
 		}
 	}, [changeDiscountAmount]);
+
+	const disableSubmit = isView || !USERDATA?.IsInsertable;
 
 	return (
 		<Grid
@@ -189,7 +201,7 @@ const DiscountAmount: FC<DiscountAmountProps> = ({ isView }) => {
 								type="submit"
 								variant="contained"
 								color="secondary"
-								disabled={isView}
+								disabled={disableSubmit}
 								fullWidth
 								sx={{ p: 1.4, pt: 1 }}>
 								Submit

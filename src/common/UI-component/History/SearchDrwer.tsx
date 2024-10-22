@@ -45,6 +45,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAppProvider } from "../../../AppProvider";
 import ConfirmationDialog from "../../ModalComponent/ConfirmationDialog";
 import { queryCache } from "../../../utils/utils";
+import { UserDetailsType } from "../../Component-types/localStorageData.type";
 
 interface SearchDrawerProps extends SwipeableDrawerProps {
 	setClose: React.Dispatch<React.SetStateAction<boolean>>;
@@ -127,6 +128,12 @@ const ActionBtnGroup: FC<ActionBtnGroupProps> = ({
 	onClickView,
 	id,
 }) => {
+	const localUserData = localStorage.getItem("userDetail") as string | null;
+
+	const USERDATA = localUserData
+		? (JSON.parse(localUserData) as UserDetailsType)
+		: null;
+
 	return (
 		<Stack
 			direction={"row"}
@@ -139,16 +146,23 @@ const ActionBtnGroup: FC<ActionBtnGroupProps> = ({
 				onClick={() => onClickPrint && onClickPrint(id)}>
 				<ReceiptIcon fontSize="small" />
 			</ActionIconBtn> */}
-			<ActionIconBtn
-				varient="view"
-				onClick={() => onClickView && onClickView(id)}>
-				<GridViewIcon fontSize="small" />
-			</ActionIconBtn>
-			<ActionIconBtn
-				varient="delete"
-				onClick={() => onClickDelete && onClickDelete(id)}>
-				<DeleteOutlineIcon fontSize="small" />
-			</ActionIconBtn>
+			{(USERDATA?.IsDeletable ||
+				USERDATA?.IsInsertable ||
+				USERDATA?.IsViewable ||
+				USERDATA?.IsEditable) && (
+				<ActionIconBtn
+					varient="view"
+					onClick={() => onClickView && onClickView(id)}>
+					<GridViewIcon fontSize="small" />
+				</ActionIconBtn>
+			)}
+			{USERDATA?.IsDeletable && (
+				<ActionIconBtn
+					varient="delete"
+					onClick={() => onClickDelete && onClickDelete(id)}>
+					<DeleteOutlineIcon fontSize="small" />
+				</ActionIconBtn>
+			)}
 		</Stack>
 	);
 };
@@ -206,7 +220,11 @@ const SearchDrawer: FC<SearchDrawerProps> = ({
 		Cmp_ID_N: CmpID.toString(), //todo add later
 	});
 
-	const USERDATA = JSON.parse(localStorage.getItem("userDetail")!);
+	const localUserData = localStorage.getItem("userDetail") as string | null;
+
+	const USERDATA = localUserData
+		? (JSON.parse(localUserData) as UserDetailsType)
+		: null;
 
 	const queryClient = useQueryClient();
 
@@ -393,7 +411,7 @@ const SearchDrawer: FC<SearchDrawerProps> = ({
 	const handleDeleteConfirm = () => {
 		//console.log("handle click Delete", deleteRow);
 		const deleteData: PrevDeleteRequestBodiesType = {
-			UserID: USERDATA.UserId || "",
+			UserID: USERDATA?.UserId || "",
 			Sih_Id_N: deleteRow,
 		};
 		mutateAsync(deleteData);
