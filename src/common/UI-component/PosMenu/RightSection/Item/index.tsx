@@ -64,6 +64,7 @@ export const Item: FC<ItemProps> = ({ label, onClick }) => {
 							WebkitBoxOrient: "vertical",
 							overflow: "hidden",
 							WebkitLineClamp: 1,
+							height: "100%",
 							textOverflow: "ellipsis",
 							whiteSpace: "normal",
 							maxWidth: "100%",
