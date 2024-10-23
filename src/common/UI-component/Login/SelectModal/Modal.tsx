@@ -2,6 +2,7 @@
 import React, { FC, ReactNode } from "react";
 import { Dialog, Slide, Fade, Grow, useTheme, lighten } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
+import { PaperComponent } from "../../../ModalComponent/ConfirmationDialog";
 
 // Define available transition types
 type TransitionType = "slide" | "fade" | "grow";
@@ -82,7 +83,8 @@ const CustomDialog: FC<CustomDialogProps> = ({
 			onClose={handleClose}
 			TransitionComponent={TransitionComponent}
 			keepMounted
-			aria-labelledby="custom-dialog-title"
+			PaperComponent={PaperComponent}
+			aria-labelledby="draggable custom-dialog-title"
 			aria-describedby="custom-dialog-description"
 			sx={{
 				"& .MuiDialog-paperWidthSm": {

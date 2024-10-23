@@ -1,5 +1,12 @@
 /// <reference types="vite-plugin-svgr/client" />
-import { Button, DialogProps } from "@mui/material";
+import {
+	alpha,
+	Button,
+	DialogProps,
+	Paper,
+	PaperProps,
+	useTheme,
+} from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { Dispatch, FC, SetStateAction } from "react";
 import {
@@ -14,6 +21,7 @@ import DoneAllIcon from "@mui/icons-material/DoneAll";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import RotateLeftIcon from "@mui/icons-material/RotateLeft";
 import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
+import Draggable from "react-draggable";
 
 import AllergyIcon from "../../assets/icons/AllergyIcon.svg?react";
 
@@ -28,6 +36,16 @@ interface ConfirmationDialogProps extends DialogProps {
 	onCancel?: () => void;
 }
 
+export function PaperComponent(props: PaperProps) {
+	return (
+		<Draggable
+			handle="#draggable-dialog-title"
+			cancel={'[class*="MuiDialogContent-root"]'}>
+			<Paper {...props} />
+		</Draggable>
+	);
+}
+
 const ConfirmationDialog: FC<ConfirmationDialogProps> = ({
 	title,
 	description,
@@ -38,23 +56,29 @@ const ConfirmationDialog: FC<ConfirmationDialogProps> = ({
 	onConfirm,
 	onCancel,
 }) => {
-	// const theme = useTheme();
+	const theme = useTheme();
 
 	return (
 		<DialogStyled
 			open={open}
 			onClose={onCancel}
-			aria-labelledby="confirmation-dialog">
+			PaperComponent={PaperComponent}
+			aria-labelledby="draggable confirmation-dialog">
 			<DialogCloseIconStyled onClick={onCancel}>
 				<div style={{ position: "relative" }}>
 					<CloseIcon />
 				</div>
 			</DialogCloseIconStyled>
 			<DialogTitleStyled
+				id="draggable-dialog-title"
 				dialogType={dialogType || "submit"}
 				sx={{
+					cursor: "move",
 					color: dialogType === "warning" ? "#4f1c1b" : "inherit",
 					fontWeight: dialogType === "warning" ? "bold" : "inheritx",
+					":hover": {
+						bgcolor: alpha(theme.palette.primary.main, 0.08),
+					},
 				}}>
 				{dialogType === "submit" && <DoneAllIcon color="secondary" />}
 				{dialogType === "delete" && <DeleteOutlineOutlinedIcon color="error" />}
@@ -67,7 +91,8 @@ const ConfirmationDialog: FC<ConfirmationDialogProps> = ({
 				{title}
 			</DialogTitleStyled>
 			<DialogContentStyled
-				sx={{ whiteSpace: 'pre-line' ,
+				sx={{
+					whiteSpace: "pre-line",
 					textAlign: dialogType === "warning" ? "center" : "left",
 					fontWeight: dialogType === "warning" ? "400" : "inherit",
 				}}>

@@ -178,8 +178,10 @@ const StudentCard: React.FC<StudentCardProps> = ({
 	} = options;
 
 	// //console.log("Student data", options);
+	const domain = localStorage.getItem("domain");
+	const domainUrl = domain ? domain : import.meta.env.VITE_API_URL;
 
-	const imgUrl = import.meta.env.VITE_API_URL + ImageUrl;
+	const imgUrl = domainUrl + ImageUrl;
 
 	return (
 		<Grid

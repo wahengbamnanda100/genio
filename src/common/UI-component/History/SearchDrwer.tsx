@@ -457,42 +457,23 @@ const SearchDrawer: FC<SearchDrawerProps> = ({
 	const { data, isLoading, isFetched, refetch } = PreviousList(search!, enable);
 
 	let currentPageData = useMemo(() => {
+		const totalValuesForAllData = {
+			totalAmount: 0,
+			netAmount: 0,
+			discountAmount: 0,
+			totalGenioWalletAmount: 0,
+			totalCashAmount: 0,
+			totalCardAmount: 0,
+			// Add more fields if necessary
+		};
 		if (!isFetched || !data || !Array.isArray(data.Data)) {
-			setTotalValues({
-				totalAmount: 0,
-				netAmount: 0,
-				discountAmount: 0,
-				totalGenioWalletAmount: 0,
-				totalCashAmount: 0,
-				totalCardAmount: 0,
-				// Reset any other fields as needed
-			});
+			// Reset totals to 0 when no data is available
+			setTotalValues(totalValuesForAllData);
 			return [];
 		}
 		try {
-			// First, slice the data according to pagination
-			const startIndex = (searchQuery.PageNo - 1) * searchQuery.Rows;
-			const endIndex = startIndex + searchQuery.Rows;
-			const slicedData = data.Data.slice(startIndex, endIndex);
-
-			//console.log("sliced data", slicedData, data?.Data);
-
-			// Check if slicedData is empty, reset totals to 0 if it is
-			if (slicedData.length === 0) {
-				setTotalValues({
-					totalAmount: 0,
-					netAmount: 0,
-					discountAmount: 0,
-					totalGenioWalletAmount: 0,
-					totalCashAmount: 0,
-					totalCardAmount: 0,
-					// Reset any other fields as needed
-				});
-				return [];
-			}
-
-			// Then calculate totals based on the sliced (current page) data
-			const calculatedTotals = slicedData.reduce(
+			// Calculate totals for all data, not just the current page
+			const allDataTotals = data.Data.reduce(
 				(
 					acc: historyTotalDataSchema,
 					item: Partial<PreviousSaleListItemType>
@@ -506,39 +487,39 @@ const SearchDrawer: FC<SearchDrawerProps> = ({
 					// Add more fields as needed
 					return acc;
 				},
-				{
-					totalAmount: 0,
-					netAmount: 0,
-					discountAmount: 0,
-					totalGenioWalletAmount: 0,
-					totalCashAmount: 0,
-					totalCardAmount: 0,
-					// Initialize more fields as needed
-				}
+				{ ...totalValuesForAllData }
 			);
 
 			// Format the totals to have 2 decimal places
-			calculatedTotals.totalAmount = parseFloat(
-				calculatedTotals.totalAmount.toFixed(2)
+			allDataTotals.totalAmount = parseFloat(
+				allDataTotals.totalAmount.toFixed(2)
 			);
-			calculatedTotals.netAmount = parseFloat(
-				calculatedTotals.netAmount.toFixed(2)
+			allDataTotals.netAmount = parseFloat(allDataTotals.netAmount.toFixed(2));
+			allDataTotals.discountAmount = parseFloat(
+				allDataTotals.discountAmount.toFixed(2)
 			);
-			calculatedTotals.discountAmount = parseFloat(
-				calculatedTotals.discountAmount.toFixed(2)
+			allDataTotals.totalGenioWalletAmount = parseFloat(
+				allDataTotals.totalGenioWalletAmount.toFixed(2)
 			);
-			calculatedTotals.totalGenioWalletAmount = parseFloat(
-				calculatedTotals.totalGenioWalletAmount
+			allDataTotals.totalCashAmount = parseFloat(
+				allDataTotals.totalCashAmount.toFixed(2)
 			);
-			calculatedTotals.totalCashAmount = parseFloat(
-				calculatedTotals.totalCashAmount.toFixed(2)
-			);
-			calculatedTotals.totalCardAmount = parseFloat(
-				calculatedTotals.totalCardAmount.toFixed(2)
+			allDataTotals.totalCardAmount = parseFloat(
+				allDataTotals.totalCardAmount.toFixed(2)
 			);
 
-			// Store the total amount in state
-			setTotalValues(calculatedTotals);
+			// Store the total for all data in state
+			setTotalValues(allDataTotals);
+
+			// Now, slice the data for the current page according to pagination
+			const startIndex = (searchQuery.PageNo - 1) * searchQuery.Rows;
+			const endIndex = startIndex + searchQuery.Rows;
+			const slicedData = data.Data.slice(startIndex, endIndex);
+
+			// If there's no data in the current slice, return an empty array
+			if (slicedData.length === 0) {
+				return [];
+			}
 
 			// Format specific fields in slicedData to have 2 decimal digits
 			const formattedSlicedData = slicedData.map(

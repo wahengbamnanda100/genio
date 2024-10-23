@@ -40,6 +40,7 @@ import {
 import { useLocation } from "react-router";
 import { queryCache } from "../../../../../utils/utils";
 import { useMutation } from "@tanstack/react-query";
+// import { getDomainFromConfig } from "../../../../../utils/axiosInstance";
 // import { useQueryClient } from "@tanstack/react-query";
 // import { FileDownloadSharp, RestartAltOutlined } from "@mui/icons-material";
 
@@ -72,6 +73,10 @@ const CardDetail: FC<CardDetailProps> = ({ resetFormValues }) => {
 		strShm_ID_N: showRoom,
 	});
 
+	const domain = localStorage.getItem("domain");
+
+	const domainUrl = domain ? domain : import.meta.env.VITE_API_URL;
+
 	// const [data, setData] = useState<unknown>(null);
 
 	const menuTable = useSelector((state: RootState) => selectMenuTable(state));
@@ -93,24 +98,6 @@ const CardDetail: FC<CardDetailProps> = ({ resetFormValues }) => {
 		control,
 		name: ["cardNumber", "idNumbar", "name", "showroom"],
 	});
-
-	// const debouncedCardNumber = useCallback(
-	// 	debounce((value: string) => value, 0),
-	// 	[]
-	// );
-
-	// //console.log("debsddfds", debouncedCardNumber(cardNumberWatch));
-
-	// const { data, isFetched, isLoading } = SearchStudentList(
-	// 	{
-	// 		...studentSearchRequestBodies,
-	// 		ShowroomId: showRoom,
-	// 		CardNumber: cardNumberWatch!,
-	// 	},
-	// 	{
-	// 		enabled: !!cardNumberWatch,
-	// 	}
-	// );
 
 	const { mutateAsync, isPending } = useMutation({
 		mutationKey: ["studen-card"],
@@ -134,7 +121,8 @@ const CardDetail: FC<CardDetailProps> = ({ resetFormValues }) => {
 				console.log("available balance ", data);
 
 				// Update the image URL
-				const imgUrl = import.meta.env.VITE_API_URL + student.ImageUrl;
+
+				const imgUrl = domainUrl + student.ImageUrl;
 				setImgUrl(imgUrl);
 
 				if (!isView) {
@@ -237,7 +225,7 @@ const CardDetail: FC<CardDetailProps> = ({ resetFormValues }) => {
 
 			const imgUrl =
 				imageUrl && imageUrl.trim() !== ""
-					? `${import.meta.env.VITE_API_URL}${
+					? `${domainUrl}${
 							imageUrl.startsWith("..")
 								? imageUrl.replace(/^\.{1,2}/, "")
 								: imageUrl
@@ -433,7 +421,7 @@ const CardDetail: FC<CardDetailProps> = ({ resetFormValues }) => {
 							isView && imgUrl
 								? imgUrl
 								: (nameWatch as Student)?.ImageUrl
-									? `${import.meta.env.VITE_API_URL}${
+									? `${domainUrl}${
 											(nameWatch as Student).ImageUrl.startsWith("..")
 												? (nameWatch as Student).ImageUrl.replace(
 														/^\.{1,2}/,

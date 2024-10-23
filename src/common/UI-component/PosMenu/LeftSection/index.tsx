@@ -18,7 +18,7 @@ interface LeftMenuSectionProps {
 	handlePreviousClick: () => void;
 	handleBackClick: () => void;
 	registerReset: (resetFn: () => void) => void;
-	// onSubmit: () => any;
+	handleGoback: () => void;
 }
 
 const LeftMenuSection: FC<LeftMenuSectionProps> = ({
@@ -29,7 +29,7 @@ const LeftMenuSection: FC<LeftMenuSectionProps> = ({
 	handlePreviousClick,
 	handleBackClick,
 	registerReset,
-	// onSubmit,
+	handleGoback,
 }) => {
 	// useEffect(() => {
 	// 	//console.log("left part rendering...", isVeiw);
@@ -37,7 +37,7 @@ const LeftMenuSection: FC<LeftMenuSectionProps> = ({
 
 	return (
 		<Grid item xs={12} md={6}>
-			{isVeiw && <BreadcrumbNav title={studentName} />}
+			{isVeiw && <BreadcrumbNav title={studentName} onGoback={handleGoback} />}
 			<CardDetail resetFormValues={registerReset} />
 
 			<LeftSpacing />

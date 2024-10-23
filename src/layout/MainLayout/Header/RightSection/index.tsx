@@ -12,36 +12,41 @@ import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
 import UserImageAvatar from "../UserImage";
 import { useNavigate } from "react-router";
 import ConfirmationDialog from "../../../../common/ModalComponent/ConfirmationDialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import moment from "moment";
 import { queryCache } from "../../../../utils/utils";
-// import { useAppProvider } from "../../../../AppProvider";
 
 const RightSection = () => {
 	const theme = useTheme();
 	const navigate = useNavigate();
-	// const { imgUrl } = useAppProvider();
 	const [open, setOpen] = useState<boolean>(false);
+	const [imageUrl, setImageUrl] = useState<string>("");
 
 	const userData = JSON.parse(localStorage.getItem("userDetail")!);
+	const domain = localStorage.getItem("domain");
+	const domainUrl = domain ? domain : import.meta.env.VITE_API_URL;
 
-	const updatedImageUrl = userData?.EmpImage
-		? `${import.meta.env.VITE_API_URL}${
+	useEffect(() => {
+		// Construct the image URL with timestamp only when the component mounts (initial load)
+		if (userData?.EmpImage) {
+			const timestamp = new Date().getTime(); // Generate timestamp for cache busting
+			const url = `${domainUrl}${
 				userData.EmpImage.startsWith("..")
 					? userData.EmpImage.replace(/^\.{1,2}/, "")
 					: userData.EmpImage
-			}?timestamp=${new Date().getTime()}` // Cache-busting query param
-		: "";
+			}?timestamp=${timestamp}`;
+			setImageUrl(url);
+		}
+	}, []);
 
 	const handleLogout = () => {
-		//console.log("logout clickeds");
 		setOpen(true);
 	};
 
 	const handleConfirm = async () => {
 		localStorage.clear();
 		await queryCache.clear();
-		navigate("/login");
+		navigate("/login", { replace: true });
 		setOpen(false);
 	};
 
@@ -58,9 +63,9 @@ const RightSection = () => {
 					justifyContent: "flex-end",
 					gap: 2,
 				}}>
-				{/* //todo add url with user data */}
 				<Stack direction="row" gap={2} alignItems={"center"} color={"white"}>
-					<UserImageAvatar src={updatedImageUrl} appBar={true} />
+					{/* Pass the memoized image URL */}
+					<UserImageAvatar src={imageUrl} appBar={true} />
 					<Divider
 						flexItem
 						orientation="vertical"

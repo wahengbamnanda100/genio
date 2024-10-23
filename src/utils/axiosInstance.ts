@@ -17,6 +17,7 @@ const fetchConfigAndUpdateInstance = async () => {
 		const config = await response.json();
 		const apiUrl = config.API_URL || import.meta.env.VITE_API_URL;
 
+		localStorage.setItem("domain", apiUrl);
 		// Update the axiosInstance with the new baseURL
 		axiosInstance.defaults.baseURL = apiUrl;
 	} catch (error) {
@@ -24,6 +25,17 @@ const fetchConfigAndUpdateInstance = async () => {
 		// If there's an error, the baseURL remains the environment variable
 	}
 };
+
+// export const getDomainFromConfig = async () => {
+// 	try {
+// 		const response = await fetch("/config.json");
+// 		const config = await response.json();
+// 		const apiUrl = config.API_URL || import.meta.env.VITE_API_URL;
+// 		return apiUrl;
+// 	} catch {
+// 		return import.meta.env.VITE_API_URL;
+// 	}
+// };
 
 // Immediately call the fetchConfigAndUpdateInstance function to update the baseURL if necessary
 fetchConfigAndUpdateInstance();

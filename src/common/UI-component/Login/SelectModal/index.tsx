@@ -1,6 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import CustomDialog from "./Modal";
 import {
+	alpha,
 	Box,
 	Button,
 	Chip,
@@ -14,8 +15,10 @@ import {
 	Radio,
 	Skeleton,
 	Typography,
+	useTheme,
 } from "@mui/material";
 import { CalendarToday, Business } from "@mui/icons-material";
+import CloseIcon from "@mui/icons-material/Close";
 import { useNavigate } from "react-router";
 import {
 	FyBussinessUnitResponseType,
@@ -24,6 +27,10 @@ import {
 	GetFyCompanyList,
 } from "../../../../services/login";
 import { useAppProvider } from "../../../../AppProvider";
+import {
+	DialogCloseIconStyled,
+	DialogTitleStyled,
+} from "../../../ModalComponent/ConfirmationDialog.style";
 
 interface SelectCompanyModalProps {
 	open: boolean;
@@ -115,6 +122,7 @@ const renderScrollableList = <T,>(
 );
 
 const SelectCompanyModal: FC<SelectCompanyModalProps> = ({ open, onClose }) => {
+	const theme = useTheme();
 	const navigate = useNavigate();
 	const { setNotify } = useAppProvider();
 	const [selectedYear, setSelectedYear] = useState<string>("");
@@ -194,6 +202,25 @@ const SelectCompanyModal: FC<SelectCompanyModalProps> = ({ open, onClose }) => {
 
 	return (
 		<CustomDialog open={open} onClose={onClose} transitionType="slide">
+			<DialogCloseIconStyled onClick={onClose}>
+				<div style={{ position: "relative" }}>
+					<CloseIcon />
+				</div>
+			</DialogCloseIconStyled>
+			<DialogTitleStyled
+				id="draggable-dialog-title"
+				dialogType="submit"
+				sx={{
+					...theme.typography.body1,
+					fontWeight: "400",
+					p: 1,
+					cursor: "move",
+					":hover": {
+						bgcolor: alpha(theme.palette.primary.main, 0.4),
+					},
+				}}>
+				Select Company and Year to Login
+			</DialogTitleStyled>
 			<DialogContent>
 				<Box>
 					{/* Financial Year Selection */}

@@ -6,7 +6,7 @@ import moment from "moment";
 import { FC, useEffect, useRef, useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation, useParams } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router";
 import { useAppProvider } from "../AppProvider";
 import { PosMenuFormSchema } from "../common/Component-types/posMenu.type";
 import ConfirmationDialog from "../common/ModalComponent/ConfirmationDialog";
@@ -40,6 +40,7 @@ interface PosMenuProps {
 const FormContainer: FC<PosMenuProps> = ({ data }) => {
 	const effectRan = useRef(false);
 	const { pathname } = useLocation();
+	const navigate = useNavigate();
 	const {
 		checked,
 		setChecked,
@@ -531,6 +532,16 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 		focusCardNumber();
 	};
 
+	const handleGobackPos = async () => {
+		method.reset();
+		setAvailBal(0);
+		setImgUrl("");
+		dispatch(resetPosMenu());
+		setOpenClear(false);
+		focusCardNumber();
+		await navigate("/pos-menu", { replace: true });
+	};
+
 	useEffect(() => {
 		method.setFocus("cardNumber" as any);
 		queryCache.clear();
@@ -584,6 +595,7 @@ const FormContainer: FC<PosMenuProps> = ({ data }) => {
 							handlePreviousClick={handlePreviousClick}
 							handleSubmitClick={handleSubmitClick}
 							registerReset={handleCardDetailResetRef}
+							handleGoback={handleGobackPos}
 						/>
 
 						<RightMenuSection resetFormValues={handleScanUnitResetRef} />

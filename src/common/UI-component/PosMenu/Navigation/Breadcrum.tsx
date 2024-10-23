@@ -10,15 +10,16 @@ import {
 	useTheme,
 } from "@mui/material";
 import { FC } from "react";
-import { Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
+import { Link as RouterLink, useLocation } from "react-router-dom";
 
 interface BreadcrumbNavProps {
 	title: string;
+	onGoback: () => void;
 }
 
-const BreadcrumbNav: FC<BreadcrumbNavProps> = ({ title }) => {
+const BreadcrumbNav: FC<BreadcrumbNavProps> = ({ title, onGoback }) => {
 	const theme = useTheme();
-	const navigate = useNavigate();
+	// const navigate = useNavigate();
 	const location = useLocation();
 	const pathnames = location.pathname.split("/").filter((x) => x);
 
@@ -28,10 +29,11 @@ const BreadcrumbNav: FC<BreadcrumbNavProps> = ({ title }) => {
 		return segment === "pos-menu" || index === pathnames.length - 1;
 	});
 
-	const handleBackNavigation = () => {
-		navigate("/pos-menu"); // Navigate back
-		window.location.reload();
-	};
+	// const handleBackNavigation = () => {
+
+	// 	navigate("/pos-menu"); // Navigate back
+	// 	// window.location.reload();
+	// };
 
 	return (
 		<Box
@@ -47,7 +49,7 @@ const BreadcrumbNav: FC<BreadcrumbNavProps> = ({ title }) => {
 				color="primary"
 				size="small"
 				aria-label="Back"
-				onClick={handleBackNavigation}
+				onClick={onGoback}
 				sx={{
 					color: theme.palette.primary.contrastText,
 					bgcolor: theme.palette.primary.main,
@@ -88,7 +90,7 @@ const BreadcrumbNav: FC<BreadcrumbNavProps> = ({ title }) => {
 							<Link
 								component={RouterLink}
 								to={to}
-								onClick={handleBackNavigation}
+								onClick={onGoback}
 								key={to}
 								sx={{ fontWeight: "bold" }}>
 								Pos Menu

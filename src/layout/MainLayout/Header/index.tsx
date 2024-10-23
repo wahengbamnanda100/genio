@@ -21,9 +21,11 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ handleLeftDrawerToggle }) => {
 	const theme = useTheme();
 	const UserData = JSON.parse(localStorage.getItem("userDetail")!);
+	const domain = localStorage.getItem("domain");
+	const domainUrl = domain ? domain : import.meta.env.VITE_API_URL;
 
 	const updatedImageUrl = UserData?.CmpLogo
-		? `${import.meta.env.VITE_API_URL}${
+		? `${domainUrl}${
 				UserData.CmpLogo.startsWith("..")
 					? UserData.CmpLogo.replace(/^\.{1,2}/, "")
 					: UserData.CmpLogo
