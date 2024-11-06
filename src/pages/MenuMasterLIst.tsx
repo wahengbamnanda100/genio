@@ -425,19 +425,19 @@ const MenuMasterLIst: FC<SearchDrawerProps> = ({
     setDeleteOpen(true);
   };
 
-  const handleDeleteConfirm = () => {
-    //console.log("handle click Delete", deleteRow);
-    // const deleteData: PrevDeleteRequestBodiesType = {
-    //   UserID: USERDATA?.UserId || "",
-    //   Sih_Id_N: deleteRow,
-    // };
-    // mutateAsync(deleteData);
-    setDeleteOpen(false);
-  };
+  // const handleDeleteConfirm = () => {
+  //   //console.log("handle click Delete", deleteRow);
+  //   // const deleteData: PrevDeleteRequestBodiesType = {
+  //   //   UserID: USERDATA?.UserId || "",
+  //   //   Sih_Id_N: deleteRow,
+  //   // };
+  //   // mutateAsync(deleteData);
+  //   setDeleteOpen(false);
+  // };
 
-  const handleDeleteCancel = () => {
-    setDeleteOpen(false);
-  };
+  // const handleDeleteCancel = () => {
+  //   setDeleteOpen(false);
+  // };
 
   const onSearch = (data: any) => {
     //console.log("search data", data);
