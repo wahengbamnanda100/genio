@@ -10,6 +10,8 @@ import PrivateRoute from "./PrivateRotes";
 const PosMenu = Loadable(lazy(() => import("../pages/PosMenu")));
 const MenuMasterList = Loadable(lazy(() => import("../pages/MenuMasterLIst")));
 const MenuMaster = Loadable(lazy(() => import("../pages/MenuMaster")));
+const Demo = Loadable(lazy(() => import("../pages/Demo")));
+const DemoList = Loadable(lazy(() => import("../pages/DemoList")));
 
 const MainRoutes: RouteObject = {
   path: "/",
@@ -68,6 +70,33 @@ const MainRoutes: RouteObject = {
       element: (
         <PrivateRoute>
           <MenuMasterList />
+        </PrivateRoute>
+      ),
+      errorElement: <ErrorElement />,
+    },
+    {
+      path: "demo",
+      element: (
+        <PrivateRoute>
+          <Demo />
+        </PrivateRoute>
+      ),
+      errorElement: <ErrorElement />,
+    },
+    {
+      path: "demo/:id",
+      element: (
+        <PrivateRoute>
+          <Demo />
+        </PrivateRoute>
+      ),
+      errorElement: <ErrorElement />,
+    },
+    {
+      path: "demo-list",
+      element: (
+        <PrivateRoute>
+          <DemoList />
         </PrivateRoute>
       ),
     },

@@ -26,17 +26,15 @@ import {
   DataTypeProvider,
   GridColumnExtension,
 } from "@devexpress/dx-react-grid";
-import { RightSpacing } from "../common/UI-component/PosMenu/RightSection";
 // import TotalVlaue from "../common/UI-component/";
 import { FormProvider, useForm } from "react-hook-form";
 import {
   historyTotalDataSchema,
   searchHistorySchema,
 } from "../common/Component-types/history.type";
-import { deletePreviousMenu, PreviousList } from "../services";
+import { PreviousList } from "../services";
 import moment from "moment";
 import {
-  PrevDeleteRequestBodiesType,
   PreviousSaleListItemType,
   PreviousSaleRequestBodiesType,
 } from "../services/aoi.type";
@@ -45,9 +43,8 @@ import {
   ListFilterCellComponent,
 } from "../common/CutomTable/components/customComponent";
 import { useNavigate } from "react-router";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useAppProvider } from "../AppProvider";
-import ConfirmationDialog from "../common/ModalComponent/ConfirmationDialog";
 import { anyOneIsTrue, queryCache } from "../utils/utils";
 import { UserDetailsType } from "../common/Component-types/localStorageData.type";
 
