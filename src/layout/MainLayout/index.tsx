@@ -15,10 +15,12 @@ import CustomSnackbar from "../../common/UI-component/Notification";
 import { UserDetailsType } from "../../common/Component-types/localStorageData.type";
 import { anyOneIsTrue } from "../../utils/utils";
 import AuthoriseModal from "../../common/ModalComponent/AuthoriseModal";
+import Sidebar from "./Sidebar";
+import { drawerWidth } from "./Sidebar/sidebar.config";
 // import { UserDetailsType } from "../../common/Component-types/localStorageData.type";
 // import { anyOneIsTrue } from "../../utils/utils";
 
-const drawerWidth: number = 150;
+
 
 // Define a prop interface for the Main component
 interface MainProps {
@@ -30,24 +32,27 @@ const Main = styled("main", {
 	shouldForwardProp: (prop) => prop !== "open",
 })<MainProps>(({ theme, open }) => ({
 	...theme.typography.body1,
-	transition: theme.transitions.create("margin", {
+	transition: theme.transitions.create("all", {
 		easing: theme.transitions.easing.sharp,
 		duration: theme.transitions.duration.leavingScreen,
 	}),
 	backgroundColor: alpha(theme.palette.primary.light, 0.3),
-	marginLeft: open ? drawerWidth : 0,
+	flexGrow: 1,
 	minHeight: "100vh",
-	width: `calc(100% - ${open ? drawerWidth : 0}px)`,
 	padding: "12px",
 	paddingTop: "8px",
+	marginLeft: open ? drawerWidth : 0,
 	[theme.breakpoints.down("md")]: {
-		marginLeft: open ? 20 : 0,
-		width: `calc(100% - ${open ? drawerWidth : 0}px)`,
+		marginLeft: 0,
+		width: `100%`,
 	},
 	[theme.breakpoints.down("sm")]: {
-		marginLeft: open ? 10 : 0,
-		width: `calc(100% - ${open ? drawerWidth : 0}px)`,
-		marginRight: open ? 10 : 0,
+		marginLeft: 0,
+		width: `100%`,
+	},
+	[theme.breakpoints.down(1080)]: {
+		marginLeft: 0,
+		width: `100%`,
 	},
 }));
 
@@ -71,10 +76,10 @@ const MainLayout: React.FC = () => {
 
 	const accessGranted = USERDATA
 		? anyOneIsTrue(
-				USERDATA.IsDeletable,
-				USERDATA.IsInsertable,
-				USERDATA.IsViewable
-			)
+			USERDATA.IsDeletable,
+			USERDATA.IsInsertable,
+			USERDATA.IsViewable
+		)
 		: false;
 
 	useEffect(() => {
@@ -84,7 +89,9 @@ const MainLayout: React.FC = () => {
 	}, [accessGranted]);
 
 	return (
-		<Box sx={{ display: "flex" }}>
+		<Box sx={{ display: "flex", justifyContent: "space-between" }}>
+
+
 			<AppBar
 				enableColorOnDark
 				position="fixed"
@@ -114,8 +121,8 @@ const MainLayout: React.FC = () => {
 					<Header handleLeftDrawerToggle={handleLeftDrawerToggle} />
 				</Toolbar>
 			</AppBar>
-
-			<Main theme={theme} open={leftDrawerOpened}>
+			<Sidebar open={leftDrawerOpened} onClose={() => setLeftDrawerOpened(false)} />
+			<Main theme={theme} open={leftDrawerOpened} >
 				<Box sx={{ padding: "1.1rem" }}>
 					<CustomSnackbar />
 				</Box>

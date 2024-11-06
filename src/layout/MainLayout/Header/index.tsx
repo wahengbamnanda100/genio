@@ -8,10 +8,12 @@ import {
 	useTheme,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import React from "react";
+import CloseIcon from "@mui/icons-material/Close";
+import React, { useState } from "react";
 import LogoSection from "./LogoSection";
 import RightSection from "./RightSection";
 import { placeholderUrl } from "./UserImage";
+import { AnimatePresence, motion } from "framer-motion";
 
 // Define the prop types for the Header component
 interface HeaderProps {
@@ -20,16 +22,17 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ handleLeftDrawerToggle }) => {
 	const theme = useTheme();
+	const [isOpen, setIsOpen] = useState(false);
+
 	const UserData = JSON.parse(localStorage.getItem("userDetail")!);
 	const domain = localStorage.getItem("domain");
 	const domainUrl = domain ? domain : import.meta.env.VITE_API_URL;
 
 	const updatedImageUrl = UserData?.CmpLogo
-		? `${domainUrl}${
-				UserData.CmpLogo.startsWith("..")
-					? UserData.CmpLogo.replace(/^\.{1,2}/, "")
-					: UserData.CmpLogo
-			}?timestamp=${new Date().getTime()}` // Cache-busting query param
+		? `${domainUrl}${UserData.CmpLogo.startsWith("..")
+			? UserData.CmpLogo.replace(/^\.{1,2}/, "")
+			: UserData.CmpLogo
+		}?timestamp=${new Date().getTime()}` // Cache-busting query param
 		: "";
 
 	return (
@@ -49,16 +52,30 @@ const Header: React.FC<HeaderProps> = ({ handleLeftDrawerToggle }) => {
 					variant="rounded"
 					sx={{
 						transition: "all .2s ease-in-out",
-						background: theme.palette.secondary.light,
-						color: theme.palette.secondary.dark,
+						background: isOpen ? theme.palette.secondary.dark : theme.palette.secondary.light,
+						color: isOpen ? theme.palette.secondary.light : theme.palette.secondary.dark,
 						"&:hover": {
 							background: theme.palette.secondary.dark,
 							color: theme.palette.secondary.light,
 						},
 					}}
-					onClick={handleLeftDrawerToggle}
+					onClick={() => {
+						handleLeftDrawerToggle()
+						setIsOpen(!isOpen)
+					}}
 					color="inherit">
-					<MenuIcon />
+					<AnimatePresence initial={false} mode="wait">
+						<motion.div
+							key={isOpen ? "close" : "menu"}
+							initial={{ opacity: 1, rotate: isOpen ? -90 : 90 }}
+							animate={{ opacity: 1, rotate: 0 }}
+							exit={{ opacity: 1, rotate: isOpen ? 90 : -90 }}
+							transition={{ duration: 0.2 }}
+						>
+							{isOpen ? <CloseIcon sx={{ fontWeight: "400" }} /> : <MenuIcon sx={{ fontWeight: "400" }} />}
+						</motion.div>
+					</AnimatePresence>
+
 				</Avatar>
 			</ButtonBase>
 

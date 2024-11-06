@@ -1,0 +1,282 @@
+import { FieldProps } from "../../Form-component";
+
+export const categoryDetail = (): FieldProps[] => [
+  {
+    fieldType: "text",
+    name: "categoryName",
+    label: "Category Name",
+    size: "medium",
+    xs: 6,
+  },
+  {
+    fieldType: "text",
+    name: "dietCategory",
+    label: "Diet Category",
+    size: "medium",
+    xs: 6,
+  },
+  {
+    fieldType: "text",
+    name: "partNumber",
+    label: "Part Number",
+    size: "medium",
+    xs: 4,
+  },
+  {
+    fieldType: "text",
+    name: "barcode",
+    label: "Barcode",
+    size: "medium",
+    xs: 4,
+  },
+  {
+    fieldType: "text",
+    name: "supplierPartNumber",
+    label: "Supplier Part Number",
+    size: "medium",
+    xs: 4,
+  },
+];
+
+export const productOtherDetail1 = (): FieldProps[] => [
+  {
+    fieldType: "select",
+    name: "manufacturer",
+    label: "ManuFacturer",
+    size: "medium",
+    options: [],
+    xs: 4,
+  },
+  {
+    fieldType: "select",
+    name: "country",
+    label: "Country of orgin",
+    size: "medium",
+    options: [],
+    xs: 4,
+  },
+  {
+    fieldType: "select",
+    name: "metarialType",
+    label: "Metarial Type",
+    size: "medium",
+    options: [],
+    xs: 4,
+  },
+  {
+    fieldType: "text",
+    name: "brad",
+    label: "Brand",
+    size: "medium",
+    xs: 4,
+  },
+  {
+    fieldType: "text",
+    name: "model",
+    label: "Model",
+    size: "medium",
+    xs: 4,
+  },
+  {
+    fieldType: "text",
+    name: "make",
+    label: "Make",
+    size: "medium",
+    xs: 4,
+  },
+  {
+    fieldType: "text",
+    name: "specification",
+    label: "Specification",
+    size: "medium",
+    xs: 4,
+  },
+  {
+    fieldType: "text",
+    name: "udgetCode",
+    label: "Budget Code",
+    size: "medium",
+    xs: 4,
+  },
+  {
+    fieldType: "text",
+    name: "Budget Name",
+    label: "Budget Name",
+    size: "medium",
+    xs: 4,
+  },
+  {
+    fieldType: "text",
+    name: "reOrderLevel",
+    label: "Re-Order Level",
+    size: "medium",
+    xs: 4,
+  },
+  {
+    fieldType: "text",
+    name: "minimumQuantity",
+    label: "Minimum Quantity",
+    size: "medium",
+    xs: 4,
+  },
+  {
+    fieldType: "text",
+    name: "maximumQuantity ",
+    label: "Maximum Quantity ",
+    size: "medium",
+    xs: 4,
+  },
+  {
+    fieldType: "text",
+    name: "wastagePercentage ",
+    label: "Wastage Percentage ",
+    size: "medium",
+    xs: 4,
+  },
+  {
+    fieldType: "text",
+    name: "shelfLife ",
+    label: "Shelf Life",
+    size: "medium",
+    xs: 4,
+  },
+  {
+    fieldType: "text",
+    name: "leadTime ",
+    label: "Lead Time (Days) ",
+    size: "medium",
+    xs: 4,
+  },
+  {
+    fieldType: "text",
+    name: "stockUnit",
+    label: "Stock Unit",
+    size: "medium",
+    xs: 4,
+  },
+  {
+    fieldType: "text",
+    name: "previousCost",
+    label: "Previous Cost",
+    size: "medium",
+    xs: 4,
+  },
+  {
+    fieldType: "text",
+    name: "averageCost",
+    label: "Average Cost",
+    size: "medium",
+    xs: 4,
+  },
+  {
+    fieldType: "text",
+    name: "purchaseRate",
+    label: "Purchase Rate",
+    size: "medium",
+    xs: 4,
+  },
+  {
+    fieldType: "text",
+    name: "previousSalesPrice",
+    label: "Previous Sales Price",
+    size: "medium",
+    xs: 4,
+  },
+  {
+    fieldType: "text",
+    name: "discountMargin",
+    label: "Discount Margin",
+    size: "medium",
+    xs: 4,
+  },
+  {
+    fieldType: "text",
+    name: "minimumSalesPrice",
+    label: "Minimum Sales Price",
+    size: "medium",
+    xs: 4,
+  },
+  {
+    fieldType: "text",
+    name: "sellingPrice",
+    label: "Selling Price (Normal)",
+    size: "medium",
+    xs: 4,
+  },
+  {
+    fieldType: "text",
+    name: "sellingPrice",
+    label: "Selling Price (Agency)",
+    size: "medium",
+    xs: 4,
+  },
+  {
+    fieldType: "text",
+    name: "sellingPrice",
+    label: "Selling Price (Dealer) ",
+    size: "medium",
+    xs: 4,
+  },
+  {
+    fieldType: "text",
+    name: "addOnDetails",
+    label: "Add On Details",
+    size: "medium",
+    xs: 4,
+  },
+];
+
+export const chckboxGroup = (): FieldProps => ({
+  fieldType: "checkbox",
+  row: true,
+  name: "checkboxList",
+  labelPlacement: "end",
+  checkBoxs: [
+    { label: "Allow (-ve) stock", name: "allownegative" },
+    { label: "Serial No. Required", name: "saleNo" },
+    { label: "Effect Inventory", name: "effectInventory" },
+  ],
+  xs: 6,
+});
+
+export const Notes = (): FieldProps => ({
+  fieldType: "text",
+  multiline: true,
+  rows: 4,
+  name: "notes",
+  label: "Notes",
+  xs: 12,
+});
+
+export const chckboxActive = (): FieldProps => ({
+  fieldType: "checkbox",
+  row: true,
+  name: "active",
+  labelPlacement: "end",
+  checkBoxs: [{ label: "Active", name: "active" }],
+  xs: 6,
+});
+
+export const addCategoryItem = (type: "add" | "edit"): FieldProps[] => [
+  {
+    fieldType: "text",
+    label: "Category Code",
+    name: "categoryCode",
+    size: "medium",
+    xs: 12,
+    disabled: type === "edit",
+    style: {
+      marginBottom: 2,
+    },
+  },
+  {
+    fieldType: "text",
+    label: "Category Name",
+    name: "categoryName",
+    size: "medium",
+    xs: 12,
+    style: {
+      marginBottom: 2,
+    },
+  },
+];
