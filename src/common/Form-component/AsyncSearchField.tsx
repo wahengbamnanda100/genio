@@ -3,11 +3,11 @@
 import React, { useEffect, useState } from "react";
 import { Controller, useFormContext, useFormState } from "react-hook-form";
 import {
-	Autocomplete,
-	CircularProgress,
-	Grid,
-	Popper,
-	TextField,
+  Autocomplete,
+  CircularProgress,
+  Grid,
+  Popper,
+  TextField,
 } from "@mui/material";
 import _ from "lodash";
 import { AsyncSearchFieldProps } from "./formField.type";
@@ -15,13 +15,13 @@ import { ErrorContainer } from "./ErrorContainer";
 // import { Student } from "../../services";
 
 const StyledPoper = (props: any) => {
-	return (
-		<Popper
-			{...props}
-			style={{ width: "fit-content", minWidth: "200px" }}
-			placement="bottom-start"
-		/>
-	);
+  return (
+    <Popper
+      {...props}
+      style={{ width: "fit-content", minWidth: "200px" }}
+      placement="bottom-start"
+    />
+  );
 };
 
 // const dummyData: Student[] = [
@@ -53,193 +53,194 @@ const StyledPoper = (props: any) => {
 // ];
 
 const AsyncSearchField = ({
-	name,
-	searchApi,
-	options,
-	getOptionLabel,
-	filterOptions = (x) => x,
-	rules,
-	variant = "outlined",
-	size = "small",
-	style,
-	className,
-	xs,
-	sm,
-	md,
-	lg,
-	sx,
-	setValue,
-	placeholder,
-	label,
-	hasErrorMessage,
-	id,
-	freeSolo,
-	optionKey,
-	columns,
-	changes,
-	renderItem,
-	onFocus,
-	highlightColor = "#61c2ff",
-	disabled = false,
-	...restProps
+  name,
+  searchApi,
+  options,
+  getOptionLabel,
+  filterOptions = (x) => x,
+  rules,
+  variant = "outlined",
+  size = "small",
+  style,
+  className,
+  xs,
+  sm,
+  md,
+  lg,
+  sx,
+  setValue,
+  placeholder,
+  label,
+  hasErrorMessage,
+  id,
+  freeSolo,
+  optionKey,
+  columns,
+  changes,
+  renderItem,
+  onFocus,
+  highlightColor = "#61c2ff",
+  disabled = false,
+  ...restProps
 }: AsyncSearchFieldProps) => {
-	const [keyStroke, setKeyStroke] = useState("");
-	const [selectedValue, setSelectedValue] = useState<any>(null);
-	const [loading, setLoading] = useState(false);
-	const [searchData, setSearchData] = useState<any[]>([]);
-	const [isFocused, setIsFocused] = useState(false);
+  const [keyStroke, setKeyStroke] = useState("");
+  const [selectedValue, setSelectedValue] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+  const [searchData, setSearchData] = useState<any[]>([]);
+  const [isFocused, setIsFocused] = useState(false);
 
-	const { control, clearErrors } = useFormContext();
-	const { errors } = useFormState({ control });
+  const { control, clearErrors } = useFormContext();
+  const { errors } = useFormState({ control });
 
-	useEffect(() => {
-		const fetchData = async () => {
-			setLoading(true);
-			const { data, isLoading } = await searchApi(keyStroke);
-			setSearchData(data);
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      const { data, isLoading } = await searchApi(keyStroke);
+      setSearchData(data as any);
 
-			// setSearchData(dummyData);
-			setLoading(isLoading);
-		};
+      // setSearchData(dummyData);
+      setLoading(isLoading);
+    };
 
-		const debouncedFetchData = _.debounce(fetchData, 500);
+    const debouncedFetchData = _.debounce(fetchData, 500);
 
-		if (keyStroke !== "" && isFocused && !disabled) {
-			debouncedFetchData();
-		} else {
-			setSearchData([]);
-			setLoading(false);
-		}
+    if (keyStroke !== "" && isFocused && !disabled) {
+      debouncedFetchData();
+    } else {
+      setSearchData([]);
+      setLoading(false);
+    }
 
-		// Cleanup function to cancel debounce on component unmount or keyStroke change
-		return () => {
-			debouncedFetchData.cancel();
-		};
-	}, [keyStroke, isFocused, searchApi, disabled]);
+    // Cleanup function to cancel debounce on component unmount or keyStroke change
+    return () => {
+      debouncedFetchData.cancel();
+    };
+  }, [keyStroke, isFocused, searchApi, disabled]);
 
-	useEffect(() => {
-		if (isFocused && onFocus) {
-			// //console.log("inside seard field", name, isFocused);
+  useEffect(() => {
+    if (isFocused && onFocus) {
+      // //console.log("inside seard field", name, isFocused);
 
-			onFocus(name);
-		}
-	}, [isFocused, name, onFocus]);
+      onFocus(name);
+    }
+  }, [isFocused, name, onFocus]);
 
-	return (
-		<Grid
-			item
-			xs={xs}
-			md={md}
-			sm={sm}
-			lg={lg}
-			className={className}
-			style={style}>
-			<Controller
-				key={id}
-				name={name}
-				render={({ field: { onChange, ref, ...rest } }) => (
-					<Autocomplete
-						freeSolo={freeSolo}
-						{...rest}
-						fullWidth
-						sx={sx}
-						loading={loading}
-						onChange={(_, value) => {
-							setSelectedValue(value);
-							setValue && setValue(name, value);
-							changes && changes(name, value);
-							clearErrors(name);
-							if (!freeSolo) {
-								onChange(value);
-								return;
-							}
-							if (optionKey) {
-								if (typeof value === "string") {
-									onChange({ [optionKey]: value });
-									return;
-								}
-								onChange(value);
-								return;
-							}
-						}}
-						onInputChange={(_, value) => {
-							setKeyStroke(value);
-						}}
-						disabled={disabled}
-						options={disabled ? [] : options(searchData)}
-						getOptionLabel={getOptionLabel}
-						filterOptions={filterOptions}
-						PopperComponent={renderItem ? StyledPoper : undefined}
-						renderOption={(props: any, option: any) => {
-							const isSelected =
-								option &&
-								selectedValue &&
-								option.StudentId === selectedValue.StudentId;
+  return (
+    <Grid
+      item
+      xs={xs}
+      md={md}
+      sm={sm}
+      lg={lg}
+      className={className}
+      style={style}
+    >
+      <Controller
+        key={id}
+        name={name}
+        render={({ field: { onChange, ref, ...rest } }) => (
+          <Autocomplete
+            freeSolo={freeSolo}
+            {...rest}
+            fullWidth
+            sx={sx}
+            loading={loading}
+            onChange={(_, value) => {
+              setSelectedValue(value);
+              setValue && setValue(name, value);
+              changes && changes(name, value);
+              clearErrors(name);
+              if (!freeSolo) {
+                onChange(value);
+                return;
+              }
+              if (optionKey) {
+                if (typeof value === "string") {
+                  onChange({ [optionKey]: value });
+                  return;
+                }
+                onChange(value);
+                return;
+              }
+            }}
+            onInputChange={(_, value) => {
+              setKeyStroke(value);
+            }}
+            disabled={disabled}
+            options={disabled ? [] : options(searchData)}
+            getOptionLabel={getOptionLabel}
+            filterOptions={filterOptions}
+            PopperComponent={renderItem ? StyledPoper : undefined}
+            renderOption={(props: any, option: any) => {
+              const isSelected =
+                option &&
+                selectedValue &&
+                option.StudentId === selectedValue.StudentId;
 
-							return (
-								<React.Fragment key={props["data-option-index"]}>
-									{renderItem ? (
-										<>
-											{renderItem &&
-												renderItem({
-													option,
-													props,
-													isSelected,
-													highlightColor,
-												})}
-										</>
-									) : (
-										<li {...props}>{option[`${optionKey}`]}</li>
-									)}
-								</React.Fragment>
-							);
-						}}
-						noOptionsText={loading ? "Loading..." : "No options"}
-						renderInput={(params: any) => {
-							// //console.log("pram auto", params);
-							// //console.log("restProps auto", restProps);
+              return (
+                <React.Fragment key={props["data-option-index"]}>
+                  {renderItem ? (
+                    <>
+                      {renderItem &&
+                        renderItem({
+                          option,
+                          props,
+                          isSelected,
+                          highlightColor,
+                        })}
+                    </>
+                  ) : (
+                    <li {...props}>{option[`${optionKey}`]}</li>
+                  )}
+                </React.Fragment>
+              );
+            }}
+            noOptionsText={loading ? "Loading..." : "No options"}
+            renderInput={(params: any) => {
+              // //console.log("pram auto", params);
+              // //console.log("restProps auto", restProps);
 
-							return (
-								<TextField
-									{...params}
-									{...restProps}
-									inputRef={ref}
-									placeholder={placeholder}
-									label={label}
-									variant={variant}
-									size={size}
-									error={_.get(errors, name)}
-									onFocus={() => setIsFocused(true)} // Set focus state to true
-									onBlur={() => setIsFocused(false)} // Set focus state to false on blur
-									InputProps={{
-										...params.InputProps,
-										endAdornment: (
-											<React.Fragment>
-												{loading && (
-													<CircularProgress color="inherit" size={20} />
-												)}
-												{params.InputProps.endAdornment}
-											</React.Fragment>
-										),
-									}}
-								/>
-							);
-						}}
-					/>
-				)}
-				rules={rules}
-			/>
-			{hasErrorMessage && _.get(errors, name) && (
-				<ErrorContainer>
-					{
-						(_.get(errors, name)
-							? _.get(errors, `${name}.message`)
-							: null) as React.ReactNode
-					}
-				</ErrorContainer>
-			)}
-		</Grid>
-	);
+              return (
+                <TextField
+                  {...params}
+                  {...restProps}
+                  inputRef={ref}
+                  placeholder={placeholder}
+                  label={label}
+                  variant={variant}
+                  size={size}
+                  error={_.get(errors, name)}
+                  onFocus={() => setIsFocused(true)} // Set focus state to true
+                  onBlur={() => setIsFocused(false)} // Set focus state to false on blur
+                  InputProps={{
+                    ...params.InputProps,
+                    endAdornment: (
+                      <React.Fragment>
+                        {loading && (
+                          <CircularProgress color="inherit" size={20} />
+                        )}
+                        {params.InputProps.endAdornment}
+                      </React.Fragment>
+                    ),
+                  }}
+                />
+              );
+            }}
+          />
+        )}
+        rules={rules}
+      />
+      {hasErrorMessage && _.get(errors, name) && (
+        <ErrorContainer>
+          {
+            (_.get(errors, name)
+              ? _.get(errors, `${name}.message`)
+              : null) as React.ReactNode
+          }
+        </ErrorContainer>
+      )}
+    </Grid>
+  );
 };
 
 export default AsyncSearchField;

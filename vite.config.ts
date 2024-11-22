@@ -6,12 +6,16 @@ import svgr from "vite-plugin-svgr";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-	plugins: [
-		react(),
-		svgr(),
-		tsConfigPaths(),
-		sassDts({
-			enabledMode: ["development", "production"], // or remove this line to enable it in all modes
-		}),
-	],
+  plugins: [
+    react(),
+    svgr(),
+    tsConfigPaths(),
+    sassDts({
+      enabledMode: ["development", "production"], // or remove this line to enable it in all modes
+    }),
+  ],
+  server: {
+    port: 3000,
+    open: true,
+  },
 });

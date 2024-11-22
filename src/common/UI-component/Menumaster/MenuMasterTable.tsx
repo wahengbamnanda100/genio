@@ -1,17 +1,24 @@
-import { FC, ReactNode, useState } from "react";
-import CustomTable from "../../CutomTable/CustomTable";
-import { Column, GridColumnExtension } from "@devexpress/dx-react-grid";
-import { IconButton, Stack, Tooltip } from "@mui/material";
 import GridViewIcon from "@mui/icons-material/GridView";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import { UserDetailsType } from "../../Component-types/localStorageData.type";
-import { anyOneIsTrue } from "../../../utils/utils";
-import { ListFilterCellComponent } from "../../CutomTable/components/customComponent";
-import { UnitMasterItem } from "../../../services/aoi.type";
+import { IconButton, Stack, Tooltip } from "@mui/material";
+import { FC, ReactNode, useState } from "react";
+// import { anyOneIsTrue } from "../../../utils/utils";
+import {
+  Column,
+  DataTypeProvider,
+  GridColumnExtension,
+} from "@devexpress/dx-react-grid";
+import CustomTable from "../../CutomTable/CustomTable";
+import {
+  CustomTableCurrrencyCellFormatter,
+  ListFilterCellComponent,
+} from "../../CutomTable/components/customComponent";
+// import { UserDetailsType } from "../../Component-types/localStorageData.type";
+import { MenuMasterListType } from "../../../services/aoi.type";
 
-interface DemoListTableProps {
+interface MenuListTableProps {
   isLoading: boolean;
-  data: UnitMasterItem[];
+  data: MenuMasterListType[];
 }
 
 interface ActionIconBtnProps {
@@ -59,20 +66,21 @@ const ActionBtnGroup: FC<ActionBtnGroupProps> = ({
   onClickView,
   id,
 }) => {
-  const localUserData = localStorage.getItem("userDetail") as string | null;
+  // const localUserData = localStorage.getItem("userDetail") as string | null;
 
-  const USERDATA = localUserData
-    ? (JSON.parse(localUserData) as UserDetailsType)
-    : null;
+  // const USERDATA = localUserData
+  //   ? (JSON.parse(localUserData) as UserDetailsType)
+  //   : null;
 
-  const viewEnable = USERDATA
-    ? anyOneIsTrue(
-        USERDATA?.IsDeletable,
-        USERDATA?.IsEditable,
-        USERDATA?.IsInsertable,
-        USERDATA?.IsViewable,
-      )
-    : false;
+  // const viewEnable = USERDATA
+  //   ? anyOneIsTrue(
+  //       USERDATA?.IsDeletable,
+  //       USERDATA?.IsEditable,
+  //       USERDATA?.IsInsertable,
+  //       USERDATA?.IsViewable,
+  //     )
+  //   : false;
+  // const viewEnable = true;
 
   return (
     <Stack
@@ -87,27 +95,27 @@ const ActionBtnGroup: FC<ActionBtnGroupProps> = ({
 				onClick={() => onClickPrint && onClickPrint(id)}>
 				<ReceiptIcon fontSize="small" />
 			</ActionIconBtn> */}
-      {viewEnable && (
-        <ActionIconBtn
-          varient="view"
-          onClick={() => onClickView && onClickView(id)}
-        >
-          <GridViewIcon fontSize="small" />
-        </ActionIconBtn>
-      )}
-      {USERDATA?.IsDeletable && (
-        <ActionIconBtn
-          varient="delete"
-          onClick={() => onClickDelete && onClickDelete(id)}
-        >
-          <DeleteOutlineIcon fontSize="small" />
-        </ActionIconBtn>
-      )}
+      {/* {viewEnable && ( */}
+      <ActionIconBtn
+        varient="view"
+        onClick={() => onClickView && onClickView(id)}
+      >
+        <GridViewIcon fontSize="small" />
+      </ActionIconBtn>
+      {/* )} */}
+      {/* {USERDATA?.IsDeletable && ( */}
+      <ActionIconBtn
+        varient="delete"
+        onClick={() => onClickDelete && onClickDelete(id)}
+      >
+        <DeleteOutlineIcon fontSize="small" />
+      </ActionIconBtn>
+      {/* )} */}
     </Stack>
   );
 };
 
-const DemoListTable: FC<DemoListTableProps> = ({ isLoading, data }) => {
+const MenUMasterTable: FC<MenuListTableProps> = ({ isLoading, data }) => {
   const [searchQuery, setSearchQuery] = useState({
     department: "",
     status: "",
@@ -120,27 +128,34 @@ const DemoListTable: FC<DemoListTableProps> = ({ isLoading, data }) => {
     {
       title: "Sl",
       name: "index",
-      getCellValue: (row: UnitMasterItem) => {
-        if (data && data) {
-          return (
-            data.findIndex(
-              (dataRow: UnitMasterItem) => dataRow.UnitID === row.UnitID,
-            ) + 1
+      getCellValue: (row: MenuMasterListType) => {
+        if (data?.length) {
+          // Check if data exists and is not empty
+          const index = data.findIndex(
+            (dataRow: MenuMasterListType) =>
+              dataRow.Partnumber === row.Partnumber,
           );
+          return index >= 0 ? index + 1 : "";
         }
         return "";
       },
     },
-    { name: "UnitCode", title: "Unit Code" },
-    { name: "UnitDesc", title: "Unit Description" },
-    { name: "FormalName", title: "Formal Name" },
-    { name: "StatusDesc", title: "Status" },
+    { name: "Partnumber", title: "Part Number" },
+    { name: "Purchasedescription", title: "Purchase Description" },
+    { name: "Salesdescription", title: "Sales Description" },
+    { name: "Categoryname", title: "Category Name" },
+    { name: "Dietcategory", title: "Diet Category" },
+    { name: "Manufacturername", title: "Manufacturer Name" },
+    { name: "Stockunit", title: "Stock Unit" },
+    { name: "Averagecost", title: "Average Cost" },
+    { name: "Sellingprice", title: "Selling Price (Normal)" },
+    { name: "Status", title: "Status" },
     {
       name: "action",
       title: "action",
-      getCellValue: (row: UnitMasterItem) => (
+      getCellValue: (row: MenuMasterListType) => (
         <ActionBtnGroup
-          id={row.UnitID}
+          id={row.Partnumber}
           onClickView={handleView}
           onClickPrint={handlePrint}
           onClickDelete={handleDelete}
@@ -151,12 +166,62 @@ const DemoListTable: FC<DemoListTableProps> = ({ isLoading, data }) => {
 
   const [columnExtension] = useState<GridColumnExtension[]>([
     {
-      columnName: "action",
+      columnName: "index",
       align: "center",
-      width: 100,
+      width: 80,
     },
     {
-      columnName: "index",
+      columnName: "Partnumber",
+      align: "left",
+      width: 130,
+    },
+    {
+      columnName: "Purchasedescription",
+      align: "left",
+      width: 180,
+    },
+    {
+      columnName: "Salesdescription",
+      align: "left",
+      width: 160,
+    },
+    {
+      columnName: "Categoryname",
+      align: "left",
+      width: 140,
+    },
+    {
+      columnName: "Dietcategory",
+      align: "left",
+      width: 130,
+    },
+    {
+      columnName: "Manufacturername",
+      align: "left",
+      width: 180,
+    },
+    {
+      columnName: "Stockunit",
+      align: "left",
+      width: 130,
+    },
+    {
+      columnName: "Averagecost",
+      align: "right",
+      width: 130,
+    },
+    {
+      columnName: "Sellingprice",
+      align: "right",
+      width: 180,
+    },
+    {
+      columnName: "Status",
+      align: "center",
+      width: 130,
+    },
+    {
+      columnName: "action",
       align: "center",
       width: 100,
     },
@@ -168,7 +233,7 @@ const DemoListTable: FC<DemoListTableProps> = ({ isLoading, data }) => {
 
   return (
     <CustomTable
-      hasBoxShadow
+      //   hasBoxShadow
       isLoading={isLoading}
       grid={{
         columns,
@@ -237,8 +302,21 @@ const DemoListTable: FC<DemoListTableProps> = ({ isLoading, data }) => {
       hasFilter
       hasGrouping
       hasToggleVisibility
-    ></CustomTable>
+    >
+      <DataTypeProvider
+        for={["Sellingprice", "Averagecost"]}
+        availableFilterOperations={[
+          "equal",
+          "notEqual",
+          "greaterThan",
+          "greaterThanOrEqual",
+          "lessThan",
+          "lessThanOrEqual",
+        ]}
+        formatterComponent={CustomTableCurrrencyCellFormatter}
+      />
+    </CustomTable>
   );
 };
 
-export default DemoListTable;
+export default MenUMasterTable;

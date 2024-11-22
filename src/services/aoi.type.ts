@@ -357,3 +357,306 @@ export type UnitMasterResponseBodyType = {
   UnitId: string;
   Message: string;
 };
+
+//!_____________MenuMaster_______________
+
+export type MetarialTypeItem = {
+  strDisplayMember: string;
+  strValueMember: string;
+  Gem_Default_N: string;
+};
+
+export type DietCategoryItem = {
+  strDisplayMember: string;
+  strValueMember: string;
+  Gem_Default_N: string;
+};
+
+export type MetarialTypeRequestBodyType = {
+  Table: "Adm_AppsType_Mst";
+  DisplayMember: "Atm_Description_V";
+  ValueMember: "Atm_ID_N";
+  FilterString: "Atm_TypeID_N = 2 AND Atm_ID_N=4";
+};
+
+export type MetarialTypeResponseBodyType = {
+  Status: string;
+  Data: MetarialTypeItem[] | [];
+  message: string | null;
+};
+
+export type DietCategoryReqBodyType = {
+  Table: "Gen_General_Mst";
+  DisplayMember: "Gem_Desc_V";
+  ValueMember: "Gem_ID_N";
+  FilterString: "Gem_TypeID_N=223";
+};
+
+export type DietCategoryResBodyType = {
+  Status: string;
+  Data: DietCategoryItem[] | [];
+  message: string | null;
+};
+
+export type AddOnDetailsRequestBodyType = {
+  Table: "Gen_General_Mst";
+  DisplayMember: "Gem_Desc_V";
+  ValueMember: "Gem_ID_N";
+  FilterString: "Gem_TypeID_N=261";
+};
+
+export type AddOnDetailsItem = {
+  strDisplayMember: string;
+  strValueMember: string;
+  Gem_Default_N: string;
+};
+
+export type AddOnDetailsResponseBodyType = {
+  Status: string;
+  Data: AddOnDetailsItem[] | [];
+  message: string | null;
+};
+
+export type ManufacturerRequestBodyType = {
+  Cmp_ID_N: string;
+  IsAllChecked: string;
+};
+
+export type ManufacturerItem = {
+  ManufacturerId: string;
+  ManufacturerDesc: string;
+};
+
+export type ManufacturerResponseBodyType = {
+  Status: string;
+  Data: ManufacturerItem[] | [];
+  message: string | null;
+};
+
+export type MenuMasterCompanyListRequestBodyType = {
+  financialyearid: string;
+  Cmp_ID_N: string;
+};
+
+export type MenuMasterCompanyListType = {
+  CompanyId: string;
+  CompanyCode: string;
+  CompanyDesc: string;
+  CompanyAddress: string;
+  CheckboxSelect: false;
+};
+
+export type MenuMasterCompanyListResponseBodyType = {
+  Status: string;
+  Data: MenuMasterCompanyListType[] | [];
+  Message: string;
+};
+
+export type MenuMasterCategoryListRequestBodyType = null | "";
+
+export type MenuMasterCategoryListType = {
+  CategoryId: string;
+  CategoryCode: string;
+  CategoryDesc: string;
+  ParentId: string;
+  Path: string;
+  Image: string;
+};
+
+export type MenuMasterCateegeoryResponseBodyType = {
+  Status: string;
+  Data: MenuMasterCategoryListType[] | [];
+  Message: string;
+};
+
+export type CategorySaveRequestBodyType = {
+  CategoryID: string;
+  CategoryCode: string;
+  CategoryName: string;
+  CategoryImage: string;
+  ParentID: string;
+  UserID: string;
+  FormType: "1";
+};
+
+export type CategorySaveResponseType = {
+  Status: string;
+  CategoryID: string | null;
+  Message: string;
+};
+
+export type StockUnitRequsetType = null;
+
+export type StockUnitItemType = {
+  UnitId: string;
+  UnitName: string;
+};
+
+export type StockUnitResponseType = {
+  Status: string;
+  Data: StockUnitItemType[] | [];
+  Message: string;
+};
+
+export type CountryReqType = null;
+
+export type CountryItemType = {
+  CountryId: string;
+  CountryName: string;
+};
+
+export type CountryResType = {
+  Status: string;
+  Data: CountryItemType[] | [];
+  Message: string;
+};
+
+export type MMCompanyreqType = {
+  financialyearid: string;
+  Cmp_ID_N: string;
+};
+
+export type MMCountryItemType = {
+  CompanyId: string;
+  CompanyCode: string;
+  CompanyDesc: string;
+  CompanyAddress?: string;
+  CheckboxSelect?: boolean;
+};
+
+export type MMCompanyresType = {
+  Status: string;
+  Data: MMCountryItemType[] | [];
+  Message: string;
+};
+
+export type MMCateforyDeleteReq = {
+  CategoryId: string;
+};
+
+export type MMCategoryDeleteRes = {
+  Status: string;
+  Data: string | null;
+  Message: string;
+};
+
+export type UnitMasterSearchReqType = {
+  UnitCode: string;
+  UnitDesc: string;
+  FormalName: string;
+  Status: string;
+};
+
+export type UnitMasterItem = {
+  UnitID: string;
+  UnitCode: string;
+  UnitDesc: string;
+  FormalName: string;
+  StatusDesc: string;
+};
+
+export type UnitMasterSearchResType = {
+  Status: string;
+  Data: UnitMasterItem[] | [];
+  Message: string;
+};
+
+export type MenuMasterSaveReqType = {
+  AllowNegativeStock: string;
+  Usr_ID_N: string;
+  CategoryID: string;
+  ManufacturerId: string;
+  CountryId: string;
+  MaterialId: string;
+  PartNo: string;
+  Barcode: string;
+  SupplierPartNo: string;
+  PurchaseDesc: string;
+  SalesDesc: string;
+  Brand: string;
+  Model: string;
+  Make: string;
+  Specification: string;
+  Status: string;
+  ReOrderLevel: string;
+  MinQty: string;
+  MaxQty: string;
+  WastagePer: string;
+  ShelfLife: string;
+  LeadTime: string;
+  Unh_ID_N: string;
+  PreviousCost: string;
+  PurchaseRate: string;
+  AverageCost: string;
+  PreviousSalesPrice: string;
+  DiscountMargin: string;
+  SalesPriceNormal: string;
+  SalesPriceAgency: string;
+  SalesPriceDealer: string;
+  Note: string;
+  SerialNumber: string;
+  EffectInventory: string;
+  Image: string;
+  LedgerID: string | null;
+  FinancilYearID: string;
+  MinSalesPrice: string;
+  ArabDescription: string;
+  TaxApplicable: string;
+  TaxPer: string;
+  RateIncTax: string;
+  FormType: string;
+  AddOnDetails: string;
+  DietCategory: string;
+  MenuMasterID: string;
+  TblStockCard: StockCardItemType[];
+};
+
+export type StockCardItemType = {
+  Cmp_ID_N: string;
+  CheckboxSelect: string;
+};
+
+export type MenuMasterSaveResType = {
+  Status: string;
+  Data: string | null;
+  Message: string | null;
+};
+
+export type MenuMasterListReqType = {
+  Partnumber: string;
+  SupplierPartNumber: string;
+  PurchaseDescription: string;
+  Barcode: string;
+  CategoryName: string;
+  SalesDescription: string;
+  Manufacturer: string;
+  MaterialType: string;
+  SerialNumber: string;
+  EffectInventory: string;
+  NegativeStock: string;
+  Status: string | "1" | "0";
+  DietCategory: string;
+  FormType: string;
+  UnitMasterId: string;
+  Page: string;
+  Rows: string;
+};
+
+export type MenuMasterListType = {
+  Partnumber: string;
+  Purchasedescription: string;
+  Salesdescription: string;
+  Categoryname: string;
+  Dietcategory: string;
+  Manufacturername: string;
+  Stockunit: string;
+  Averagecost: string;
+  Sellingprice: string;
+  Status: string;
+};
+
+export type MenuMasterListResType = {
+  Status: string;
+  Data: MenuMasterListType[] | [];
+  Message: string;
+};

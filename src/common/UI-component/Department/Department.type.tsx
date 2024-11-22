@@ -54,24 +54,3 @@ export interface SearchListDepartmentType {
   departmentName: string;
   status: boolean;
 }
-
-export const departmentListSearchFields = (): FieldProps[] => [
-  {
-    fieldType: "text",
-    name: "departmentName",
-    label: "Department Name",
-    size: "medium",
-    xs: 6,
-  },
-  {
-    fieldType: "select",
-    name: "status",
-    label: "Status",
-    size: "medium",
-    options: [
-      { label: "Active", value: true },
-      { label: "Inactive", value: false },
-    ],
-    xs: 6,
-  },
-];

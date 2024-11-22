@@ -1,4 +1,5 @@
-import { alpha, Box, Grid, useTheme } from "@mui/material";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { alpha, Box, Grid, Typography, useTheme } from "@mui/material";
 import { PaperComponent } from "./ConfirmationDialog";
 import {
   DialogActionsStyled,
@@ -10,24 +11,28 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import { LoadingButton } from "@mui/lab";
 import { FormProvider, useForm } from "react-hook-form";
-import { addCategoryItem } from "../UI-component/Menumaster/MenuForm.types";
+import { AddCategoryItem } from "../UI-component/Menumaster/MenuForm.types";
 import Field from "../Form-component/field";
 import {
   placeholderUrl,
-  StudentImage,
+  // StudentImage,
 } from "../../layout/MainLayout/Header/UserImage";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import ImageUploadComponent from "../UI-component/Menumaster/UploadImage";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../store";
+import { setCategoryImgUrl } from "../../store/slices/menuMasterSlice";
 
 // Define props type for CategoryDialog
 interface CategoryDialogProps {
   title: string;
-  type: "add" | "edit";
+  type: "add" | "edit" | "new";
   open: boolean;
   setOpen: (open: boolean) => void;
   loading: boolean;
   onConfirm: (data: any) => void;
-  editData: Record<string, string> | null;
+  error: string | null;
+  data: Record<string, string> | null;
 }
 
 // Define form field types
@@ -37,16 +42,28 @@ interface CategoryFormFields {
   categoryImg: string;
 }
 
+export type BackendData = {
+  CategoryCode: string;
+  CategoryDesc: string;
+  CategoryImg: string;
+  CategoryId: string;
+  ParentId: string;
+};
+
 const CategoryDialog: React.FC<CategoryDialogProps> = ({
   title,
   type,
   open,
+  data,
   setOpen,
   loading,
   onConfirm,
-  editData,
+  error,
 }) => {
   const theme = useTheme();
+  const dispatch = useDispatch();
+
+  const [imgSrc, setImgSrc] = useState<string>(placeholderUrl);
 
   // Set up form with typed fields
   const methodCategory = useForm<CategoryFormFields>({
@@ -57,26 +74,61 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({
     },
   });
 
-  const onSubmit = (data: any) => {
+  const imgUrl = useSelector(
+    (state: RootState) => state.menuMaster.categoryImgUrl,
+  );
+
+  const onSubmit = (md: any) => {
     //todo any change
-    onConfirm(data);
+    const ParentId =
+      type === "new"
+        ? "0"
+        : type === "add"
+          ? data?.CategoryId ?? "0" // Fallback to "0" if CategoryId is undefined
+          : type === "edit"
+            ? data?.ParentId ?? "0" // Fallback to "0" if ParentId is undefined
+            : "0";
+    const backendData: BackendData = {
+      CategoryCode: md.categoryCode,
+      CategoryDesc: md.categoryName,
+      CategoryImg: md.categoryImg,
+      CategoryId: type === "edit" ? data?.CategoryId || "" : "",
+      ParentId: ParentId,
+    };
+    console.log({ data });
+    console.log("data?.ParentId", ParentId);
+    onConfirm(backendData);
   };
 
   useEffect(() => {
-    console.log("type", type, editData);
+    console.log("type", type, data);
 
-    if (type === "edit" && editData) {
-      methodCategory.setValue("categoryCode", editData.itemId);
-      methodCategory.setValue("categoryName", editData.label);
+    if (type === "edit" && data) {
+      methodCategory.setValue("categoryCode", data.CategoryCode);
+      methodCategory.setValue("categoryName", data.CategoryDesc);
       // methodCategory.setValue("categoryImg", editData.categoryImg); //todo later
+      console.log(data);
+      dispatch(setCategoryImgUrl(data.Image));
     }
   }, [open]);
 
   useEffect(() => {
     if (!open) {
       methodCategory.reset(); // Resets to defaultValues when dialog closes
+      dispatch(setCategoryImgUrl(""));
     }
   }, [open]);
+
+  useEffect(() => {
+    //todo in update mode if img is there then set img url in redux then show here
+    if (imgUrl && imgUrl !== "") {
+      methodCategory.setValue("categoryImg", imgUrl);
+      console.log("imgUrl", `${import.meta.env.VITE_API_URL}/${imgUrl}`);
+      setImgSrc(`${import.meta.env.VITE_API_URL}/${imgUrl}`);
+    } else {
+      setImgSrc(placeholderUrl);
+    }
+  }, [imgUrl]);
 
   return (
     <DialogStyled
@@ -104,7 +156,7 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({
             sx={{
               cursor: "move",
               color: "inherit",
-              fontWeight: "inherit",
+              fontWeight: "400",
               ":hover": {
                 bgcolor: alpha(theme.palette.primary.main, 0.08),
               },
@@ -122,20 +174,41 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({
           >
             <Grid container spacing={2} padding={1} height={"100%"}>
               <Grid item xs={8} spacing={2} sx={{}}>
-                {addCategoryItem(type).map((field) => (
+                {AddCategoryItem(type).map((field) => (
                   <Field key={field.name} {...field} />
                 ))}
               </Grid>
               <Grid item xs={4}>
                 <ImageUploadComponent
-                  src={placeholderUrl}
+                  src={imgSrc}
                   alt={"alte product image"} //todo add later
                   width="100%"
                   height="100%"
-                  apiEndpoint="#"
+                  apiEndpoint={`${import.meta.env.VITE_API_URL}/api/StockCardApi/PostAsync?TempFolderName=~/imgUpload/CategoryItemImage`}
                   sxProps={{ objectFit: "cover", borderRadius: 0 }}
                 />
               </Grid>
+              {error && (
+                <Grid item xs={8} spacing={2}>
+                  <Box
+                    sx={{
+                      width: "100%",
+                      p: 1,
+                      textAlign: "center",
+
+                      bgcolor: alpha(theme.palette.error.main, 0.1),
+                    }}
+                  >
+                    <Typography
+                      variant="subtitle1"
+                      fontWeight={"400"}
+                      color={"error"}
+                    >
+                      {error}
+                    </Typography>
+                  </Box>
+                </Grid>
+              )}
             </Grid>
           </DialogContentStyled>
           <DialogActionsStyled dialogType={"submit"}>
@@ -147,7 +220,7 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({
               type="submit"
               // onClick={onConfirm}
             >
-              Add
+              {type === "edit" ? "Update" : "Add"}
             </LoadingButton>
           </DialogActionsStyled>
         </form>

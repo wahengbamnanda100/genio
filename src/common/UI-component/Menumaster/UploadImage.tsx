@@ -1,14 +1,8 @@
-import React, {
-  useState,
-  CSSProperties,
-  MouseEventHandler,
-  useEffect,
-} from "react";
+import React, { useState, CSSProperties, MouseEventHandler } from "react";
 import {
   Avatar,
   Box,
   CircularProgress,
-  Modal,
   Button,
   IconButton,
   alpha,
@@ -26,11 +20,13 @@ import {
   DialogStyled,
   DialogTitleStyled,
 } from "../../ModalComponent/ConfirmationDialog.style";
-import { PaperComponent } from "../../ModalComponent/ConfirmationDialog";
+import { UploadPaperComponent } from "../../ModalComponent/ConfirmationDialog";
 import AnimateButton from "../Extended/AnimateButton";
+import { useDispatch } from "react-redux";
+import { setCategoryImgUrl } from "../../../store/slices/menuMasterSlice";
 
 interface ImageUploadComponentProps {
-  src?: string;
+  src: string;
   alt?: string;
   height?: string | number;
   width?: string | number;
@@ -50,7 +46,8 @@ const ImageUploadComponent: React.FC<ImageUploadComponentProps> = ({
   sxProps,
 }) => {
   const theme = useTheme();
-  const [imgSrc, setImgSrc] = useState<string>(src || placeholderUrl);
+  const dispatch = useDispatch();
+  const [imgSrc, setImgSrc] = useState<string>(src);
   const [loading, setLoading] = useState<boolean>(false);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
@@ -109,10 +106,18 @@ const ImageUploadComponent: React.FC<ImageUploadComponentProps> = ({
 
     try {
       setLoading(true);
-      await axios.post(apiEndpoint, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      setImgSrc(previewImage as string);
+      await axios
+        .put(apiEndpoint, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        })
+        .then((response) => {
+          console.log("Image uploaded successfully:", response.data[0]);
+          if (response.status === 200) {
+            dispatch(setCategoryImgUrl(response.data[0]));
+          } else {
+            console.log("Image upload failed");
+          }
+        });
       setModalOpen(false);
       setLoading(false);
     } catch (error) {
@@ -191,7 +196,7 @@ const ImageUploadComponent: React.FC<ImageUploadComponentProps> = ({
       <DialogStyled
         open={modalOpen}
         onClose={() => setModalOpen(false)}
-        PaperComponent={PaperComponent}
+        PaperComponent={UploadPaperComponent}
         aria-labelledby="draggable-upload-dialog"
         sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
       >
@@ -202,7 +207,7 @@ const ImageUploadComponent: React.FC<ImageUploadComponentProps> = ({
         </DialogCloseIconStyled>
 
         <DialogTitleStyled
-          id="draggable-dialog-title"
+          id="draggable-upload-dialog-title"
           dialogType={"submit"}
           sx={{
             cursor: "move",

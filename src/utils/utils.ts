@@ -98,3 +98,8 @@ export const queryCache = new QueryCache({
 export function anyOneIsTrue(...params: boolean[]): boolean {
   return params.includes(true);
 }
+
+export const arrayToStringWithDot = (arr: string[]): string => {
+  if (!Array.isArray(arr) || arr.length === 0) return "";
+  return arr.join(",");
+};

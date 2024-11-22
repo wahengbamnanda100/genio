@@ -6,31 +6,34 @@ import AsyncSearchField from "./AsyncSearchField";
 import DateField from "./DatePickerField";
 import SelectField from "./selectField";
 import BootstrapInputField from "./BootstrapInput";
+import AsyncAutoCompleteField from "./AsyncAutocompleteField";
 // import ReactDropZoneField from "./ReactDropZoneField";
 
 const Field = (props: FieldProps) => {
-	const { fieldType } = props;
+  const { fieldType } = props;
 
-	return fieldType === "text" ? (
-		<InputField {..._.omit(props, ["fieldType"])} />
-	) : fieldType === "checkbox" ? (
-		<CheckBoxField {..._.omit(props, ["fieldType", "name"])} />
-	) : fieldType === "search" ? (
-		<AsyncSearchField {..._.omit(props, ["fieldType"])} />
-	) : fieldType === "date" ? (
-		<DateField {..._.omit(props, ["fieldType"])} />
-	) : fieldType === "select" ? (
-		<SelectField {..._.omit(props, ["fieldType"])} />
-	) : fieldType === "boot-text" ? (
-		<BootstrapInputField {..._.omit(props, ["fieldType"])} />
-	) : // fieldType === "reactdropzone" ? (
-	//<ReactDropZoneField {..._.omit(props, ["fieldType"])} />
-	//) :  ) : fieldType === "dropzone" ? (
-	//   <AsyncSearchField {..._.omit(props, ["fieldType"])} />
-	// ) : fieldType === "dateTime" ? (
-	//   <AsyncSearchField {..._.omit(props, ["fieldType"])} />
-	// )
-	null;
+  return fieldType === "text" ? (
+    <InputField {..._.omit(props, ["fieldType"])} />
+  ) : fieldType === "checkbox" ? (
+    <CheckBoxField {..._.omit(props, ["fieldType", "name"])} />
+  ) : fieldType === "search" ? (
+    <AsyncSearchField {..._.omit(props, ["fieldType"])} />
+  ) : fieldType === "date" ? (
+    <DateField {..._.omit(props, ["fieldType"])} />
+  ) : fieldType === "select" ? (
+    <SelectField {..._.omit(props, ["fieldType"])} />
+  ) : fieldType === "boot-text" ? (
+    <BootstrapInputField {..._.omit(props, ["fieldType"])} />
+  ) : fieldType === "autoComplete" ? (
+    <AsyncAutoCompleteField {..._.omit(props, ["fieldType"])} />
+  ) : // fieldType === "reactdropzone" ? (
+  //<ReactDropZoneField {..._.omit(props, ["fieldType"])} />
+  //) :  ) : fieldType === "dropzone" ? (
+  //   <AsyncSearchField {..._.omit(props, ["fieldType"])} />
+  // ) : fieldType === "dateTime" ? (
+  //   <AsyncSearchField {..._.omit(props, ["fieldType"])} />
+  // )
+  null;
 };
 
 export default Field;
