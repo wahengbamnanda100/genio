@@ -357,3 +357,55 @@ export type UnitMasterResponseBodyType = {
   UnitId: string;
   Message: string;
 };
+
+
+//! ____________Manufacturer____________
+
+export type ManufacturerMasterRequestBodyType = {
+  ManCode: string;
+  ManName: string;
+  Address : string;
+  PhoneNumber:number | string;
+  FaxNumber:number | string;
+  Email:string; 
+  Status: string;
+  UserId:string;
+  ManId:string
+};
+
+export type ManufacturerMasterResponseBodyType={
+  Status: string;
+  ManId: string;
+  Message: string;
+}
+
+
+
+//! ____________Manufacturer List____________
+  
+export type ManufacturerMasterSearchRequestBodyType={
+  ManufacturerCode: string;
+  ManufacturerName: string;
+  Address: string;
+  Phonenumber:string;
+  Status:string;
+}
+
+export type Griddetails={
+  ManufacturerId:string;
+  ManufacturerCode:string;
+  ManufacturerName:string;
+  Address:string;
+  Phonenumber:string;
+  Faxnumber:string;
+  Emailid:string;
+  StatusDesc:string;
+}
+
+export type ManufacturerMasterSearchResponseBodyType={
+  Status: string;
+  Data: Griddetails[] | [];
+  Message: string;
+}
+
+

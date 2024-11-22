@@ -3,6 +3,7 @@ import HandymanIcon from "@mui/icons-material/Handyman";
 import RepeatIcon from "@mui/icons-material/Repeat";
 import FolderIcon from "@mui/icons-material/Folder";
 import WidgetsIcon from "@mui/icons-material/Widgets";
+import AddHomeWorkIcon from '@mui/icons-material/AddHomeWork';
 import { ReactElement } from "react";
 
 export interface RouteConfig {
@@ -31,6 +32,11 @@ const routes = [
         path: "menu-master",
         icon: <WidgetsIcon />,
       },
+      {
+        title: "Manufacturer",
+        path: "Manufacturer",
+        icon: <AddHomeWorkIcon />,
+      },
     ],
   },
   {
@@ -56,7 +62,7 @@ const routes = [
         title: "Demo UI",
         path: "demo",
         icon: <WidgetsIcon />,
-      },
+      }
     ],
   },
 ];

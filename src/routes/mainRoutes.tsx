@@ -6,12 +6,15 @@ import { RouteObject } from "react-router";
 import PageNotFound from "../common/UI-component/PageNotFound";
 import PrivateRoute from "./PrivateRotes";
 
+
 // const Dashboard = Loadable(lazy(() => import("../pages/dashboard")));
 const PosMenu = Loadable(lazy(() => import("../pages/PosMenu")));
 const MenuMasterList = Loadable(lazy(() => import("../pages/MenuMasterLIst")));
 const MenuMaster = Loadable(lazy(() => import("../pages/MenuMaster")));
 const Demo = Loadable(lazy(() => import("../pages/Demo")));
 const DemoList = Loadable(lazy(() => import("../pages/DemoList")));
+const Manufacturer = Loadable(lazy(() => import("../pages/Manufacturer")));
+const ManufacturerList = Loadable(lazy(() => import("../pages/ManufacturerMasterList")));
 
 const MainRoutes: RouteObject = {
   path: "/",
@@ -97,6 +100,24 @@ const MainRoutes: RouteObject = {
       element: (
         <PrivateRoute>
           <DemoList />
+        </PrivateRoute>
+      ),
+    },
+    {
+      path: "Manufacturer",
+      element: (
+        <PrivateRoute>
+          <Manufacturer/>
+        </PrivateRoute>
+      ),
+      errorElement: <ErrorElement />,
+    },
+
+    {
+      path: "ManufacturerMasterList",
+      element: (
+        <PrivateRoute>
+          <ManufacturerList/>
         </PrivateRoute>
       ),
     },
