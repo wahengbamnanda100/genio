@@ -15,6 +15,9 @@ const Demo = Loadable(lazy(() => import("../pages/Demo")));
 const DemoList = Loadable(lazy(() => import("../pages/DemoList")));
 const Manufacturer = Loadable(lazy(() => import("../pages/Manufacturer")));
 const ManufacturerList = Loadable(lazy(() => import("../pages/ManufacturerMasterList")));
+const Unit = Loadable(lazy(() => import("../pages/Unit")));
+const UnitList = Loadable(lazy(() => import("../pages/UnitList")));
+
 
 const MainRoutes: RouteObject = {
   path: "/",
@@ -103,6 +106,33 @@ const MainRoutes: RouteObject = {
         </PrivateRoute>
       ),
     },
+    
+ {
+  path: "Unit",
+  element: (
+    <PrivateRoute>
+      <Unit />
+    </PrivateRoute>
+  ),
+  errorElement: <ErrorElement />,
+},
+{
+  path: "Unit/:id",
+  element: (
+    <PrivateRoute>
+      <Unit />
+    </PrivateRoute>
+  ),
+  errorElement: <ErrorElement />,
+},
+{
+  path: "Unit-list",
+  element: (
+    <PrivateRoute>
+      <UnitList />
+    </PrivateRoute>
+  ),
+},
     {
       path: "Manufacturer",
       element: (
