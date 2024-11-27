@@ -5,6 +5,7 @@ import FolderIcon from "@mui/icons-material/Folder";
 import WidgetsIcon from "@mui/icons-material/Widgets";
 import AddHomeWorkIcon from '@mui/icons-material/AddHomeWork';
 import { ReactElement } from "react";
+import CalculateSharpIcon from '@mui/icons-material/CalculateSharp';
 
 export interface RouteConfig {
   path: string;
@@ -36,6 +37,11 @@ const routes = [
         title: "Manufacturer",
         path: "Manufacturer",
         icon: <AddHomeWorkIcon />,
+      },
+      {
+        title: "Unit",
+        path: "Unit",
+        icon: <CalculateSharpIcon />,
       },
     ],
   },
