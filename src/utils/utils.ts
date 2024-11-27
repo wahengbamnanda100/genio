@@ -103,3 +103,12 @@ export const arrayToStringWithDot = (arr: string[]): string => {
   if (!Array.isArray(arr) || arr.length === 0) return "";
   return arr.join(",");
 };
+
+export const getValueOrDefault = (
+  field: any,
+  key: string,
+  defaultValue: string = "",
+) => {
+  if (field === "") return defaultValue;
+  return key ? field[key] || field : field;
+};

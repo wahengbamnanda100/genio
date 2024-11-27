@@ -1,11 +1,11 @@
 import { FC, ReactNode, useState } from "react";
 import CustomTable from "../../CutomTable/CustomTable";
-import { Column, GridColumnExtension } from "@devexpress/dx-react-grid";
+import { GridColumnExtension } from "@devexpress/dx-react-grid";
 import { IconButton, Stack, Tooltip } from "@mui/material";
 import GridViewIcon from "@mui/icons-material/GridView";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import { UserDetailsType } from "../../Component-types/localStorageData.type";
-import { anyOneIsTrue } from "../../../utils/utils";
+// import { UserDetailsType } from "../../Component-types/localStorageData.type";
+// import { anyOneIsTrue } from "../../../utils/utils";
 import { ListFilterCellComponent } from "../../CutomTable/components/customComponent";
 import { UnitMasterItem } from "../../../services/aoi.type";
 
@@ -59,20 +59,20 @@ const ActionBtnGroup: FC<ActionBtnGroupProps> = ({
   onClickView,
   id,
 }) => {
-  const localUserData = localStorage.getItem("userDetail") as string | null;
+  // const localUserData = localStorage.getItem("userDetail") as string | null;
 
-  const USERDATA = localUserData
-    ? (JSON.parse(localUserData) as UserDetailsType)
-    : null;
+  // const USERDATA = localUserData
+  //   ? (JSON.parse(localUserData) as UserDetailsType)
+  //   : null;
 
-  const viewEnable = USERDATA
-    ? anyOneIsTrue(
-        USERDATA?.IsDeletable,
-        USERDATA?.IsEditable,
-        USERDATA?.IsInsertable,
-        USERDATA?.IsViewable,
-      )
-    : false;
+  // const viewEnable = USERDATA
+  //   ? anyOneIsTrue(
+  //       USERDATA?.IsDeletable,
+  //       USERDATA?.IsEditable,
+  //       USERDATA?.IsInsertable,
+  //       USERDATA?.IsViewable,
+  //     )
+  //   : false;
 
   return (
     <Stack
@@ -87,22 +87,22 @@ const ActionBtnGroup: FC<ActionBtnGroupProps> = ({
 				onClick={() => onClickPrint && onClickPrint(id)}>
 				<ReceiptIcon fontSize="small" />
 			</ActionIconBtn> */}
-      {viewEnable && (
-        <ActionIconBtn
-          varient="view"
-          onClick={() => onClickView && onClickView(id)}
-        >
-          <GridViewIcon fontSize="small" />
-        </ActionIconBtn>
-      )}
-      {USERDATA?.IsDeletable && (
-        <ActionIconBtn
-          varient="delete"
-          onClick={() => onClickDelete && onClickDelete(id)}
-        >
-          <DeleteOutlineIcon fontSize="small" />
-        </ActionIconBtn>
-      )}
+      {/* {viewEnable && ( */}
+      <ActionIconBtn
+        varient="view"
+        onClick={() => onClickView && onClickView(id)}
+      >
+        <GridViewIcon fontSize="small" />
+      </ActionIconBtn>
+      {/* )} */}
+      {/* {USERDATA?.IsDeletable && ( */}
+      <ActionIconBtn
+        varient="delete"
+        onClick={() => onClickDelete && onClickDelete(id)}
+      >
+        <DeleteOutlineIcon fontSize="small" />
+      </ActionIconBtn>
+      {/* )} */}
     </Stack>
   );
 };
@@ -116,7 +116,7 @@ const DemoListTable: FC<DemoListTableProps> = ({ isLoading, data }) => {
   });
   const [leftColumns] = useState(["index"]);
   const [rightColumns] = useState(["action"]);
-  const [columns] = useState<Column[]>([
+  const columns = [
     {
       title: "Sl",
       name: "index",
@@ -147,7 +147,7 @@ const DemoListTable: FC<DemoListTableProps> = ({ isLoading, data }) => {
         />
       ),
     },
-  ]);
+  ];
 
   const [columnExtension] = useState<GridColumnExtension[]>([
     {

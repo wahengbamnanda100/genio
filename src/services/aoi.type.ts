@@ -640,6 +640,7 @@ export type MenuMasterListReqType = {
   UnitMasterId: string;
   Page: string;
   Rows: string;
+  Stm_ID_N: string;
 };
 
 export type MenuMasterListType = {
@@ -659,6 +660,7 @@ export type MenuMasterListResType = {
   Status: string;
   Data: MenuMasterListType[] | [];
   Message: string;
+  OverallCount: string;
 };
 
 //! ____________Manufacturer____________

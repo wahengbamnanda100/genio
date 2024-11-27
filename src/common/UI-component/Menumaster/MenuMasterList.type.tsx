@@ -1,15 +1,19 @@
-import { MenuMasterListReqType } from "../../../services/aoi.type";
+import {
+  MenuMasterListReqType,
+  MenuMasterListType,
+} from "../../../services/aoi.type";
 import { MenuMasterList } from "../../../services/menuMaster";
 import { FieldProps } from "../../Form-component";
+import { getDietCategory, getMetarialType } from "./MenuForm.types";
 
 export type MenuMasterListSearchType = {
-  Partnumber: string;
-  SupplierPartNumber: string;
-  PurchaseDescription: string;
-  Barcode: string;
-  CategoryName: string;
-  SalesDescription: string;
-  Manufacturer: string;
+  Partnumber: MenuMasterListType | "";
+  SupplierPartNumber: MenuMasterListType | "";
+  PurchaseDescription: MenuMasterListType | "";
+  Barcode: MenuMasterListType | "";
+  CategoryName: MenuMasterListType | "";
+  SalesDescription: MenuMasterListType | "";
+  Manufacturer: MenuMasterListType | "";
   MaterialType: string;
   SerialNumber: string;
   EffectInventory: string;
@@ -30,12 +34,13 @@ export const menuSearchQuery: MenuMasterListReqType = {
   SerialNumber: "",
   EffectInventory: "",
   NegativeStock: "",
-  Status: "0",
+  Status: "-1",
   DietCategory: "",
   FormType: "",
   UnitMasterId: "",
   Page: "1",
   Rows: "10",
+  Stm_ID_N: "",
 };
 
 export const menuMasterSearchField = (): FieldProps[] => [
@@ -75,51 +80,117 @@ export const menuMasterSearchField = (): FieldProps[] => [
           enabled: keyStroke !== "" ? true : false,
         },
       ),
-    optionKey: "SupplierPartNumber",
-    getOptionLabel: (option) => (option ? `${option.SupplierPartNumber}` : ""),
+    optionKey: "SupplierPartNo",
+    getOptionLabel: (option) => (option ? `${option.SupplierPartNo}` : ""),
     options: (searchData) => searchData?.Data ?? [],
 
     xs: 2,
   },
   {
-    fieldType: "text",
+    fieldType: "autoComplete",
     name: "PurchaseDescription",
     label: "Purchase Description",
+    searchApi: (keyStroke) =>
+      MenuMasterList(
+        {
+          ...menuSearchQuery,
+          PurchaseDescription: keyStroke,
+        },
+        {
+          enabled: keyStroke !== "" ? true : false,
+        },
+      ),
+    optionKey: "Purchasedescription",
+    getOptionLabel: (option) => (option ? `${option.Purchasedescription}` : ""),
+    options: (searchData) => searchData?.Data ?? [],
     size: "medium",
     xs: 2,
   },
   {
-    fieldType: "text",
+    fieldType: "autoComplete",
     name: "Barcode",
     label: "Barcode",
+    searchApi: (keyStroke) =>
+      MenuMasterList(
+        {
+          ...menuSearchQuery,
+          Barcode: keyStroke,
+        },
+        {
+          enabled: keyStroke !== "" ? true : false,
+        },
+      ),
+    optionKey: "Barcode",
+    getOptionLabel: (option) => (option ? `${option.Barcode}` : ""),
+    options: (searchData) => searchData?.Data ?? [],
     size: "medium",
     xs: 2,
   },
   {
-    fieldType: "text",
+    fieldType: "autoComplete",
     name: "CategoryName",
     label: "Category Name",
+    searchApi: (keyStroke) =>
+      MenuMasterList(
+        {
+          ...menuSearchQuery,
+          CategoryName: keyStroke,
+        },
+        {
+          enabled: keyStroke !== "" ? true : false,
+        },
+      ),
+    optionKey: "Categoryname",
+    getOptionLabel: (option) => (option ? `${option.Categoryname}` : ""),
+    options: (searchData) => searchData?.Data ?? [],
     size: "medium",
     xs: 2,
   },
   {
-    fieldType: "text",
+    fieldType: "autoComplete",
     name: "SalesDescription",
     label: "Sales Description",
+    searchApi: (keyStroke) =>
+      MenuMasterList(
+        {
+          ...menuSearchQuery,
+          SalesDescription: keyStroke,
+        },
+        {
+          enabled: keyStroke !== "" ? true : false,
+        },
+      ),
+    optionKey: "Salesdescription",
+    getOptionLabel: (option) => (option ? `${option.Salesdescription}` : ""),
+    options: (searchData) => searchData?.Data ?? [],
     size: "medium",
     xs: 2,
   },
   {
-    fieldType: "text",
+    fieldType: "autoComplete",
     name: "Manufacturer",
     label: "Manufecturer",
+    searchApi: (keyStroke) =>
+      MenuMasterList(
+        {
+          ...menuSearchQuery,
+          Manufacturer: keyStroke,
+        },
+        {
+          enabled: keyStroke !== "" ? true : false,
+        },
+      ),
+    optionKey: "Manufacturername",
+    getOptionLabel: (option) => (option ? `${option.Manufacturername}` : ""),
+    options: (searchData) => searchData?.Data ?? [],
     size: "medium",
     xs: 2,
   },
   {
-    fieldType: "text",
+    fieldType: "select",
     name: "MaterialType",
     label: "Metarial Type",
+    options: getMetarialType(true),
     size: "medium",
     xs: 2,
   },
@@ -170,9 +241,10 @@ export const menuMasterSearchField = (): FieldProps[] => [
     xs: 2,
   },
   {
-    fieldType: "text",
+    fieldType: "select",
     name: "DietCategory",
     label: "Diet Category",
+    options: getDietCategory(true),
     size: "medium",
     xs: 2,
   },

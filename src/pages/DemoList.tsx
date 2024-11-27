@@ -12,6 +12,7 @@ import {
 } from "../common/Component-types/UnitMaster.type";
 import { UnitMasterSearchReqType } from "../services/aoi.type";
 import { UnitMasterSearch } from "../services/unitMaster";
+import { getValueOrDefault } from "../utils/utils";
 
 const DemoList = () => {
   const navigate = useNavigate();
@@ -20,7 +21,7 @@ const DemoList = () => {
     UnitCode: "",
     UnitDesc: "",
     FormalName: "",
-    Status: "",
+    Status: "-1", //todo add Page and Rows for pagination
   });
 
   const method = useForm<UnitmMasterListSchema>({
@@ -28,7 +29,7 @@ const DemoList = () => {
       UnitCode: "",
       UnitDesc: "",
       FormalName: "",
-      Status: "",
+      Status: "-1",
     },
   });
 
@@ -40,7 +41,16 @@ const DemoList = () => {
 
   const onSearch = (data: UnitmMasterListSchema) => {
     console.log("Search form", data);
-    setQueryParam(data);
+    const backendData: UnitMasterSearchReqType = {
+      // ...queryParam //todo later add this after Page and Rows
+      ...data,
+      UnitCode: getValueOrDefault(data.UnitCode, "UnitCode", ""),
+      UnitDesc: getValueOrDefault(data.UnitDesc, "UnitDesc", ""),
+      FormalName: getValueOrDefault(data.FormalName, "FormalName", ""),
+      Status: getValueOrDefault(data.Status, "Status", "-1"),
+    };
+
+    setQueryParam(backendData);
   };
 
   // useEffect(() => {

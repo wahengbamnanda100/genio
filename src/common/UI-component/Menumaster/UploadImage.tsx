@@ -1,4 +1,9 @@
-import React, { useState, CSSProperties, MouseEventHandler } from "react";
+import React, {
+  useState,
+  CSSProperties,
+  MouseEventHandler,
+  useEffect,
+} from "react";
 import {
   Avatar,
   Box,
@@ -23,13 +28,17 @@ import {
 import { UploadPaperComponent } from "../../ModalComponent/ConfirmationDialog";
 import AnimateButton from "../Extended/AnimateButton";
 import { useDispatch } from "react-redux";
-import { setCategoryImgUrl } from "../../../store/slices/menuMasterSlice";
+import {
+  setCategoryImgUrl,
+  setMenuItemsImgUrl,
+} from "../../../store/slices/menuMasterSlice";
 
 interface ImageUploadComponentProps {
   src: string;
   alt?: string;
   height?: string | number;
   width?: string | number;
+  imageType?: "menu" | "category";
   apiEndpoint: string; // API endpoint for uploading the image
   sxProps?: CSSProperties;
 }
@@ -42,6 +51,7 @@ const ImageUploadComponent: React.FC<ImageUploadComponentProps> = ({
   alt = "image",
   height = "30px",
   width = "30px",
+  imageType = "category",
   apiEndpoint,
   sxProps,
 }) => {
@@ -65,6 +75,10 @@ const ImageUploadComponent: React.FC<ImageUploadComponentProps> = ({
   const handleError = () => {
     setImgSrc(placeholderUrl);
   };
+
+  useEffect(() => {
+    setImgSrc(src);
+  }, [src]);
 
   const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -113,7 +127,10 @@ const ImageUploadComponent: React.FC<ImageUploadComponentProps> = ({
         .then((response) => {
           console.log("Image uploaded successfully:", response.data[0]);
           if (response.status === 200) {
-            dispatch(setCategoryImgUrl(response.data[0]));
+            imageType === "category" &&
+              dispatch(setCategoryImgUrl(response.data[0]));
+            imageType === "menu" &&
+              dispatch(setMenuItemsImgUrl(response.data[0]));
           } else {
             console.log("Image upload failed");
           }

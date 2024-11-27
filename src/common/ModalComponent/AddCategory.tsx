@@ -101,34 +101,39 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({
   };
 
   useEffect(() => {
-    console.log("type", type, data);
-
     if (type === "edit" && data) {
       methodCategory.setValue("categoryCode", data.CategoryCode);
       methodCategory.setValue("categoryName", data.CategoryDesc);
-      // methodCategory.setValue("categoryImg", editData.categoryImg); //todo later
-      console.log(data);
-      dispatch(setCategoryImgUrl(data.Image));
+      methodCategory.setValue("categoryImg", data.Image || "");
+      dispatch(setCategoryImgUrl(data.Image || ""));
+      setImgSrc(`${import.meta.env.VITE_API_URL}/${data.Image || ""}`);
     }
-  }, [open]);
+  }, [open, type, data]);
 
   useEffect(() => {
-    if (!open) {
-      methodCategory.reset(); // Resets to defaultValues when dialog closes
-      dispatch(setCategoryImgUrl(""));
-    }
-  }, [open]);
-
-  useEffect(() => {
-    //todo in update mode if img is there then set img url in redux then show here
-    if (imgUrl && imgUrl !== "") {
-      methodCategory.setValue("categoryImg", imgUrl);
-      console.log("imgUrl", `${import.meta.env.VITE_API_URL}/${imgUrl}`);
+    if ((imgUrl && imgUrl !== "" && type === "add") || type === "new") {
       setImgSrc(`${import.meta.env.VITE_API_URL}/${imgUrl}`);
+      methodCategory.setValue("categoryImg", imgUrl); // Sync with form field
+      console.log("imgUrl ADD", imgUrl);
+    } else if (type === "edit" && data?.Image) {
+      console.log("imgUrl EDIT", imgUrl);
+      setImgSrc(`${import.meta.env.VITE_API_URL}/${data.Image}`);
     } else {
       setImgSrc(placeholderUrl);
     }
-  }, [imgUrl]);
+  }, [imgUrl, type, data]);
+
+  useEffect(() => {
+    if (!open) {
+      methodCategory.reset();
+      dispatch(setCategoryImgUrl(""));
+      setImgSrc(placeholderUrl);
+    }
+  }, [open]);
+
+  useEffect(() => {
+    console.log("img state", imgSrc);
+  }, [imgSrc]);
 
   return (
     <DialogStyled
@@ -180,6 +185,7 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({
               </Grid>
               <Grid item xs={4}>
                 <ImageUploadComponent
+                  // src={`${import.meta.env.VITE_API_URL}/${imgUrl}`}
                   src={imgSrc}
                   alt={"alte product image"} //todo add later
                   width="100%"

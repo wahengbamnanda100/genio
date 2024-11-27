@@ -16,13 +16,15 @@ import {
 } from "../common/UI-component/Menumaster/MenuMasterList.type";
 import { MenuMasterListReqType } from "../services/aoi.type";
 import { MenuMasterList } from "../services/menuMaster";
+import { getValueOrDefault } from "../utils/utils";
 
 const MenuMasterLIst = () => {
   const navigate = useNavigate();
   // const { setNotify } = useAppProvider();
   const [expanded, setExpanded] = useState<boolean>(false);
 
-  const [serachQuery] = useState<MenuMasterListReqType>(menuSearchQuery);
+  const [searchQuery, setSearchQuery] =
+    useState<MenuMasterListReqType>(menuSearchQuery);
 
   const method = useForm<MenuMasterListSearchType>({
     defaultValues: {
@@ -42,19 +44,43 @@ const MenuMasterLIst = () => {
     },
   });
 
-  const { data, isLoading, isFetched } = MenuMasterList(serachQuery);
+  const { data, isLoading, isFetched } = MenuMasterList(searchQuery);
 
   const handleCreateNew = () => {
     navigate("/menu-master");
   };
 
-  const onSearch = (data: any) => {
-    console.log(data);
-    // const searchData = {
-    //   ...menuSearchQuery,
-    //   ...data,
-    // };
-    //console.log("backend search data", searchData);
+  const onSearch = (data: MenuMasterListSearchType) => {
+    const backendData: MenuMasterListReqType = {
+      ...searchQuery,
+      ...data,
+      Partnumber: getValueOrDefault(data.Partnumber, "Partnumber", ""),
+      SupplierPartNumber: getValueOrDefault(
+        data.SupplierPartNumber,
+        "Categoryname",
+        "",
+      ),
+      PurchaseDescription: getValueOrDefault(
+        data.PurchaseDescription,
+        "Categoryname",
+        "",
+      ),
+      Barcode: getValueOrDefault(data.Barcode, "Categoryname", ""),
+      CategoryName: getValueOrDefault(data.CategoryName, "Categoryname", ""),
+      SalesDescription: getValueOrDefault(
+        data.SalesDescription,
+        "Categoryname",
+        "",
+      ),
+      Manufacturer: getValueOrDefault(data.Manufacturer, "Categoryname", ""),
+      SerialNumber: getValueOrDefault(data.SerialNumber, "", "-1"),
+      EffectInventory: getValueOrDefault(data.EffectInventory, "", "-1"),
+      NegativeStock: getValueOrDefault(data.NegativeStock, "", "-1"),
+    };
+
+    setSearchQuery(backendData);
+
+    console.log({ data });
   };
 
   return (
@@ -100,6 +126,9 @@ const MenuMasterLIst = () => {
           <Grid item xs={12}>
             <MenUMasterTable
               isLoading={isLoading}
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              totalPageCount={(isFetched && data?.OverallCount) || "0"}
               data={isFetched && data?.Data ? data?.Data : []}
             />
           </Grid>

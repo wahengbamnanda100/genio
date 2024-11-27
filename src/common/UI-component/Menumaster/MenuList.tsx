@@ -134,99 +134,6 @@ export default function CustomMenuList() {
     [data],
   ); //todo change to aler api call
 
-  // const addNode = (
-  //   items: TreeViewBaseItem[],
-  //   nodeId: string,
-  //   nodeData: { categoryName: string; categoryCode: string }, // Contains name and code for the new or edited node
-  // ): TreeViewBaseItem[] => {
-  //   return items.map((item) => {
-  //     // Check if the current item matches the categoryCode for editing
-  //     if (item.id === nodeData.categoryCode) {
-  //       console.log("Editing first-level node:", item.id);
-  //       // Update the label for the existing first-level node
-  //       return {
-  //         ...item,
-  //         label: nodeData.categoryName, // Update label with the new name
-  //       };
-  //     }
-
-  //     // If the current item is the one we want to add/edit under its children
-  //     if (item.id === nodeId) {
-  //       console.log("Tree item found for adding/editing children:", item.id);
-
-  //       // Check if an existing child has the same id as nodeData.categoryCode
-  //       const existingChildIndex = item.children?.findIndex(
-  //         (child) => child.id === nodeData.categoryCode,
-  //       );
-
-  //       if (
-  //         existingChildIndex !== undefined &&
-  //         existingChildIndex >= 0 &&
-  //         item.children
-  //       ) {
-  //         // Edit the existing child node with the same id
-  //         const updatedChildren = [...item.children];
-  //         updatedChildren[existingChildIndex] = {
-  //           ...updatedChildren[existingChildIndex],
-  //           label: nodeData.categoryName, // Update label with the new name
-  //         };
-  //         console.log("Updated children:", updatedChildren);
-
-  //         return {
-  //           ...item,
-  //           children: updatedChildren,
-  //         };
-  //       } else {
-  //         // Add new child if no matching id was found
-  //         const newNode: TreeViewBaseItem = {
-  //           id: nodeData.categoryCode, // Set the id to the code from nodeData
-  //           label: nodeData.categoryName, // Set the label to the name from nodeData
-  //         };
-  //         console.log("Adding new node:", newNode);
-
-  //         return {
-  //           ...item,
-  //           children: item.children ? [...item.children, newNode] : [newNode],
-  //         };
-  //       }
-  //     }
-
-  //     // Recursive call to search within children
-  //     if (item.children) {
-  //       return {
-  //         ...item,
-  //         children: addNode(item.children, nodeId, nodeData),
-  //       };
-  //     }
-
-  //     return item;
-  //   });
-  // };
-
-  // const deleteNode = (
-  //   items: TreeViewBaseItem[],
-  //   nodeId: string,
-  // ): TreeViewBaseItem[] => {
-  //   const itemToDelete = items.find((item) => item.id === nodeId);
-
-  //   if (
-  //     itemToDelete &&
-  //     itemToDelete.children &&
-  //     itemToDelete.children.length > 0
-  //   ) {
-  //     alert("Cannot delete an item that has children.");
-  //     return items;
-  //   }
-
-  //   return items
-  //     .map((item) =>
-  //       item.children
-  //         ? { ...item, children: deleteNode(item.children, nodeId) }
-  //         : item,
-  //     )
-  //     .filter((item) => item.id !== nodeId);
-  // };
-
   const handleAddItem = () => {
     console.log("add item", selectedNodeId);
     setType("add");
@@ -312,6 +219,12 @@ export default function CustomMenuList() {
         key="one"
         startIcon={<RestartAltIcon />}
         onClick={handleReloadData}
+        sx={{
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          maxWidth: "140px", // Adjust based on your requirements
+        }}
       >
         relaod
       </Button>
@@ -321,6 +234,12 @@ export default function CustomMenuList() {
         key="two"
         startIcon={<UnfoldMoreDoubleIcon />}
         onClick={handleExpandAll}
+        sx={{
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          maxWidth: "140px", // Adjust based on your requirements
+        }}
       >
         expand all
       </Button>
@@ -330,6 +249,12 @@ export default function CustomMenuList() {
         key="three"
         startIcon={<UnfoldLessDoubleIcon />}
         onClick={handleCollapseAll}
+        sx={{
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          maxWidth: "140px", // Adjust based on your requirements
+        }}
       >
         collapse all
       </Button>

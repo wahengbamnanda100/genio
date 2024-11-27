@@ -27,7 +27,7 @@ import {
   placeholderUrl,
   // StudentImage,
 } from "../../../layout/MainLayout/Header/UserImage";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import ImageUploadComponent from "./UploadImage";
 import { useNavigate } from "react-router";
 import AddCompanyModal, {
@@ -35,6 +35,8 @@ import AddCompanyModal, {
 } from "../../ModalComponent/SelectCompany/AddCompanyModal";
 import { useFormContext } from "react-hook-form";
 import { MenuMasterComapnyList } from "../../../services/menuMaster";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../store";
 
 interface MenuFormProps {
   config: number | null;
@@ -44,8 +46,11 @@ interface MenuFormProps {
 const MenuForm: FC<MenuFormProps> = ({ config, configLoading }) => {
   // const theme = useTheme();
   const navigate = useNavigate();
+
   const { getValues, setValue, watch } = useFormContext<MenuMasterFormType>();
   const [companyModal, setCompanyModal] = useState<boolean>(false);
+  const [imgSrc, setImgSrc] = useState<string>(placeholderUrl);
+
   const financialyearid: string = localStorage.getItem("finYear")!;
   // const Cmp_ID_N: string = localStorage.getItem("CmpId")!;
   const manufactureAllWatch = watch("manufactoreAll");
@@ -60,6 +65,8 @@ const MenuForm: FC<MenuFormProps> = ({ config, configLoading }) => {
       enabled: companyModal,
     },
   );
+
+  const imgUrl = useSelector((state: RootState) => state.menuMaster.menuImgUrl);
 
   const handleCopy = () => {
     const getPruchaseDescription = getValues("purchaseDiscription");
@@ -82,6 +89,15 @@ const MenuForm: FC<MenuFormProps> = ({ config, configLoading }) => {
   const companyList: CompanyData[] = isFetched
     ? (companyListData?.Data as CompanyData[])
     : [];
+
+  useEffect(() => {
+    if (imgUrl && imgUrl !== "") {
+      setImgSrc(`${import.meta.env.VITE_API_URL}/${imgUrl}`);
+      setValue("categoryImage", imgUrl);
+    } else {
+      setImgSrc(placeholderUrl);
+    }
+  }, [imgUrl]);
 
   return (
     <Grid
@@ -142,11 +158,12 @@ const MenuForm: FC<MenuFormProps> = ({ config, configLoading }) => {
         </Grid>
         <Grid item xs={1.5} justifyContent="center">
           <ImageUploadComponent
-            src={placeholderUrl}
+            src={imgSrc}
             alt={"alte product image"} //todo add later
             width="100%"
             height="100%"
-            apiEndpoint="#"
+            apiEndpoint={`${import.meta.env.VITE_API_URL}/api/StockCardApi/PostAsync?TempFolderName=~/imgUpload/StockCardItemImage`}
+            imageType="menu"
             sxProps={{ objectFit: "cover", borderRadius: 0 }}
           />
         </Grid>

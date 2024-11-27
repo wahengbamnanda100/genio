@@ -9,9 +9,12 @@ import { useMutation } from "@tanstack/react-query";
 import { ConfigMenuMaster, MenuMssterSave } from "../services/menuMaster";
 import { useAppProvider } from "../AppProvider";
 import { MenuMasterSaveReqType } from "../services/aoi.type";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/index";
 import { arrayToStringWithDot } from "../utils/utils";
+import ConfirmationDialog from "../common/ModalComponent/ConfirmationDialog";
+import { useEffect, useState } from "react";
+import { setMenuItemsImgUrl } from "../store/slices/menuMasterSlice";
 
 const transformSetToObjects = (arr: Set<string>, defaultCmpId: string) => {
   if (arr.size === 0) {
@@ -31,7 +34,10 @@ const transformSetToObjects = (arr: Set<string>, defaultCmpId: string) => {
 
 const MenuMaster = () => {
   const theme = useTheme();
+  const dispatch = useDispatch();
   const { setNotify } = useAppProvider();
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
   const Cmp_ID_N: string = localStorage.getItem("CmpId")!;
 
   const financialyearid: string = localStorage.getItem("finYear")!;
@@ -106,6 +112,7 @@ const MenuMaster = () => {
           severity: "success",
           message: "Menu Save Successfully",
         });
+        dispatch(setMenuItemsImgUrl(""));
         methods.reset();
       } else {
         setNotify({
@@ -126,7 +133,12 @@ const MenuMaster = () => {
     (state: RootState) => state.menuMaster.categoryId,
   );
 
-  const handleSubmit = (data: MenuMasterFormType) => {
+  const handleSubmit = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleConfirmeSave = () => {
+    const data = methods.getValues();
     const backendData: MenuMasterSaveReqType = {
       AllowNegativeStock: Number(data.allownegative).toString(),
       Usr_ID_N: "1",
@@ -177,9 +189,19 @@ const MenuMaster = () => {
       TblStockCard: transformSetToObjects(data.addCompanies, Cmp_ID_N),
     };
 
-    console.log(backendData);
     mutateAsync(backendData);
   };
+  const handleCancelSave = () => {
+    setIsModalOpen(false);
+  };
+
+  useEffect(() => {
+    dispatch(setMenuItemsImgUrl(""));
+
+    return () => {
+      dispatch(setMenuItemsImgUrl(""));
+    };
+  }, []);
 
   return (
     <Paper sx={{ mt: 4, p: 2, px: 3 }}>
@@ -212,7 +234,10 @@ const MenuMaster = () => {
           >
             <form
               onSubmit={methods.handleSubmit(handleSubmit)}
-              onReset={() => methods.reset()}
+              onReset={() => {
+                methods.reset();
+                dispatch(setMenuItemsImgUrl(""));
+              }}
             >
               <MenuForm
                 config={isFetched ? data! : null}
@@ -246,6 +271,17 @@ const MenuMaster = () => {
           </Grid>
         </FormProvider>
       </MenuContainer>
+
+      <ConfirmationDialog
+        dialogType="submit"
+        open={isModalOpen}
+        loading={isPending}
+        setOpen={setIsModalOpen}
+        title="Save Menu item"
+        description={"Do you want to save the Menu item"}
+        onConfirm={handleConfirmeSave}
+        onCancel={handleCancelSave}
+      />
     </Paper>
   );
 };

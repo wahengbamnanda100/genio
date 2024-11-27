@@ -14,10 +14,16 @@ import {
   ListFilterCellComponent,
 } from "../../CutomTable/components/customComponent";
 // import { UserDetailsType } from "../../Component-types/localStorageData.type";
-import { MenuMasterListType } from "../../../services/aoi.type";
+import {
+  MenuMasterListReqType,
+  MenuMasterListType,
+} from "../../../services/aoi.type";
 
 interface MenuListTableProps {
   isLoading: boolean;
+  searchQuery: MenuMasterListReqType;
+  setSearchQuery: React.Dispatch<React.SetStateAction<MenuMasterListReqType>>;
+  totalPageCount: string;
   data: MenuMasterListType[];
 }
 
@@ -66,22 +72,6 @@ const ActionBtnGroup: FC<ActionBtnGroupProps> = ({
   onClickView,
   id,
 }) => {
-  // const localUserData = localStorage.getItem("userDetail") as string | null;
-
-  // const USERDATA = localUserData
-  //   ? (JSON.parse(localUserData) as UserDetailsType)
-  //   : null;
-
-  // const viewEnable = USERDATA
-  //   ? anyOneIsTrue(
-  //       USERDATA?.IsDeletable,
-  //       USERDATA?.IsEditable,
-  //       USERDATA?.IsInsertable,
-  //       USERDATA?.IsViewable,
-  //     )
-  //   : false;
-  // const viewEnable = true;
-
   return (
     <Stack
       direction={"row"}
@@ -115,55 +105,15 @@ const ActionBtnGroup: FC<ActionBtnGroupProps> = ({
   );
 };
 
-const MenUMasterTable: FC<MenuListTableProps> = ({ isLoading, data }) => {
-  const [searchQuery, setSearchQuery] = useState({
-    department: "",
-    status: "",
-    PageNo: 1,
-    Rows: 10,
-  });
+const MenUMasterTable: FC<MenuListTableProps> = ({
+  isLoading,
+  searchQuery,
+  setSearchQuery,
+  totalPageCount,
+  data,
+}) => {
   const [leftColumns] = useState(["index"]);
   const [rightColumns] = useState(["action"]);
-  const [columns] = useState<Column[]>([
-    {
-      title: "Sl",
-      name: "index",
-      getCellValue: (row: MenuMasterListType) => {
-        if (data?.length) {
-          // Check if data exists and is not empty
-          const index = data.findIndex(
-            (dataRow: MenuMasterListType) =>
-              dataRow.Partnumber === row.Partnumber,
-          );
-          return index >= 0 ? index + 1 : "";
-        }
-        return "";
-      },
-    },
-    { name: "Partnumber", title: "Part Number" },
-    { name: "Purchasedescription", title: "Purchase Description" },
-    { name: "Salesdescription", title: "Sales Description" },
-    { name: "Categoryname", title: "Category Name" },
-    { name: "Dietcategory", title: "Diet Category" },
-    { name: "Manufacturername", title: "Manufacturer Name" },
-    { name: "Stockunit", title: "Stock Unit" },
-    { name: "Averagecost", title: "Average Cost" },
-    { name: "Sellingprice", title: "Selling Price (Normal)" },
-    { name: "Status", title: "Status" },
-    {
-      name: "action",
-      title: "action",
-      getCellValue: (row: MenuMasterListType) => (
-        <ActionBtnGroup
-          id={row.Partnumber}
-          onClickView={handleView}
-          onClickPrint={handlePrint}
-          onClickDelete={handleDelete}
-        />
-      ),
-    },
-  ]);
-
   const [columnExtension] = useState<GridColumnExtension[]>([
     {
       columnName: "index",
@@ -227,6 +177,41 @@ const MenUMasterTable: FC<MenuListTableProps> = ({ isLoading, data }) => {
     },
   ]);
 
+  const columns: Column[] = [
+    {
+      title: "Sl",
+      name: "index",
+      getCellValue: (row: MenuMasterListType) => {
+        const index =
+          data?.findIndex((dataRow) => dataRow.Partnumber === row.Partnumber) ??
+          -1;
+        return index !== -1 ? index + 1 : "";
+      },
+    },
+    { name: "Partnumber", title: "Part Number" },
+    { name: "Purchasedescription", title: "Purchase Description" },
+    { name: "Salesdescription", title: "Sales Description" },
+    { name: "Categoryname", title: "Category Name" },
+    { name: "Dietcategory", title: "Diet Category" },
+    { name: "Manufacturername", title: "Manufacturer Name" },
+    { name: "Stockunit", title: "Stock Unit" },
+    { name: "Averagecost", title: "Average Cost" },
+    { name: "Sellingprice", title: "Selling Price (Normal)" },
+    { name: "Status", title: "Status" },
+    {
+      name: "action",
+      title: "action",
+      getCellValue: (row: MenuMasterListType) => (
+        <ActionBtnGroup
+          id={row.Partnumber}
+          onClickView={handleView}
+          onClickPrint={handlePrint}
+          onClickDelete={handleDelete}
+        />
+      ),
+    },
+  ];
+
   const handleView = () => {};
   const handlePrint = () => {};
   const handleDelete = () => {};
@@ -244,22 +229,22 @@ const MenUMasterTable: FC<MenuListTableProps> = ({ isLoading, data }) => {
         // rowComponent: EmployeeAllowanceListTableRowComponent,
       }}
       pagingState={{
-        currentPage: searchQuery?.PageNo - 1,
+        currentPage: Number(searchQuery?.Page) - 1,
         onCurrentPageChange: (currentPage) =>
           setSearchQuery({
             ...searchQuery,
-            PageNo: currentPage + 1,
+            Page: (currentPage + 1).toString(),
           }),
-        pageSize: searchQuery.Rows,
+        pageSize: Number(searchQuery.Rows),
         onPageSizeChange: (pageSize) =>
           setSearchQuery({
             ...searchQuery,
-            PageNo: 1,
-            Rows: pageSize,
+            Page: "1",
+            Rows: pageSize.toString(),
           }),
       }}
       customPaging={{
-        totalCount: data && Array.isArray(data) ? data.length : 0,
+        totalCount: Number(totalPageCount),
       }} //todo count page
       tableFilterRow={{
         cellComponent: ListFilterCellComponent,

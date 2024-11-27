@@ -26,7 +26,7 @@ import { getDropDownValues } from "../../../utils/utils";
 import { FieldProps } from "../../Form-component";
 import { NumericFormatCustom } from "../../Form-component/inputField";
 
-const getDietCategory = () => {
+export const getDietCategory = (name: boolean = false) => {
   const requestBody: DietCategoryReqBodyType = {
     DisplayMember: "Gem_Desc_V",
     Table: "Gen_General_Mst",
@@ -36,13 +36,17 @@ const getDietCategory = () => {
   const { data, isFetched } = DietCategoryItemApi(requestBody);
   const dropdownValues =
     isFetched && data?.Data?.length
-      ? getDropDownValues(data?.Data, "strDisplayMember", "strValueMember")
+      ? getDropDownValues(
+          data?.Data,
+          "strDisplayMember",
+          name ? "strDisplayMember" : "strValueMember",
+        )
       : [];
 
   return dropdownValues;
 };
 
-const getMetarialType = () => {
+export const getMetarialType = (name: boolean = false) => {
   const requestBody: MetarialTypeRequestBodyType = {
     Table: "Adm_AppsType_Mst",
     DisplayMember: "Atm_Description_V",
@@ -52,7 +56,11 @@ const getMetarialType = () => {
   const { data, isFetched } = MetarialTypeApi(requestBody);
   const dropdownValues =
     isFetched && data?.Data?.length
-      ? getDropDownValues(data?.Data, "strDisplayMember", "strValueMember")
+      ? getDropDownValues(
+          data?.Data,
+          "strDisplayMember",
+          name ? "strDisplayMember" : "strValueMember",
+        )
       : [];
 
   return dropdownValues;
