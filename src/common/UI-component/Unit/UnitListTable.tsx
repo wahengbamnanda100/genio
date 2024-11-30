@@ -2,23 +2,24 @@ import { FC, ReactNode, useState } from "react";
 import CustomTable from "../../CutomTable/CustomTable";
 import { Column, GridColumnExtension } from "@devexpress/dx-react-grid";
 import { IconButton, Stack, Tooltip } from "@mui/material";
-import GridViewIcon from "@mui/icons-material/GridView";
+
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { UserDetailsType } from "../../Component-types/localStorageData.type";
 import { anyOneIsTrue } from "../../../utils/utils";
 import { ListFilterCellComponent } from "../../CutomTable/components/customComponent";
 
-interface RowDataType {
-  id: string;
-  UnitCode: string;
-  Description: string;
-  FormalName: string;
-  status: string;
-}
+import {
+  UnitMasterSearchReqType,
+  UnitMasterItem,
+} from "../../../services/aoi.type";
+
 
 interface UnitListTableProps {
   isLoading: boolean;
-  data: RowDataType[];
+  searchQuery: UnitMasterSearchReqType;
+  setSearchQuery: React.Dispatch<React.SetStateAction<UnitMasterSearchReqType>>;
+  totalPageCount: string;
+  data: UnitMasterItem[];
 }
 
 interface ActionIconBtnProps {
@@ -60,7 +61,7 @@ const ActionIconBtn: FC<ActionIconBtnProps> = ({
 const ActionBtnGroup: FC<ActionBtnGroupProps> = ({
   // onClickPrint,
   onClickDelete,
-  onClickEdit,
+ // onClickEdit,
   id,
 }) => {
   const localUserData = localStorage.getItem("userDetail") as string | null;
@@ -87,14 +88,7 @@ const ActionBtnGroup: FC<ActionBtnGroupProps> = ({
       flex={1}
     >
       
-      {viewEnable && (
-        <ActionIconBtn
-          varient="edit"
-          onClick={() => onClickView && onClickView(id)}
-        >
-          <GridViewIcon fontSize="small" />
-        </ActionIconBtn>
-      )}
+    
       {USERDATA?.IsDeletable && (
         <ActionIconBtn
           varient="delete"
@@ -107,48 +101,59 @@ const ActionBtnGroup: FC<ActionBtnGroupProps> = ({
   );
 };
 
-const UnitListTable: FC<UnitListTableProps> = ({ isLoading, data }) => {
-  const [searchQuery, setSearchQuery] = useState({
-    department: "",
-    status: "",
-    PageNo: 1,
-    Rows: 10,
-  });
+
+  const UnitListTable: FC<UnitListTableProps> = ({
+    isLoading,
+    searchQuery,
+    setSearchQuery,
+    totalPageCount,
+    data,
+  }) => {
   const [leftColumns] = useState(["index"]);
   const [rightColumns] = useState(["action"]);
-  const [columns] = useState<Column[]>([
+  const columns = [
     {
       title: "Sl",
-      name: "index",
-      getCellValue: (row: RowDataType) => {
-        if (data && data) {
-          return (
-            data.findIndex((dataRow: RowDataType) => dataRow.id === row.id) + 1
+      name: "index",      
+     getCellValue: (row: UnitMasterItem) => {
+                  if (data?.length) {
+          // Check if data exists and is not empty
+          const index = data.findIndex(
+            (dataRow: UnitMasterItem) =>
+              dataRow.UnitID === row.UnitID,
           );
+          return index >= 0 ? index + 1 : "";
         }
         return "";
       },
     },
     { name: "UnitCode", title: "Unit Code" },
-    { name: "UnitDescription", title: "Description" },
+    { name: "UnitDesc", title: "Description" },
     { name: "FormalName", title: "Formal Name" },
+    { name: "StatusDesc", title: "Status" },
     {
       name: "action",
       title: "action",
-      getCellValue: (row: RowDataType) => (
+      getCellValue: (row: UnitMasterItem) => (
         <ActionBtnGroup
-          id={row.id}
+          id={row.UnitID}
           onClickEdit={handleView}
            onClickDelete={handleDelete}
         />
       ),
     },
-  ]);
+  ];
 
   const [columnExtension] = useState<GridColumnExtension[]>([
     {
       columnName: "action",
       align: "center",
+      width:100,
+    },
+    {
+      columnName: "index",
+      align: "center",
+      width:100,
     },
   ]);
 
@@ -157,7 +162,7 @@ const UnitListTable: FC<UnitListTableProps> = ({ isLoading, data }) => {
 
   return (
     <CustomTable
-      hasBoxShadow
+      //hasBoxShadow
       isLoading={isLoading}
       grid={{
         columns,
@@ -168,22 +173,22 @@ const UnitListTable: FC<UnitListTableProps> = ({ isLoading, data }) => {
         // rowComponent: EmployeeAllowanceListTableRowComponent,
       }}
       pagingState={{
-        currentPage: searchQuery?.PageNo - 1,
+        currentPage: Number(searchQuery?.Page) - 1,
         onCurrentPageChange: (currentPage) =>
           setSearchQuery({
             ...searchQuery,
-            PageNo: currentPage + 1,
+            Page: (currentPage + 1).toString(),
           }),
-        pageSize: searchQuery.Rows,
+        pageSize: Number(searchQuery.Rows),
         onPageSizeChange: (pageSize) =>
           setSearchQuery({
             ...searchQuery,
-            PageNo: 1,
-            Rows: pageSize,
+            Page: "1",
+            Rows: pageSize.toString(),
           }),
       }}
       customPaging={{
-        totalCount: data && Array.isArray(data) ? data.length : 0,
+        totalCount: Number(totalPageCount),
       }} //todo count page
       tableFilterRow={{
         cellComponent: ListFilterCellComponent,
@@ -206,14 +211,7 @@ const UnitListTable: FC<UnitListTableProps> = ({ isLoading, data }) => {
           { columnName: "action", filteringEnabled: false },
         ],
       }}
-      integratedFiltering={{
-        columnExtensions: [
-          {
-            columnName: "CardSwipe",
-            predicate: (value, filter) => filter.value === value,
-          },
-        ],
-      }}
+   
       sortingState={{
         columnExtensions: [{ columnName: "action", sortingEnabled: false }],
       }}

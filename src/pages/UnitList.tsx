@@ -11,17 +11,30 @@ import Field from "../common/Form-component/field";
 import { useState } from "react";
 import UnitListTable from "../common/UI-component/Unit/UnitListTable";
 import { useNavigate } from "react-router";
+import { UnitMasterSearchReqType } from "../services/aoi.type";
+import { UnitMasterSearch } from "../services/unitMaster";
+import { unitMasterParama } from "../common/Component-types/UnitMaster.type";
 
 const UnitList = () => {
   const navigate = useNavigate();
   const [expanded, setExpanded] = useState<boolean>(false);
+  const [queryParam, setQueryParam] = useState<UnitMasterSearchReqType>({
+    UnitCode: "",
+    UnitDesc: "",
+    FormalName: "",
+    Status: "-1",
+    Page: "1",
+    Rows: "10",
+  });
 
   const method = useForm<SearchListUnit>({
     defaultValues: {
-      UnitCodeSrc: "",
-      UnitDescSrc: "",
-      FormalNameSrc: "",
-      StatusSrc: false,
+      UnitCode: "",
+      UnitDesc: "",
+      FormalName: "",
+      Status: "-1",
+      Page: "1",
+      Rows: "10",
     },
   });
 
@@ -29,9 +42,16 @@ const UnitList = () => {
     navigate("/Unit");
   };
 
+  
+  const { data, isLoading, isFetched } = UnitMasterSearch(queryParam);
+  const [searchQuery, setSearchQuery] =
+    useState<UnitMasterSearchReqType>(unitMasterParama);
   const onSearch = (data: SearchListUnit) => {
     console.log("Search form", data);
-  };
+    setQueryParam(data);
+  }
+  
+  ;
   return (
     <>
       <Toolbar />
@@ -74,7 +94,13 @@ const UnitList = () => {
             </FormProvider>
           </Grid>
           <Grid item xs={12}>
-            <UnitListTable isLoading={false} data={[]} />
+
+            <UnitListTable    
+             isLoading={isLoading}
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+             totalPageCount={(isFetched && data?.OverallCount) || "0"}
+              data={isFetched && data?.Data ? data?.Data : []}/>
           </Grid>
         </Grid>
       </Paper>

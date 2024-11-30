@@ -545,6 +545,8 @@ export type UnitMasterSearchReqType = {
   UnitDesc: string;
   FormalName: string;
   Status: string;
+  Page: string;
+  Rows: string;
 };
 
 export type UnitMasterItem = {
@@ -558,7 +560,8 @@ export type UnitMasterItem = {
 export type UnitMasterSearchResType = {
   Status: string;
   Data: UnitMasterItem[] | [];
-  Message: string;
+  Message: string;  
+  OverallCount: string;
 };
 
 export type MenuMasterSaveReqType = {

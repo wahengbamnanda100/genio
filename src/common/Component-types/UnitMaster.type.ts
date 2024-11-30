@@ -17,7 +17,9 @@ export const unitMasterParama: UnitMasterSearchReqType = {
   UnitCode: "",
   UnitDesc: "",
   FormalName: "",
-  Status: "",
+  Status: "-1",
+  Page: "1",
+  Rows: "10"
 };
 
 export const unitMasterSearchFields = (): FieldProps[] => [
