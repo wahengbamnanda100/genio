@@ -49,10 +49,12 @@ export const UnitForm=(disable :boolean):FieldProps[]=>[
       },
 ]
 export interface SearchListUnit {
-  UnitCodeSrc: string;
-  UnitDescSrc: string;
-  FormalNameSrc:string;
-  StatusSrc:boolean; 
+  UnitCode: string;
+  UnitDesc: string;
+  FormalName:string;
+  Status:string; 
+  Page: string;
+  Rows: string;
 }
 
 export const UnitListSearchFields = (): FieldProps[] => [
@@ -61,31 +63,31 @@ export const UnitListSearchFields = (): FieldProps[] => [
     name: "Unitcode",
     label: "Unit Code",
     size: "medium",
-    xs: 6,
+    xs: 3,
   },
   {
     fieldType: "text",
-    name: "Unitdescription",
+    name: "UnitDesc",
     label: "Unit Description",
     size: "medium",
-    xs: 6,
+    xs: 3,
   },
   {
     fieldType: "text",
     name: "FormalName",
     label: "Formal Name",
     size: "medium",
-    xs: 6,
+    xs: 3,
   },
   {
     fieldType: "select",
-    name: "status",
+    name: "StatusDesc",
     label: "Status",
     size: "medium",
     options: [
       { label: "Active", value: true },
       { label: "Inactive", value: false },
     ],
-    xs: 6,
+    xs: 3,
   },
 ];
