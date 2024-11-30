@@ -31,13 +31,13 @@ export const menuSearchQuery: MenuMasterListReqType = {
   SalesDescription: "",
   Manufacturer: "",
   MaterialType: "",
-  SerialNumber: "",
-  EffectInventory: "",
-  NegativeStock: "",
+  SerialNumber: "-1",
+  EffectInventory: "-1",
+  NegativeStock: "-1",
   Status: "-1",
   DietCategory: "",
-  FormType: "",
   UnitMasterId: "",
+  FormType: "2",
   Page: "1",
   Rows: "10",
   Stm_ID_N: "",
@@ -203,7 +203,7 @@ export const menuMasterSearchField = (): FieldProps[] => [
       { value: "0", label: "No" },
     ],
     size: "medium",
-    xs: 2,
+    xs: 1.5,
   },
   {
     fieldType: "select",
@@ -214,7 +214,7 @@ export const menuMasterSearchField = (): FieldProps[] => [
       { value: "0", label: "No" },
     ],
     size: "medium",
-    xs: 2,
+    xs: 1.5,
   },
   {
     fieldType: "select",
@@ -225,7 +225,7 @@ export const menuMasterSearchField = (): FieldProps[] => [
       { value: "0", label: "No" },
     ],
     size: "medium",
-    xs: 2,
+    xs: 1.5,
   },
   {
     fieldType: "select",
@@ -238,7 +238,7 @@ export const menuMasterSearchField = (): FieldProps[] => [
     ],
 
     size: "medium",
-    xs: 2,
+    xs: 1.5,
   },
   {
     fieldType: "select",

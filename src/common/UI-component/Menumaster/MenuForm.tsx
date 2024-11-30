@@ -29,7 +29,7 @@ import {
 } from "../../../layout/MainLayout/Header/UserImage";
 import { FC, useEffect, useState } from "react";
 import ImageUploadComponent from "./UploadImage";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import AddCompanyModal, {
   CompanyData,
 } from "../../ModalComponent/SelectCompany/AddCompanyModal";
@@ -46,7 +46,7 @@ interface MenuFormProps {
 const MenuForm: FC<MenuFormProps> = ({ config, configLoading }) => {
   // const theme = useTheme();
   const navigate = useNavigate();
-
+  const { id } = useParams();
   const { getValues, setValue, watch } = useFormContext<MenuMasterFormType>();
   const [companyModal, setCompanyModal] = useState<boolean>(false);
   const [imgSrc, setImgSrc] = useState<string>(placeholderUrl);
@@ -212,14 +212,16 @@ const MenuForm: FC<MenuFormProps> = ({ config, configLoading }) => {
         <Field {...Notes()} />
         <Grid item container xs={12}>
           <Grid item xs={6}>
-            <Field {...ChckboxActive(true)} />
+            <Field {...ChckboxActive(id ? false : true)} />
             {/* //todo check later */}
           </Grid>
-          <Grid item xs={6} display={"flex"} justifyContent={"flex-end"}>
-            <Button variant="text" onClick={() => setCompanyModal(true)}>
-              Add to Group Companies
-            </Button>
-          </Grid>
+          {!id && (
+            <Grid item xs={6} display={"flex"} justifyContent={"flex-end"}>
+              <Button variant="text" onClick={() => setCompanyModal(true)}>
+                Add to Group Companies
+              </Button>
+            </Grid>
+          )}
         </Grid>
       </Grid>
       <Grid item container spacing={2} xs={12}></Grid>

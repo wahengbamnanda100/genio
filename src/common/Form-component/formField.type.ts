@@ -30,6 +30,7 @@ type common_type = {
     | "auto"
     | true
     | 1
+    | 1.5
     | 2
     | 2.4
     | 3

@@ -18,6 +18,8 @@ import {
   MenuMasterCategoryListRequestBodyType,
   MenuMasterCompanyListRequestBodyType,
   MenuMasterCompanyListResponseBodyType,
+  MenuMasterListDeleteReqType,
+  MenuMasterListDeleteResType,
   MenuMasterListReqType,
   MenuMasterListResType,
   MenuMasterSaveReqType,
@@ -274,4 +276,12 @@ export const ConfigMenuMaster = (
     data,
     queryOptions,
   );
+};
+
+export const MenuMssterListDelete = async (
+  data: MenuMasterListDeleteReqType,
+): Promise<MenuMasterListDeleteResType> => {
+  const response: AxiosResponse<MenuMasterListDeleteResType> =
+    await axiosInstance.post("/API/DeleteMenumasterAPI", data);
+  return response.data; // Return the response data
 };

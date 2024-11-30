@@ -112,3 +112,39 @@ export const getValueOrDefault = (
   if (field === "") return defaultValue;
   return key ? field[key] || field : field;
 };
+
+export const transformSetToObjects = (
+  arr: Set<string>,
+  defaultCmpId: string,
+) => {
+  if (arr.size === 0) {
+    return [
+      {
+        Cmp_ID_N: defaultCmpId,
+        CheckboxSelect: "true",
+      },
+    ];
+  }
+
+  return Array.from(arr).map((cmpId) => ({
+    Cmp_ID_N: cmpId,
+    CheckboxSelect: "true",
+  }));
+};
+
+export function convertStringArray(
+  input: string | string[],
+  mode: "toString" | "toArray",
+): string | string[] {
+  if (mode === "toString") {
+    // Convert array of strings to comma-separated string
+    return Array.isArray(input) ? input.join(",") : input;
+  } else if (mode === "toArray") {
+    // Convert comma-separated string to array of strings
+    return typeof input === "string"
+      ? input.split(",").map((s) => s.trim())
+      : input;
+  } else {
+    throw new Error("Invalid mode. Use 'toString' or 'toArray'.");
+  }
+}

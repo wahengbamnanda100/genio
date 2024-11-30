@@ -1,4 +1,4 @@
-import { Button, Grid, Paper, Toolbar } from "@mui/material";
+import { Button, Grid, Paper } from "@mui/material";
 import SearchBox from "../common/UI-component/SearchBox";
 import { FormProvider, useForm } from "react-hook-form";
 import AddIcon from "@mui/icons-material/Add";
@@ -10,18 +10,30 @@ import {
   unitMasterSearchFields,
   UnitmMasterListSchema,
 } from "../common/Component-types/UnitMaster.type";
-import { UnitMasterSearchReqType } from "../services/aoi.type";
-import { UnitMasterSearch } from "../services/unitMaster";
+import {
+  UnitMasterListDeleteReqType,
+  UnitMasterSearchReqType,
+} from "../services/aoi.type";
+import { unitMasterDelete, UnitMasterSearch } from "../services/unitMaster";
 import { getValueOrDefault } from "../utils/utils";
+import { useMutation } from "@tanstack/react-query";
+import { useAppProvider } from "../AppProvider";
+import ConfirmationDialog from "../common/ModalComponent/ConfirmationDialog";
 
 const DemoList = () => {
   const navigate = useNavigate();
+  const { setNotify } = useAppProvider();
   const [expanded, setExpanded] = useState<boolean>(false);
+
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [rowDeleteId, setRowDeleteId] = useState<string>("");
   const [queryParam, setQueryParam] = useState<UnitMasterSearchReqType>({
     UnitCode: "",
     UnitDesc: "",
     FormalName: "",
     Status: "-1", //todo add Page and Rows for pagination
+    Page: "1",
+    Rows: "10",
   });
 
   const method = useForm<UnitmMasterListSchema>({
@@ -35,6 +47,25 @@ const DemoList = () => {
 
   const { data, isLoading, isFetched } = UnitMasterSearch(queryParam);
 
+  const { mutateAsync, isPending } = useMutation({
+    mutationKey: ["demo-delete"],
+    mutationFn: unitMasterDelete,
+    onSuccess: (data) => {
+      if (data.Status === "1") {
+        setNotify({
+          severity: "success",
+          message: data.Message,
+        });
+      } else {
+        setNotify({
+          severity: "info",
+          message: "Cannot delete this Unit item, reference exists",
+        });
+      }
+      setIsModalOpen(false);
+    },
+  });
+
   const handleCreate = () => {
     navigate("/demo");
   };
@@ -44,6 +75,7 @@ const DemoList = () => {
     const backendData: UnitMasterSearchReqType = {
       // ...queryParam //todo later add this after Page and Rows
       ...data,
+      ...queryParam,
       UnitCode: getValueOrDefault(data.UnitCode, "UnitCode", ""),
       UnitDesc: getValueOrDefault(data.UnitDesc, "UnitDesc", ""),
       FormalName: getValueOrDefault(data.FormalName, "FormalName", ""),
@@ -53,21 +85,33 @@ const DemoList = () => {
     setQueryParam(backendData);
   };
 
-  // useEffect(() => {
-  //   refetch();
-  // }, [queryParam]);
+  const handleDelete = (id: string) => {
+    setRowDeleteId(id);
+    setIsModalOpen(true);
+  };
+
+  const handleConfirmeDelete = () => {
+    const data: UnitMasterListDeleteReqType = {
+      UnitMasterId: rowDeleteId,
+    };
+
+    mutateAsync(data);
+  };
+  const handleCancelDelete = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <>
-      <Toolbar />
-      <Paper>
+      <Paper
+        sx={{ py: 2, mt: 4, border: "1px solid", borderColor: "primary.main" }}
+      >
         <Grid
           container
           justifyContent={"center"}
           sx={{
             width: "100%",
-            border: "1px solid",
             borderRadius: 1,
-            borderColor: "primary.main",
             overflowY: "hidden",
             overflowX: "hidden",
             p: 1,
@@ -99,12 +143,27 @@ const DemoList = () => {
           </Grid>
           <Grid item xs={12}>
             <DemoListTable
+              searchQuery={queryParam}
+              setSearchQuery={setQueryParam}
+              totalCount={data?.OverallCount || "0"}
               isLoading={isLoading}
+              onDeleteClick={handleDelete}
               data={isFetched && data?.Data ? data?.Data : []}
             />
           </Grid>
         </Grid>
       </Paper>
+
+      <ConfirmationDialog
+        dialogType="delete"
+        open={isModalOpen}
+        loading={isPending}
+        setOpen={setIsModalOpen}
+        title="Delete Unit item"
+        description={"Do you want to Delete the Unit item"}
+        onConfirm={handleConfirmeDelete}
+        onCancel={handleCancelDelete}
+      />
     </>
   );
 };

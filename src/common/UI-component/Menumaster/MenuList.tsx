@@ -31,8 +31,13 @@ import { useAppProvider } from "../../../AppProvider";
 import { CategorySaveRequestBodyType } from "../../../services/aoi.type";
 import { useDispatch } from "react-redux";
 import { setCategoryItem } from "../../../store/slices/menuMasterSlice";
+import { FC } from "react";
 
-export default function CustomMenuList() {
+interface CustomMenuListProps {
+  categoryId: string | undefined;
+}
+
+const CustomMenuList: FC<CustomMenuListProps> = ({ categoryId }) => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const { setNotify } = useAppProvider();
@@ -213,6 +218,12 @@ export default function CustomMenuList() {
     }
   }, [selectedNodeId]);
 
+  React.useEffect(() => {
+    if (categoryId) {
+      setSelectedNodeId(categoryId);
+    }
+  }, [categoryId]);
+
   const buttons = [
     <AnimateButton>
       <Button
@@ -377,4 +388,6 @@ export default function CustomMenuList() {
       />
     </Box>
   );
-}
+};
+
+export default CustomMenuList;

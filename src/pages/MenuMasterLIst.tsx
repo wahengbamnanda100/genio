@@ -15,13 +15,18 @@ import {
   menuSearchQuery,
 } from "../common/UI-component/Menumaster/MenuMasterList.type";
 import { MenuMasterListReqType } from "../services/aoi.type";
-import { MenuMasterList } from "../services/menuMaster";
+import { MenuMasterList, MenuMssterListDelete } from "../services/menuMaster";
 import { getValueOrDefault } from "../utils/utils";
+import { useMutation } from "@tanstack/react-query";
+import ConfirmationDialog from "../common/ModalComponent/ConfirmationDialog";
+import { useAppProvider } from "../AppProvider";
 
 const MenuMasterLIst = () => {
   const navigate = useNavigate();
-  // const { setNotify } = useAppProvider();
+  const { setNotify } = useAppProvider();
   const [expanded, setExpanded] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [deleteID, setDeleteId] = useState<string>("");
 
   const [searchQuery, setSearchQuery] =
     useState<MenuMasterListReqType>(menuSearchQuery);
@@ -44,7 +49,32 @@ const MenuMasterLIst = () => {
     },
   });
 
-  const { data, isLoading, isFetched } = MenuMasterList(searchQuery);
+  const { data, isLoading, isFetched, refetch } = MenuMasterList(searchQuery);
+
+  const { mutateAsync, isPending } = useMutation({
+    mutationKey: ["menu-master-delete"],
+    mutationFn: MenuMssterListDelete,
+    onSuccess: (data) => {
+      if (data.Status === "1") {
+        setNotify({
+          severity: "success",
+          message: data?.Message || "Menu Master Deleted Successfully",
+        });
+        refetch();
+      } else if (data.Status === "-2") {
+        setNotify({
+          severity: "info",
+          message: data.Message || "Deletion failed",
+        });
+      } else {
+        setNotify({
+          severity: "error",
+          message: data.Message || "Deletion failed",
+        });
+      }
+      setIsModalOpen(false);
+    },
+  });
 
   const handleCreateNew = () => {
     navigate("/menu-master");
@@ -81,6 +111,21 @@ const MenuMasterLIst = () => {
     setSearchQuery(backendData);
 
     console.log({ data });
+  };
+
+  const handleDelete = (id: string) => {
+    setDeleteId(id);
+    setIsModalOpen(true);
+  };
+
+  const handleConfirmeDelete = () => {
+    mutateAsync({
+      Stm_ID_N: deleteID,
+    });
+    // setIsModalOpen(false);
+  };
+  const handleCancelDelete = () => {
+    setIsModalOpen(false);
   };
 
   return (
@@ -128,12 +173,24 @@ const MenuMasterLIst = () => {
               isLoading={isLoading}
               searchQuery={searchQuery}
               setSearchQuery={setSearchQuery}
+              onDeleteClick={handleDelete}
               totalPageCount={(isFetched && data?.OverallCount) || "0"}
               data={isFetched && data?.Data ? data?.Data : []}
             />
           </Grid>
         </Grid>
       </Paper>
+
+      <ConfirmationDialog
+        dialogType="delete"
+        open={isModalOpen}
+        loading={isPending}
+        setOpen={setIsModalOpen}
+        title="Delete Menu item"
+        description={"Do you want to delete the Menu item"}
+        onConfirm={handleConfirmeDelete}
+        onCancel={handleCancelDelete}
+      />
     </>
   );
 };

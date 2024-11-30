@@ -1,3 +1,4 @@
+// import { Notes } from '../common/UI-component/Menumaster/MenuForm.types';
 //!________STUDENT LIST API____________
 
 export interface StudentListRequest {
@@ -346,6 +347,7 @@ export interface PrevDeleteResponseType {
 
 export type UnitMasterRequestBodyType = {
   UnitCode: string;
+  UnitId?: string;
   UnitDesc: string;
   FormalName: string;
   Status: string;
@@ -355,6 +357,16 @@ export type UnitMasterRequestBodyType = {
 export type UnitMasterResponseBodyType = {
   Status: string;
   UnitId: string;
+  Message: string;
+};
+
+export type UnitMasterListDeleteReqType = {
+  UnitMasterId: string;
+};
+
+export type UnitMasterListDeleteResType = {
+  Status: string;
+  Data: null;
   Message: string;
 };
 
@@ -545,6 +557,8 @@ export type UnitMasterSearchReqType = {
   UnitDesc: string;
   FormalName: string;
   Status: string;
+  Page: string;
+  Rows: string;
 };
 
 export type UnitMasterItem = {
@@ -559,6 +573,7 @@ export type UnitMasterSearchResType = {
   Status: string;
   Data: UnitMasterItem[] | [];
   Message: string;
+  OverallCount: string;
 };
 
 export type MenuMasterSaveReqType = {
@@ -570,7 +585,7 @@ export type MenuMasterSaveReqType = {
   MaterialId: string;
   PartNo: string;
   Barcode: string;
-  SupplierPartNo: string;
+  SupplierPartNumber: string;
   PurchaseDesc: string;
   SalesDesc: string;
   Brand: string;
@@ -584,7 +599,7 @@ export type MenuMasterSaveReqType = {
   WastagePer: string;
   ShelfLife: string;
   LeadTime: string;
-  Unh_ID_N: string;
+  UnitID: string;
   PreviousCost: string;
   PurchaseRate: string;
   AverageCost: string;
@@ -593,22 +608,19 @@ export type MenuMasterSaveReqType = {
   SalesPriceNormal: string;
   SalesPriceAgency: string;
   SalesPriceDealer: string;
-  Note: string;
+  Notes: string;
   SerialNumber: string;
   EffectInventory: string;
-  Image: string;
-  LedgerID: string | null;
+  StockcardImagepath: string;
   FinancilYearID: string;
   MinSalesPrice: string;
   ArabDescription: string;
-  TaxApplicable: string;
-  TaxPer: string;
-  RateIncTax: string;
   FormType: string;
   AddOnDetails: string;
   DietCategory: string;
   MenuMasterID: string;
   TblStockCard: StockCardItemType[];
+  Stm_ID_N: string | null;
 };
 
 export type StockCardItemType = {
@@ -636,8 +648,8 @@ export type MenuMasterListReqType = {
   NegativeStock: string;
   Status: string | "1" | "0";
   DietCategory: string;
-  FormType: string;
   UnitMasterId: string;
+  FormType: "2";
   Page: string;
   Rows: string;
   Stm_ID_N: string;
@@ -648,12 +660,64 @@ export type MenuMasterListType = {
   Purchasedescription: string;
   Salesdescription: string;
   Categoryname: string;
-  Dietcategory: string;
   Manufacturername: string;
   Stockunit: string;
-  Averagecost: string;
+  AverageCost: string;
   Sellingprice: string;
   Status: string;
+  Stm_ID_N: string;
+  Usr_ID_N: string;
+  CategoryID: string;
+  Cmp_ID_N: string;
+  ManufacturerId: string;
+  CountryId: string;
+  MaterialId: string;
+  PartNo: string;
+  Barcode: string;
+  SupplierPartNo: string;
+  Brand: string;
+  Model: string;
+  Make: string;
+  Specification: string;
+  ReOrderLevel: string;
+  MinQty: string;
+  MaxQty: string;
+  WastagePer: string;
+  ShelfLife: string;
+  LeadTime: string;
+  UnitID: string;
+  PreviousCost: string;
+  PurchaseRate: string;
+  PreviousSalesPrice: string;
+  DiscountMargin: string;
+  SalesPriceNormal: string;
+  SalesPriceAgency: string;
+  SalesPriceDealer: string;
+  MinSalesPrice: string;
+  Notes: string;
+  SerialNumber: string;
+  EffectInventory: string;
+  AllowNegativeStock: string;
+  StockcardImagepath: string;
+  CompanyID: string | null;
+  FinancilYearID: string;
+  ArabDescription: string | null;
+  DietCategoryId: string;
+  AddOnDetails: string;
+  DietCategory: string;
+  MultiplePurchase: string;
+  Mode: string | null;
+  Gem_ID_N: string;
+  ManufactureCode: string;
+  CountryName: string;
+  UnitCode: string;
+  UnitDesc: string;
+  CompanyCode: string;
+  CompanyName: string;
+  MaterialDesc: string;
+  StatusId: string;
+  ArabicSalesDesc: string;
+  Gemdietdesc: string;
 };
 
 export type MenuMasterListResType = {
@@ -708,4 +772,14 @@ export type ManufacturerMasterSearchResponseBodyType = {
   Status: string;
   Data: Griddetails[] | [];
   Message: string;
+};
+
+export type MenuMasterListDeleteReqType = {
+  Stm_ID_N: string;
+};
+
+export type MenuMasterListDeleteResType = {
+  Status: string;
+  Data: string | null;
+  Message: string | null;
 };

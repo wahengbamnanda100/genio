@@ -1,4 +1,5 @@
-import GridViewIcon from "@mui/icons-material/GridView";
+// import GridViewIcon from "@mui/icons-material/GridView";
+import EditIcon from "@mui/icons-material/Edit";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { IconButton, Stack, Tooltip } from "@mui/material";
 import { FC, ReactNode, useState } from "react";
@@ -18,26 +19,29 @@ import {
   MenuMasterListReqType,
   MenuMasterListType,
 } from "../../../services/aoi.type";
+import { useNavigate } from "react-router";
 
 interface MenuListTableProps {
   isLoading: boolean;
   searchQuery: MenuMasterListReqType;
   setSearchQuery: React.Dispatch<React.SetStateAction<MenuMasterListReqType>>;
+  onDeleteClick: (id: string) => void;
   totalPageCount: string;
   data: MenuMasterListType[];
 }
 
 interface ActionIconBtnProps {
   children: ReactNode;
-  varient: "print" | "view" | "delete";
+  varient: "edit" | "view" | "delete" | "print";
   onClick: () => void;
 }
 
 interface ActionBtnGroupProps {
-  id: string;
-  onClickPrint?: (id: string) => void;
-  onClickView?: (id: string) => void;
-  onClickDelete?: (id: string) => void;
+  rowData: MenuMasterListType;
+  onClickPrint?: (id: MenuMasterListType) => void;
+  onClickView?: (id: MenuMasterListType) => void;
+  onClickDelete?: (id: MenuMasterListType) => void;
+  onClickEdit?: (id: MenuMasterListType) => void;
 }
 
 const ActionIconBtn: FC<ActionIconBtnProps> = ({
@@ -53,7 +57,7 @@ const ActionIconBtn: FC<ActionIconBtnProps> = ({
           width: "1.2rem",
           height: "1.2rem",
           color:
-            varient === "print"
+            varient === "edit" || varient === "print"
               ? "primary.main"
               : varient === "view"
                 ? "secondary.main"
@@ -69,8 +73,8 @@ const ActionIconBtn: FC<ActionIconBtnProps> = ({
 const ActionBtnGroup: FC<ActionBtnGroupProps> = ({
   // onClickPrint,
   onClickDelete,
-  onClickView,
-  id,
+  onClickEdit,
+  rowData: id,
 }) => {
   return (
     <Stack
@@ -87,10 +91,10 @@ const ActionBtnGroup: FC<ActionBtnGroupProps> = ({
 			</ActionIconBtn> */}
       {/* {viewEnable && ( */}
       <ActionIconBtn
-        varient="view"
-        onClick={() => onClickView && onClickView(id)}
+        varient="edit"
+        onClick={() => onClickEdit && onClickEdit(id)}
       >
-        <GridViewIcon fontSize="small" />
+        <EditIcon fontSize="small" />
       </ActionIconBtn>
       {/* )} */}
       {/* {USERDATA?.IsDeletable && ( */}
@@ -109,9 +113,11 @@ const MenUMasterTable: FC<MenuListTableProps> = ({
   isLoading,
   searchQuery,
   setSearchQuery,
+  onDeleteClick,
   totalPageCount,
   data,
 }) => {
+  const navigate = useNavigate();
   const [leftColumns] = useState(["index"]);
   const [rightColumns] = useState(["action"]);
   const [columnExtension] = useState<GridColumnExtension[]>([
@@ -200,13 +206,14 @@ const MenUMasterTable: FC<MenuListTableProps> = ({
     { name: "Status", title: "Status" },
     {
       name: "action",
-      title: "action",
+      title: "Action",
       getCellValue: (row: MenuMasterListType) => (
         <ActionBtnGroup
-          id={row.Partnumber}
+          rowData={row}
           onClickView={handleView}
           onClickPrint={handlePrint}
           onClickDelete={handleDelete}
+          onClickEdit={handleEdit}
         />
       ),
     },
@@ -214,7 +221,15 @@ const MenUMasterTable: FC<MenuListTableProps> = ({
 
   const handleView = () => {};
   const handlePrint = () => {};
-  const handleDelete = () => {};
+  const handleDelete = (rowData: MenuMasterListType) => {
+    console.log("delete clicked", rowData);
+    onDeleteClick(rowData.Stm_ID_N);
+  };
+  const handleEdit = (rowData: MenuMasterListType) => {
+    console.log("edit clicked", rowData);
+    const id = rowData.Stm_ID_N;
+    navigate(`/menu-master/${id}`, { state: { data: rowData } });
+  };
 
   return (
     <CustomTable

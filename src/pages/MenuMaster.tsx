@@ -8,34 +8,28 @@ import { MenuMasterFormType } from "../common/UI-component/Menumaster/MenuForm.t
 import { useMutation } from "@tanstack/react-query";
 import { ConfigMenuMaster, MenuMssterSave } from "../services/menuMaster";
 import { useAppProvider } from "../AppProvider";
-import { MenuMasterSaveReqType } from "../services/aoi.type";
+import {
+  MenuMasterListType,
+  MenuMasterSaveReqType,
+} from "../services/aoi.type";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/index";
-import { arrayToStringWithDot } from "../utils/utils";
+import { convertStringArray, transformSetToObjects } from "../utils/utils";
 import ConfirmationDialog from "../common/ModalComponent/ConfirmationDialog";
-import { useEffect, useState } from "react";
+import { useEffect, useState, FC } from "react";
 import { setMenuItemsImgUrl } from "../store/slices/menuMasterSlice";
+import { useLocation, useParams } from "react-router";
 
-const transformSetToObjects = (arr: Set<string>, defaultCmpId: string) => {
-  if (arr.size === 0) {
-    return [
-      {
-        Cmp_ID_N: defaultCmpId,
-        CheckboxSelect: "true",
-      },
-    ];
-  }
+interface MenuFormContainerProps {
+  formData: MenuMasterListType | null;
+}
 
-  return Array.from(arr).map((cmpId) => ({
-    Cmp_ID_N: cmpId,
-    CheckboxSelect: "true",
-  }));
-};
-
-const MenuMaster = () => {
+const MenuFormContainer: FC<MenuFormContainerProps> = ({ formData }) => {
   const theme = useTheme();
   const dispatch = useDispatch();
+  const { id } = useParams();
   const { setNotify } = useAppProvider();
+
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const Cmp_ID_N: string = localStorage.getItem("CmpId")!;
@@ -114,10 +108,11 @@ const MenuMaster = () => {
         });
         dispatch(setMenuItemsImgUrl(""));
         methods.reset();
+        setIsModalOpen(false);
       } else {
         setNotify({
-          severity: "success",
-          message: "Menu Save Successfully",
+          severity: "error",
+          message: "Menu save failded",
         });
       }
     },
@@ -148,7 +143,7 @@ const MenuMaster = () => {
       MaterialId: data.metarialType,
       PartNo: data.partNumber,
       Barcode: data.barcode,
-      SupplierPartNo: data.supplierPartNumber,
+      SupplierPartNumber: data.supplierPartNumber,
       PurchaseDesc: data.purchaseDiscription,
       SalesDesc: data.salesDescription,
       Brand: data.brand,
@@ -162,7 +157,7 @@ const MenuMaster = () => {
       WastagePer: data.wastagePercentage,
       ShelfLife: data.shelfLife,
       LeadTime: data.leadTime,
-      Unh_ID_N: "1038", //todo verify
+      UnitID: data.stockUnit, //todo verify
       PreviousCost: data.previousCost,
       PurchaseRate: data.purchaseRate,
       AverageCost: data.averageCost,
@@ -171,28 +166,84 @@ const MenuMaster = () => {
       SalesPriceNormal: data.sellingPrice,
       SalesPriceAgency: data.sellingPriceAgency,
       SalesPriceDealer: data.sellingPriceDealer,
-      Note: data.notes,
+      Notes: data.notes,
       SerialNumber: Number(data.serialNo).toString(),
       EffectInventory: Number(data.effectInventory).toString(),
-      Image: data.categoryImage,
-      LedgerID: null,
+      StockcardImagepath: data.categoryImage,
       FinancilYearID: financialyearid, //todo
       MinSalesPrice: data.minimumSalesPrice,
       ArabDescription: data.arabicDescription,
-      TaxApplicable: "0", //todo
-      TaxPer: "0", //todo
-      RateIncTax: "0", //todo
+
       FormType: "2", //todo
-      AddOnDetails: arrayToStringWithDot(data.addOnDetails),
-      DietCategory: arrayToStringWithDot(data.dietCategory),
+      AddOnDetails: convertStringArray(data.addOnDetails, "toString") as string,
+      DietCategory: convertStringArray(data.dietCategory, "toString") as string,
       MenuMasterID: "", //todo change it later for edit
       TblStockCard: transformSetToObjects(data.addCompanies, Cmp_ID_N),
+      Stm_ID_N: id ? formData && formData?.Stm_ID_N : null,
     };
 
     mutateAsync(backendData);
   };
   const handleCancelSave = () => {
     setIsModalOpen(false);
+  };
+
+  const setFormFields = (data: MenuMasterListType) => {
+    const { setValue } = methods;
+
+    setValue(
+      "dietCategory",
+      convertStringArray(data.DietCategoryId, "toArray") as string[],
+    );
+    setValue("partNumber", data.Partnumber);
+    setValue("barcode", data.Barcode);
+    setValue("supplierPartNumber", data.SupplierPartNo);
+    // setValue("categoryImage", (data?.StockcardImagepath as string) || ""); //todo add base url
+    dispatch(setMenuItemsImgUrl(data.StockcardImagepath as string));
+    setValue("purchaseDiscription", data.Purchasedescription);
+    setValue("salesDescription", data.Salesdescription);
+    setValue("arabicDescription", data.ArabicSalesDesc);
+    setValue("manufacturer", data.ManufacturerId); //todo manufatruer data is comming wrong
+    setValue("country", data.CountryId); //todo country name is coming wrong
+    setValue("metarialType", data.MaterialId);
+    setValue("brand", data.Brand);
+    setValue("model", data.Model);
+    setValue("make", data.Make);
+    setValue("specification", data.Specification);
+    setValue("reOrderLevel", data.ReOrderLevel);
+    setValue("minimumQuantity", data.MinQty);
+    setValue("maximumQuantity", data.MaxQty);
+    setValue("wastagePercentage", data.WastagePer);
+    setValue("leadTime", data.LeadTime);
+    setValue("stockUnit", data.UnitID);
+    setValue("previousCost", data.PreviousCost);
+    setValue("averageCost", data.AverageCost);
+    setValue("purchaseRate", data.PurchaseRate);
+    setValue("previousSalesPrice", data.PreviousSalesPrice);
+    setValue("discountMargin", data.DiscountMargin);
+    setValue("minimumSalesPrice", data.MinSalesPrice);
+    setValue("sellingPrice", data.SalesPriceNormal);
+    setValue("sellingPriceAgency", data.SalesPriceAgency);
+    setValue("sellingPriceDealer", data.SalesPriceDealer);
+    setValue("shelfLife", data.ShelfLife);
+    setValue(
+      "addOnDetails",
+      convertStringArray(data.AddOnDetails, "toArray") as string[],
+    );
+    setValue("allownegative", data.AllowNegativeStock === "1" ? true : false);
+    setValue("serialNo", data.SerialNumber === "1" ? true : false);
+    setValue("effectInventory", data.EffectInventory === "1" ? true : false);
+    setValue("active", data.StatusId === "1" ? true : false);
+    setValue("notes", data.Notes);
+  };
+
+  const handleReset = () => {
+    if (id && formData) {
+      setFormFields(formData);
+      return;
+    }
+    methods.reset();
+    dispatch(setMenuItemsImgUrl(""));
   };
 
   useEffect(() => {
@@ -202,6 +253,13 @@ const MenuMaster = () => {
       dispatch(setMenuItemsImgUrl(""));
     };
   }, []);
+
+  useEffect(() => {
+    if (formData) {
+      console.log("this is a edit page", formData);
+      setFormFields(formData);
+    }
+  }, [formData]);
 
   return (
     <Paper sx={{ mt: 4, p: 2, px: 3 }}>
@@ -220,7 +278,9 @@ const MenuMaster = () => {
               // overflowY: "auto",
             }}
           >
-            <CustomMenuList />
+            <CustomMenuList
+              categoryId={id ? formData?.CategoryID : undefined}
+            />
           </Grid>
           <Grid
             item
@@ -234,10 +294,7 @@ const MenuMaster = () => {
           >
             <form
               onSubmit={methods.handleSubmit(handleSubmit)}
-              onReset={() => {
-                methods.reset();
-                dispatch(setMenuItemsImgUrl(""));
-              }}
+              onReset={handleReset}
             >
               <MenuForm
                 config={isFetched ? data! : null}
@@ -261,7 +318,7 @@ const MenuMaster = () => {
                   color={"secondary"}
                   type={"submit"}
                 >
-                  Submit
+                  {id ? "Update" : "Submit"}
                 </LoadingButton>
                 <Button variant="outlined" color="primary" type="reset">
                   Cancel
@@ -284,6 +341,14 @@ const MenuMaster = () => {
       />
     </Paper>
   );
+};
+
+const MenuMaster = () => {
+  const location = useLocation();
+  const { id } = useParams();
+  const { data } = location.state || {};
+
+  return <MenuFormContainer formData={id ? data : null} />;
 };
 
 export default MenuMaster;
