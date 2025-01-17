@@ -90,7 +90,15 @@ const ParentListItem: React.FC<ParentListItemProps> = ({
     }}
   >
     <ListItemIcon
-      sx={{ minWidth: "36px", color: parentIsActive ? color : "default" }}
+      sx={{
+        minWidth: "36px",
+        width: "36px",
+        color: parentIsActive ? color : "default",
+        fontSize: "20px",
+        "& .muiltr-i4bv87-MuiSvgIcon-root": {
+          width: "0.8em",
+        },
+      }}
     >
       {route.icon}
     </ListItemIcon>

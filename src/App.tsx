@@ -13,26 +13,26 @@ import AppProvider from "./AppProvider";
 // const AppContent = () => { }
 
 function App() {
-	const queryClient = new QueryClient();
-	//console.log("this page is loaded @app");
+  const queryClient = new QueryClient();
+  //console.log("this page is loaded @app");
 
-	return (
-		<Provider store={store}>
-			<QueryClientProvider client={queryClient}>
-				<ReactQueryDevtools initialIsOpen={false} />
-				<StyledEngineProvider injectFirst>
-					<AppProvider>
-						<CustomThemeProvider>
-							<CssBaseline />
-							<NavigationScroll>
-								<RouterProvider router={router} />
-							</NavigationScroll>
-						</CustomThemeProvider>
-					</AppProvider>
-				</StyledEngineProvider>
-			</QueryClientProvider>
-		</Provider>
-	);
+  return (
+    <Provider store={store}>
+      <QueryClientProvider client={queryClient}>
+        <ReactQueryDevtools initialIsOpen={false} />
+        <StyledEngineProvider injectFirst>
+          <AppProvider>
+            <CustomThemeProvider>
+              <CssBaseline />
+              <NavigationScroll>
+                <RouterProvider router={router} />
+              </NavigationScroll>
+            </CustomThemeProvider>
+          </AppProvider>
+        </StyledEngineProvider>
+      </QueryClientProvider>
+    </Provider>
+  );
 }
 
 export default App;

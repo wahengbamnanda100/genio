@@ -6,25 +6,25 @@
 
 // ==============================|| LIGHT BOX ||============================== //
 .fullscreen .react-images__blanket {
-	z-index: 1200;
+  z-index: 1200;
 }
 
 // ==============================|| APEXCHART ||============================== //
 
 .apexcharts-legend-series .apexcharts-legend-marker {
-	margin-right: 8px;
+  margin-right: 8px;
 }
 
 .TableSelectCell-cell {
-	padding: 0;
-	margin: 0;
+  padding: 0;
+  margin: 0;
 }
 
 .TableEditCell-cell {
-	padding: 0 !important;
-	padding-left: 6px !important;
-	padding-right: 6px !important;
-	font-size: 12px !important;
+  padding: 0 !important;
+  padding-left: 6px !important;
+  padding-right: 6px !important;
+  font-size: 12px !important;
 }
 
 // ==============================|| PERFECT SCROLLBAR ||============================== //
@@ -69,136 +69,137 @@ $scrollbar-color: rgb(196, 196, 196);
 $track-shadow-color: rgb(204, 204, 204);
 
 ::-webkit-scrollbar {
-	width: 5px;
+  width: 5px;
+  height: 5px;
 
-	&-track {
-		box-shadow: inset 0 0 3px $track-shadow-color;
-		border-radius: 0px;
-	}
+  &-track {
+    box-shadow: inset 0 0 3px $track-shadow-color;
+    border-radius: 0px;
+  }
 
-	&-thumb {
-		background: $scrollbar-color;
-		border-radius: 0px;
+  &-thumb {
+    background: $scrollbar-color;
+    border-radius: 0px;
 
-		&:hover {
-			background: $scrollbar-color;
-			width: 8px;
-		}
-	}
+    &:hover {
+      background: $scrollbar-color;
+      width: 8px;
+    }
+  }
 }
 
 // ==============================|| ANIMATION Carousal||============================== //
 
 .carousel-enter {
-	border-color: aquamarine;
-	opacity: 0;
-	transform: translateX(100%);
+  border-color: aquamarine;
+  opacity: 0;
+  transform: translateX(100%);
 }
 
 .carousel-enter-active {
-	opacity: 1;
-	transform: translateX(0);
-	transition:
-		opacity 500ms,
-		transform 500ms;
+  opacity: 1;
+  transform: translateX(0);
+  transition:
+    opacity 500ms,
+    transform 500ms;
 }
 
 .carousel-exit {
-	opacity: 1;
-	transform: translateX(0);
+  opacity: 1;
+  transform: translateX(0);
 }
 
 .carousel-exit-active {
-	opacity: 0;
-	transform: translateX(-100%);
-	transition:
-		opacity 500ms,
-		transform 500ms;
+  opacity: 0;
+  transform: translateX(-100%);
+  transition:
+    opacity 500ms,
+    transform 500ms;
 }
 
 .table_container {
-	overflow-y: auto;
-	min-height: 160px;
-	max-height: 160px;
+  overflow-y: auto;
+  min-height: 160px;
+  max-height: 160px;
 }
 
 .table_container_main {
-	overflow-y: auto;
+  overflow-y: auto;
 }
 
 .muiltr-181uqv1-MuiTableCell-root.TableEditCell-cell {
-	padding-bottom: 0px;
+  padding-bottom: 0px;
 }
 // ==============================|| ANIMATION KEYFRAMES ||============================== //
 
 @keyframes wings {
-	50% {
-		transform: translateY(-40px);
-	}
-	100% {
-		transform: translateY(0px);
-	}
+  50% {
+    transform: translateY(-40px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
 }
 
 @keyframes blink {
-	50% {
-		opacity: 0;
-	}
-	100% {
-		opacity: 1;
-	}
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 @keyframes bounce {
-	0%,
-	20%,
-	53%,
-	to {
-		animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
-		transform: translateZ(0);
-	}
-	40%,
-	43% {
-		animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
-		transform: translate3d(0, -5px, 0);
-	}
-	70% {
-		animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
-		transform: translate3d(0, -7px, 0);
-	}
-	80% {
-		transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
-		transform: translateZ(0);
-	}
-	90% {
-		transform: translate3d(0, -2px, 0);
-	}
+  0%,
+  20%,
+  53%,
+  to {
+    animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+    transform: translateZ(0);
+  }
+  40%,
+  43% {
+    animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+    transform: translate3d(0, -5px, 0);
+  }
+  70% {
+    animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+    transform: translate3d(0, -7px, 0);
+  }
+  80% {
+    transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+    transform: translateZ(0);
+  }
+  90% {
+    transform: translate3d(0, -2px, 0);
+  }
 }
 
 @keyframes slideY {
-	0%,
-	50%,
-	100% {
-		transform: translateY(0px);
-	}
-	25% {
-		transform: translateY(-10px);
-	}
-	75% {
-		transform: translateY(10px);
-	}
+  0%,
+  50%,
+  100% {
+    transform: translateY(0px);
+  }
+  25% {
+    transform: translateY(-10px);
+  }
+  75% {
+    transform: translateY(10px);
+  }
 }
 
 @keyframes slideX {
-	0%,
-	50%,
-	100% {
-		transform: translateX(0px);
-	}
-	25% {
-		transform: translateX(-10px);
-	}
-	75% {
-		transform: translateX(10px);
-	}
+  0%,
+  50%,
+  100% {
+    transform: translateX(0px);
+  }
+  25% {
+    transform: translateX(-10px);
+  }
+  75% {
+    transform: translateX(10px);
+  }
 }

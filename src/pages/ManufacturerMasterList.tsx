@@ -3,8 +3,8 @@ import SearchBox from "../common/UI-component/SearchBox";
 import { FormProvider, useForm } from "react-hook-form";
 import AddIcon from "@mui/icons-material/Add";
 import {
-    SearchListManufacturer,
-    ManufacturerListSearchFields,
+  // SearchListManufacturer,
+  ManufacturerListSearchFields,
 } from "../common/UI-component/Manufacturer/Manufacturer.type";
 
 import Field from "../common/Form-component/field";
@@ -18,17 +18,14 @@ const ManufacturerMasterList = () => {
   const [expanded, setExpanded] = useState<boolean>(false);
 
   const method = useForm<ManufacturerMasterListSchema>({
-      defaultValues: {
-        ManufacturerCode: "",
-        ManufacturerName:"",
-        Address:"",
-        Phonenumber:"",
-        Status: false,
-      },
-    });
-
-
-
+    defaultValues: {
+      ManufacturerCode: "",
+      ManufacturerName: "",
+      Address: "",
+      Phonenumber: "",
+      Status: false,
+    },
+  });
 
   const handleCreate = () => {
     navigate("/Manufacturer");

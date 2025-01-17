@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Grid, Paper } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import AddIcon from "@mui/icons-material/Add";
 import { FormProvider, useForm } from "react-hook-form";
@@ -49,7 +49,10 @@ const MenuMasterLIst = () => {
     },
   });
 
-  const { data, isLoading, isFetched, refetch } = MenuMasterList(searchQuery);
+  const { data, isLoading, isFetched, refetch } = MenuMasterList(searchQuery, {
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
+  });
 
   const { mutateAsync, isPending } = useMutation({
     mutationKey: ["menu-master-delete"],
@@ -127,6 +130,10 @@ const MenuMasterLIst = () => {
   const handleCancelDelete = () => {
     setIsModalOpen(false);
   };
+
+  useEffect(() => {
+    refetch();
+  }, []);
 
   return (
     <>

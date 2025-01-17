@@ -29,6 +29,7 @@ type common_type = {
     | false
     | "auto"
     | true
+    | 0.5
     | 1
     | 1.5
     | 2
@@ -36,6 +37,7 @@ type common_type = {
     | 3
     | 3.5
     | 4
+    | 4.5
     | 5
     | 5.5
     | 5.6
@@ -43,7 +45,10 @@ type common_type = {
     | 5.8
     | 6
     | 7
+    | 7.4
+    | 7.5
     | 8
+    | 8.4
     | 9
     | 10
     | 11

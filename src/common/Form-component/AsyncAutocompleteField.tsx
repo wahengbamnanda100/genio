@@ -104,7 +104,7 @@ const AsyncAutoCompleteField = ({
                 return;
               }
             }}
-            onInputChange={(e, value) => setKeyStrocke(value)}
+            onInputChange={(e, value) => isFocused && setKeyStrocke(value)}
             options={restProps.disabled ? [] : options(searchData)}
             getOptionLabel={getOptionLabel}
             filterOptions={filterOptions}

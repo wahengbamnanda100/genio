@@ -783,3 +783,53 @@ export type MenuMasterListDeleteResType = {
   Data: string | null;
   Message: string | null;
 };
+
+export type AllocatinCateoryItem = {
+  CategoryID: string;
+  CategoryCode: string;
+  CategoryDesc: string;
+};
+
+export type AllocationCategoryResType = {
+  Status: string;
+  Data: AllocatinCateoryItem[] | [] | null;
+  Message: string;
+  OverallCount: string | null;
+};
+export type AllocationCategoryReqType = {
+  CategoryCode: string;
+  CategoryDesc: string;
+};
+
+export type AllocationShowroomItem = {
+  ShowroomID: string;
+  ShowroomCode: string;
+};
+
+export type AllocationShowroomReqType = null;
+export type AllocationShowroomResType = {
+  Status: string;
+  Data: AllocationShowroomItem[] | [] | null;
+  Message: string;
+  OverallCount: string | null;
+};
+
+// export type AllocationShowroomCatItem = {
+
+// }
+
+export type AllocationShowroomCatItem = {
+  CategoryID: string;
+  CategoryCode: string;
+  CategoryDesc: string;
+};
+
+export type AllocationShowroomCatReqType = {
+  ShowroomId: string;
+};
+export type AllocationShowroomCatResType = {
+  Status: string;
+  Data: AllocationShowroomCatItem[] | [] | null;
+  Message: string;
+  OverallCount: null;
+};

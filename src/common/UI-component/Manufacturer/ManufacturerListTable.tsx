@@ -112,7 +112,10 @@ const ActionBtnGroup: FC<ActionBtnGroupProps> = ({
   );
 };
 
-const ManufacturerListTable: FC<ManufacturerListTableProps> = ({ isLoading, data }) => {
+const ManufacturerListTable: FC<ManufacturerListTableProps> = ({
+  isLoading,
+  data,
+}) => {
   const [searchQuery, setSearchQuery] = useState({
     department: "",
     status: "",
@@ -134,12 +137,12 @@ const ManufacturerListTable: FC<ManufacturerListTableProps> = ({ isLoading, data
         return "";
       },
     },
-    { name: "ManufacturerCode", title: "Manufacturer Code"},
-    { name: "ManufacturerName", title: "Manufacturer Name"},
-    { name: "Address", title: "Address"},
-    { name: "PhoneNumber", title: "Phone Number"},
-    { name: "FaxNumber", title: "Fax Number"},
-    { name: "EMail", title: "E-Mail ID"},
+    { name: "ManufacturerCode", title: "Manufacturer Code" },
+    { name: "ManufacturerName", title: "Manufacturer Name" },
+    { name: "Address", title: "Address" },
+    { name: "PhoneNumber", title: "Phone Number" },
+    { name: "FaxNumber", title: "Fax Number" },
+    { name: "EMail", title: "E-Mail ID" },
     { name: "status", title: "status" },
     {
       name: "action",

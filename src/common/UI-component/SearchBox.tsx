@@ -9,6 +9,7 @@ import {
   Grid,
   Paper,
   Stack,
+  SxProps,
   Typography,
   useTheme,
 } from "@mui/material";
@@ -25,6 +26,7 @@ interface SearchBoxProps {
   onCancel: () => void;
   title: string;
   children: ReactNode;
+  sx?: SxProps;
 }
 
 interface ActionButtonProps {
@@ -80,6 +82,7 @@ const SearchBox = ({
   children: fields,
   onSearch,
   onCancel,
+  sx,
 }: SearchBoxProps) => {
   const theme = useTheme();
   return (
@@ -89,6 +92,7 @@ const SearchBox = ({
         border: `1px solid`,
         borderColor: theme.palette.secondary.main,
         m: 2,
+        ...sx,
       }}
     >
       <Accordion
