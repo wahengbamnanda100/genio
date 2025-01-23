@@ -3,14 +3,22 @@ import { FormProvider, useForm } from "react-hook-form";
 import SearchIcon from "@mui/icons-material/Search";
 import {manufacturerForm,ManufacturerFormType,} from "../common/UI-component/Manufacturer/Manufacturer.type";
 import Field from "../common/Form-component/field";
-import { useNavigate, useParams } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router";
 import { useMutation } from "@tanstack/react-query";
 import { ManufacturerMaster } from "../services/ManufacturerMaster";
-import { ManufacturerMasterRequestBodyType } from "../services/aoi.type";
+import {Griddetails, ManufacturerMasterRequestBodyType } from "../services/aoi.type";
 import { useAppProvider } from "../AppProvider";
+import { FC, useEffect } from "react";
+
+interface DemoFormContainerProps {
+  formData: Griddetails;
+}
 
 
-export default function Manufacturer() {
+
+
+export const Manufacturercontainet:FC<DemoFormContainerProps> =({ formData })=>{
+
     const navigate = useNavigate();
     const { id } = useParams();
     const method = useForm<ManufacturerFormType>({
@@ -60,11 +68,31 @@ export default function Manufacturer() {
         FaxNumber:data.FaxNumber,
         Email:data.EMailID,
         UserId: "1",
-        ManId:"",
+        ManId: id ? formData.ManufacturerId : undefined,
         Status: Number(data.Status).toString()
       };
       mutateAsync(_data);
-    };  
+    };
+
+
+    const setFormValues = () => {
+      const { ManufacturerCode,ManufacturerName,Address,Emailid,Faxnumber,StatusDesc,Phonenumber } = formData;
+      const { setValue } = method;
+      setValue("ManufacturerCode", ManufacturerCode);
+      setValue("ManufacturerName", ManufacturerName);
+      setValue("Address", Address);
+      setValue("PhoneNumber", Phonenumber);
+      setValue("FaxNumber", Faxnumber);
+      setValue("EMailID", Emailid);
+      setValue("Status", StatusDesc === "Active" ? true : false);
+    };
+
+    useEffect(() => {
+        if (formData) {
+          setFormValues();
+        }
+      }, [formData]);
+     
   return (
     <Paper sx={{ mt: 4, p: 2, px: 3 }}>
       <FormProvider {...method}>
@@ -131,7 +159,7 @@ export default function Manufacturer() {
             >
               <Grid item xs={0.8}>
                 <Button variant="contained" disabled={isPending} type="submit">
-                  Submit
+                  {id ? "Update" : "Submit"}
                 </Button>
               </Grid>
               <Grid item xs={0.8}>
@@ -145,4 +173,13 @@ export default function Manufacturer() {
       </FormProvider>
     </Paper>
   )
+  
 }
+const Manufacturer = () => {
+  const location = useLocation();
+  const { id } = useParams();
+  const { data } = location.state || {};
+  return <Manufacturercontainet formData={id ? data : null} />;
+};
+
+export default Manufacturer;

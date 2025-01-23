@@ -191,6 +191,15 @@ const MainRoutes: RouteObject = {
       errorElement: <ErrorElement />,
     },
     {
+      path: "Manufacturer/:id",
+      element: (
+        <PrivateRoute>
+          <Manufacturer/>
+        </PrivateRoute>
+      ),
+      errorElement: <ErrorElement />,
+    },
+    {
       path: "categoryAllocation",
       element: (
         <PrivateRoute>

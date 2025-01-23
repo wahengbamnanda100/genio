@@ -1,35 +1,37 @@
 import { FC, ReactNode, useState } from "react";
 import CustomTable from "../../CutomTable/CustomTable";
-import { Column, GridColumnExtension } from "@devexpress/dx-react-grid";
+import {GridColumnExtension } from "@devexpress/dx-react-grid";
 import { IconButton, Stack, Tooltip } from "@mui/material";
-import GridViewIcon from "@mui/icons-material/GridView";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import { UserDetailsType } from "../../Component-types/localStorageData.type";
-import { anyOneIsTrue } from "../../../utils/utils";
-import { ListFilterCellComponent } from "../../CutomTable/components/customComponent";
 
-interface RowDataType {
-  id: string;
-  department: string;
-  status: string;
-}
+import { ListFilterCellComponent } from "../../CutomTable/components/customComponent";
+import { Griddetails, ManufacturerMasterSearchRequestBodyType } from "../../../services/aoi.type";
+import EditIcon from "@mui/icons-material/Edit";
+import { useNavigate } from "react-router";
+
+
 
 interface ManufacturerListTableProps {
   isLoading: boolean;
-  data: RowDataType[];
+  searchQuery: ManufacturerMasterSearchRequestBodyType;
+  setSearchQuery: React.Dispatch<React.SetStateAction<ManufacturerMasterSearchRequestBodyType>>;
+  totalCount: string;
+  data: Griddetails[];
+  onDeleteClick: (id: string) => void;
 }
 
 interface ActionIconBtnProps {
   children: ReactNode;
-  varient: "print" | "view" | "delete";
+  varient: "print" | "view" | "delete" | "edit";
   onClick: () => void;
 }
 
 interface ActionBtnGroupProps {
-  id: string;
-  onClickPrint?: (id: string) => void;
-  onClickView?: (id: string) => void;
-  onClickDelete?: (id: string) => void;
+    row: Griddetails;
+    onClickPrint?: (row: Griddetails) => void;
+    onClickView?: (row: Griddetails) => void;
+    onClickDelete?: (row: Griddetails) => void;
+    onClickEdit?: (row: Griddetails) => void;
 }
 
 const ActionIconBtn: FC<ActionIconBtnProps> = ({
@@ -45,7 +47,7 @@ const ActionIconBtn: FC<ActionIconBtnProps> = ({
           width: "1.2rem",
           height: "1.2rem",
           color:
-            varient === "print"
+            varient === "edit"
               ? "primary.main"
               : varient === "view"
                 ? "secondary.main"
@@ -61,9 +63,15 @@ const ActionIconBtn: FC<ActionIconBtnProps> = ({
 const ActionBtnGroup: FC<ActionBtnGroupProps> = ({
   // onClickPrint,
   onClickDelete,
-  onClickView,
-  id,
+  onClickEdit,
+ // onClickView,
+  row,
 }) => {
+  
+  /*
+   import { UserDetailsType } from "../../Component-types/localStorageData.type";
+import { anyOneIsTrue } from "../../../utils/utils";
+
   const localUserData = localStorage.getItem("userDetail") as string | null;
 
   const USERDATA = localUserData
@@ -78,7 +86,7 @@ const ActionBtnGroup: FC<ActionBtnGroupProps> = ({
         USERDATA?.IsViewable,
       )
     : false;
-
+*/
   return (
     <Stack
       direction={"row"}
@@ -87,78 +95,122 @@ const ActionBtnGroup: FC<ActionBtnGroupProps> = ({
       alignItems={"center"}
       flex={1}
     >
-      {/* <ActionIconBtn
-				varient="print"
-				onClick={() => onClickPrint && onClickPrint(id)}>
-				<ReceiptIcon fontSize="small" />
-			</ActionIconBtn> */}
-      {viewEnable && (
+
+        <ActionIconBtn varient="edit" onClick={() => onClickEdit && onClickEdit(row)} >
+            <EditIcon fontSize="small" />
+        </ActionIconBtn>
+      <ActionIconBtn
+        varient="delete"
+        onClick={() => onClickDelete && onClickDelete(row)}
+      >
+        <DeleteOutlineIcon fontSize="small" />
+      </ActionIconBtn>
+      
+      {/*viewEnable && (
         <ActionIconBtn
           varient="view"
-          onClick={() => onClickView && onClickView(id)}
+          onClick={() => onClickView && onClickView(row)}
         >
           <GridViewIcon fontSize="small" />
         </ActionIconBtn>
-      )}
-      {USERDATA?.IsDeletable && (
+      )*/}
+      {/*USERDATA?.IsDeletable && (
         <ActionIconBtn
           varient="delete"
-          onClick={() => onClickDelete && onClickDelete(id)}
+          onClick={() => onClickDelete && onClickDelete(row)}
         >
           <DeleteOutlineIcon fontSize="small" />
         </ActionIconBtn>
-      )}
+      )*/}
     </Stack>
   );
 };
 
-const ManufacturerListTable: FC<ManufacturerListTableProps> = ({
+const ManufacturerListTable: FC<ManufacturerListTableProps> = ({ 
   isLoading,
   data,
-}) => {
-  const [searchQuery, setSearchQuery] = useState({
+  totalCount,
+  searchQuery,
+  onDeleteClick,
+  setSearchQuery
+ }) => {
+  
+  /*const [searchQuery, setSearchQuery] = useState({
     department: "",
     status: "",
-    PageNo: 1,
-    Rows: 10,
-  });
+    Page: 1,
+    Rows: 5,
+  });*/
+  const navigate = useNavigate();
   const [leftColumns] = useState(["index"]);
   const [rightColumns] = useState(["action"]);
-  const [columns] = useState<Column[]>([
+  
+  const columns = [
     {
       title: "Sl",
       name: "index",
-      getCellValue: (row: RowDataType) => {
+      getCellValue: (row: Griddetails) => {
         if (data && data) {
           return (
-            data.findIndex((dataRow: RowDataType) => dataRow.id === row.id) + 1
+            data.findIndex((dataRow: Griddetails) => dataRow.ManufacturerId === row.ManufacturerId) + 1
           );
         }
         return "";
       },
     },
-    { name: "ManufacturerCode", title: "Manufacturer Code" },
-    { name: "ManufacturerName", title: "Manufacturer Name" },
-    { name: "Address", title: "Address" },
-    { name: "PhoneNumber", title: "Phone Number" },
-    { name: "FaxNumber", title: "Fax Number" },
-    { name: "EMail", title: "E-Mail ID" },
-    { name: "status", title: "status" },
+    { name: "ManufacturerCode", title: "Manufacturer Code"},
+    { name: "ManufacturerName", title: "Manufacturer Name"},
+    { name: "Address", title: "Address"},
+    { name: "Phonenumber", title: "Phone Number"},
+    { name: "Faxnumber", title: "Fax Number"},
+    { name: "Emailid", title: "E-Mail ID"},
+    { name: "StatusDesc", title: "status" },
     {
       name: "action",
       title: "action",
-      getCellValue: (row: RowDataType) => (
+      getCellValue: (row: Griddetails) => (
         <ActionBtnGroup
-          id={row.id}
+          row={row}
           onClickView={handleView}
           onClickPrint={handlePrint}
           onClickDelete={handleDelete}
+          onClickEdit={handleEdit}
         />
       ),
     },
-  ]);
+  ];
 
   const [columnExtension] = useState<GridColumnExtension[]>([
+    {
+      columnName:"ManufacturerCode",
+      align:"left",
+      width: 180,
+    },
+    {
+      columnName:"ManufacturerName",
+      align:"left",
+      width: 180,
+    },
+    {
+      columnName:"Address",
+      align:"left",
+      width: 200,
+    },
+    {
+      columnName:"Phonenumber",
+      align:"left",
+      width: 200,
+    },
+    {
+      columnName:"Faxnumber",
+      align:"left",
+      width:180,
+    },
+    {
+      columnName:"Emailid",
+      align:"left",
+      width:190,
+    },
     {
       columnName: "action",
       align: "center",
@@ -167,7 +219,15 @@ const ManufacturerListTable: FC<ManufacturerListTableProps> = ({
 
   const handleView = () => {};
   const handlePrint = () => {};
-  const handleDelete = () => {};
+  const handleDelete = (row: Griddetails) => {
+      onDeleteClick(row.ManufacturerId);
+  };
+
+  const handleEdit = (row: Griddetails) => {
+    const id = row.ManufacturerId;
+    console.log("edit clicked", id);
+    navigate(`/Manufacturer/${id}`, { state: { data: row } });
+  };
 
   return (
     <CustomTable
@@ -181,23 +241,25 @@ const ManufacturerListTable: FC<ManufacturerListTableProps> = ({
         columnExtensions: columnExtension,
         // rowComponent: EmployeeAllowanceListTableRowComponent,
       }}
+      
       pagingState={{
-        currentPage: searchQuery?.PageNo - 1,
+        currentPage: Number(searchQuery?.Page) - 1,
         onCurrentPageChange: (currentPage) =>
           setSearchQuery({
             ...searchQuery,
-            PageNo: currentPage + 1,
+            Page: (currentPage + 1).toString(),
           }),
-        pageSize: searchQuery.Rows,
+        pageSize: Number(searchQuery.Rows),
         onPageSizeChange: (pageSize) =>
           setSearchQuery({
             ...searchQuery,
-            PageNo: 1,
-            Rows: pageSize,
+            Page: "1",
+            Rows: pageSize.toString(),
           }),
       }}
+
       customPaging={{
-        totalCount: data && Array.isArray(data) ? data.length : 0,
+        totalCount: Number(totalCount),
       }} //todo count page
       tableFilterRow={{
         cellComponent: ListFilterCellComponent,
