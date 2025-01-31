@@ -738,7 +738,7 @@ export type ManufacturerMasterRequestBodyType = {
   Email: string;
   Status: string;
   UserId: string;
-  ManId: string;
+  ManId: string | undefined;
 };
 
 export type ManufacturerMasterResponseBodyType = {
@@ -754,7 +754,9 @@ export type ManufacturerMasterSearchRequestBodyType = {
   ManufacturerName: string;
   Address: string;
   Phonenumber: string;
-  Status: string;
+  Status: string | boolean;
+  Page:string;
+  Rows:string;
 };
 
 export type Griddetails = {
@@ -771,6 +773,18 @@ export type Griddetails = {
 export type ManufacturerMasterSearchResponseBodyType = {
   Status: string;
   Data: Griddetails[] | [];
+  Message: string;
+  OverallCount: string;
+};
+
+
+export type ManufacturerMasterListDeleteReqType = {
+  ManufacturerId: string;
+};
+
+export type ManufacturerMasterListDeleteResType = {
+  Status: string;
+  Data: null;
   Message: string;
 };
 
