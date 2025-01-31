@@ -9,6 +9,7 @@ import router from "./routes";
 import CustomThemeProvider from "./theme/CustomThemeProvider";
 import store from "./store";
 import AppProvider from "./AppProvider";
+import "./i18n";
 
 // const AppContent = () => { }
 

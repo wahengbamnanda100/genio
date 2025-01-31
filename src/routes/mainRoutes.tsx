@@ -28,6 +28,7 @@ const SalePriceSetting = Loadable(
 
 //!___-admin____
 const Role = Loadable(lazy(() => import("../pages/Roles")));
+const RoleList = Loadable(lazy(() => import("../pages/RoleList")));
 const Users = Loadable(lazy(() => import("../pages/Users")));
 const Country = Loadable(lazy(() => import("../pages/Country")));
 const ParentLoginPassword = Loadable(
@@ -229,6 +230,14 @@ const MainRoutes: RouteObject = {
       element: (
         <PrivateRoute>
           <Role />
+        </PrivateRoute>
+      ),
+    },
+    {
+      path: "role-list",
+      element: (
+        <PrivateRoute>
+          <RoleList />
         </PrivateRoute>
       ),
     },

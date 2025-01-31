@@ -1,3 +1,4 @@
+import { TFunction } from "i18next";
 import { FieldProps } from "../../Form-component";
 
 export type RoleType = {
@@ -9,25 +10,27 @@ export type RoleType = {
   costView: boolean;
 };
 
-export const RolesFields = (): FieldProps[] => [
+export const RolesFields = (
+  t: TFunction<"translation", undefined>,
+): FieldProps[] => [
   {
-    fieldType: "text",
+    fieldType: "new-input",
     name: "RoleCode",
-    label: "Role Code",
+    label: t("role-code"),
     size: "medium",
     xs: 3,
   },
   {
-    fieldType: "text",
+    fieldType: "new-input",
     name: "RoleName",
-    label: "Role Name",
+    label: t("role-name"),
     size: "medium",
     xs: 12,
   },
   {
-    fieldType: "text",
+    fieldType: "new-input",
     name: "RoleDesc",
-    label: "Role Description",
+    label: t("role-description"),
     size: "medium",
     xs: 12,
   },
@@ -35,9 +38,9 @@ export const RolesFields = (): FieldProps[] => [
     fieldType: "checkbox",
     name: "checkboxes",
     checkBoxs: [
-      { name: "RoleStatus", label: "Role Status" },
-      { name: "ApproveAutority", label: "Approve Autority" },
-      { name: "costView", label: "Cost View" },
+      { name: "RoleStatus", label: t("role-status") },
+      { name: "ApproveAutority", label: t("approve-authority") },
+      { name: "costView", label: t("cost-view") },
     ],
     labelPlacement: "end",
     row: true,

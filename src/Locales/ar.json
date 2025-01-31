@@ -1,0 +1,13 @@
+{
+  "arabic": "العربية",
+  "english": "English",
+  "Roles": "الأدوار",
+  "role-code": "رمز الدور",
+  "role-name": "اسم الدور",
+  "role-description": "وصف الدور",
+  "role-status": "حالة الدور",
+  "approve-authority": "الموافقة على الصلاحية",
+  "cost-view": "الموافقة على الصلاحية",
+  "submit": "إرسال",
+  "cancel": "إلغاء"
+}

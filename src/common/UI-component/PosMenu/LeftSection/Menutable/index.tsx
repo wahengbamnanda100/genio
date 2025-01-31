@@ -2,22 +2,22 @@
 // import { useForm } from "react-hook-form";
 // import { MenuTableSchema } from "../../../Component-types/posMenu.type";
 import {
-	Box,
-	ButtonBase,
-	IconButton,
-	Typography,
-	useMediaQuery,
-	// useMediaQuery,
-	useTheme,
+  Box,
+  ButtonBase,
+  IconButton,
+  Typography,
+  useMediaQuery,
+  // useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import {
-	Column,
-	DataTypeProvider,
-	// EditingCell,
-	// EditingState,
-	// EditingStateProps,
-	// GridColumnExtension,
-	TableColumnWidthInfo,
+  Column,
+  DataTypeProvider,
+  // EditingCell,
+  // EditingState,
+  // EditingStateProps,
+  // GridColumnExtension,
+  TableColumnWidthInfo,
 } from "@devexpress/dx-react-grid";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
@@ -26,12 +26,12 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { AppDispatch, RootState } from "../../../../../store";
 import {
-	decrementItemQuantity,
-	incrementItemQuantity,
-	removePosMenu,
-	// removePosMenu,
-	selectMenuTable,
-	// updateMenuItem,
+  decrementItemQuantity,
+  incrementItemQuantity,
+  removePosMenu,
+  // removePosMenu,
+  selectMenuTable,
+  // updateMenuItem,
 } from "../../../../../store/slices/posMenuSlice";
 import EditingCustomTable from "../../../../CutomTable/EditableTable";
 import AnimateButton from "../../../Extended/AnimateButton";
@@ -42,280 +42,285 @@ import ConfirmationDialog from "../../../../ModalComponent/ConfirmationDialog";
 import { CustomTableCellFormatter } from "../../../../CutomTable/components/customComponent";
 
 const MenuTable = () => {
-	const dispatch: AppDispatch = useDispatch();
-	const theme = useTheme();
-	const [open, setOpen] = useState<boolean>(false);
-	const menuTable = useSelector((state: RootState) => selectMenuTable(state));
+  const dispatch: AppDispatch = useDispatch();
+  const theme = useTheme();
+  const [open, setOpen] = useState<boolean>(false);
+  const menuTable = useSelector((state: RootState) => selectMenuTable(state));
 
-	// const mediaBetweenMd = useMediaQuery(theme.breakpoints.between(1023, 1301));
-	// const mediaDownMd = useMediaQuery(theme.breakpoints.down(1300));
-	const mediaDownSm = useMediaQuery(theme.breakpoints.down(1025));
+  // const mediaBetweenMd = useMediaQuery(theme.breakpoints.between(1023, 1301));
+  // const mediaDownMd = useMediaQuery(theme.breakpoints.down(1300));
+  const mediaDownSm = useMediaQuery(theme.breakpoints.down(1025));
 
-	// const [columnExtension] = useState<GridColumnExtension[]>([
-	// 	{ columnName: "sl", width: 50 }, // Width as a number
-	// 	mediaDownSm
-	// 		? { columnName: "description", width: "auto", align: "left" }
-	// 		: mediaDownMd
-	// 			? { columnName: "description", width: 190, align: "left" }
-	// 			: { columnName: "description", width: "auto", align: "left" },
-	// 	{ columnName: "quantity", width: 50, align: "right" },
-	// 	{ columnName: "unitPrice", width: 50, align: "right" },
-	// 	{ columnName: "amount", width: 75, align: "right" },
-	// 	{ columnName: "discount", width: 75, align: "right" },
-	// 	{ columnName: "netAmount", width: 75, align: "right" },
-	// 	{ columnName: "action", width: 60, align: "center" },
-	// ]);
-	const [selection, setSelection] = useState<(string | number)[]>([]);
-	const [deleteRow, setDeleteRow] = useState<MenuItem>();
-	const [rightColumns] = useState(["action"]);
-	const [columnWidths, setColumnWidths] = useState<TableColumnWidthInfo[]>(
-		mediaDownSm
-			? [
-					{ columnName: "sl", width: 50 }, // Width as a number
-					{ columnName: "description", width: 190 },
-					{ columnName: "quantity", width: 50 },
-					{ columnName: "unitPrice", width: 60 },
-					{ columnName: "amount", width: 75 },
-					{ columnName: "discount", width: 75 },
-					{ columnName: "netAmount", width: 75 },
-					{ columnName: "action", width: 60 },
-				]
-			: [
-					{ columnName: "sl", width: 50 }, // Width as a number
-					{ columnName: "description", width: 270 },
-					{ columnName: "quantity", width: 50 },
-					{ columnName: "unitPrice", width: 60 },
-					{ columnName: "amount", width: 75 },
-					{ columnName: "discount", width: 75 },
-					{ columnName: "netAmount", width: 75 },
-					{ columnName: "action", width: 60 },
-				]
-	);
+  // const [columnExtension] = useState<GridColumnExtension[]>([
+  // 	{ columnName: "sl", width: 50 }, // Width as a number
+  // 	mediaDownSm
+  // 		? { columnName: "description", width: "auto", align: "left" }
+  // 		: mediaDownMd
+  // 			? { columnName: "description", width: 190, align: "left" }
+  // 			: { columnName: "description", width: "auto", align: "left" },
+  // 	{ columnName: "quantity", width: 50, align: "right" },
+  // 	{ columnName: "unitPrice", width: 50, align: "right" },
+  // 	{ columnName: "amount", width: 75, align: "right" },
+  // 	{ columnName: "discount", width: 75, align: "right" },
+  // 	{ columnName: "netAmount", width: 75, align: "right" },
+  // 	{ columnName: "action", width: 60, align: "center" },
+  // ]);
+  const [selection, setSelection] = useState<(string | number)[]>([]);
+  const [deleteRow, setDeleteRow] = useState<MenuItem>();
+  const [rightColumns] = useState(["action"]);
+  const [columnWidths, setColumnWidths] = useState<TableColumnWidthInfo[]>(
+    mediaDownSm
+      ? [
+          { columnName: "sl", width: 50 }, // Width as a number
+          { columnName: "description", width: 190 },
+          { columnName: "quantity", width: 50 },
+          { columnName: "unitPrice", width: 60 },
+          { columnName: "amount", width: 75 },
+          { columnName: "discount", width: 75 },
+          { columnName: "netAmount", width: 75 },
+          { columnName: "action", width: 60 },
+        ]
+      : [
+          { columnName: "sl", width: 50 }, // Width as a number
+          { columnName: "description", width: 270 },
+          { columnName: "quantity", width: 50 },
+          { columnName: "unitPrice", width: 60 },
+          { columnName: "amount", width: 75 },
+          { columnName: "discount", width: 75 },
+          { columnName: "netAmount", width: 75 },
+          { columnName: "action", width: 60 },
+        ],
+  );
 
-	const handleRowDelete = (row: MenuItem) => {
-		setDeleteRow(row);
-		setOpen(true);
-	};
+  const handleRowDelete = (row: MenuItem) => {
+    setDeleteRow(row);
+    setOpen(true);
+  };
 
-	const column: Column[] = [
-		{
-			title: "SL",
-			name: "sl",
-			getCellValue: (row) =>
-				menuTable.findIndex((item) => item.id === row.id) + 1,
-		},
-		{
-			title: "Description",
-			name: "description",
-		},
-		{
-			title: "Qty",
-			name: "quantity",
-		},
-		{
-			title: "Price",
-			name: "unitPrice",
-		},
-		{
-			title: "Amount",
-			name: "amount",
-		},
-		{
-			title: "Discount",
-			name: "discount",
-		},
-		{
-			title: "Net Amt",
-			name: "netAmount",
-		},
-		{
-			title: "Action",
-			name: "action",
-			getCellValue: (row: MenuItem) => (
-				<IconButton
-					color="error"
-					onClick={() => handleRowDelete(row)}
-					sx={{ p: 0.1, alignSelf: "center" }}>
-					<DeleteOutlinedIcon
-						color="error"
-						fontSize="small"
-						sx={{ fontSize: "0.7em", p: 0 }}
-					/>
-				</IconButton>
-			),
-		},
-	];
+  const column: Column[] = [
+    {
+      title: "SL",
+      name: "sl",
+      getCellValue: (row) =>
+        menuTable.findIndex((item) => item.id === row.id) + 1,
+    },
+    {
+      title: "Description",
+      name: "description",
+    },
+    {
+      title: "Qty",
+      name: "quantity",
+    },
+    {
+      title: "Price",
+      name: "unitPrice",
+    },
+    {
+      title: "Amount",
+      name: "amount",
+    },
+    {
+      title: "Discount",
+      name: "discount",
+    },
+    {
+      title: "Net Amt",
+      name: "netAmount",
+    },
+    {
+      title: "Action",
+      name: "action",
+      getCellValue: (row: MenuItem) => (
+        <IconButton
+          color="error"
+          onClick={() => handleRowDelete(row)}
+          sx={{ p: 0.1, alignSelf: "center" }}
+        >
+          <DeleteOutlinedIcon
+            color="error"
+            fontSize="small"
+            sx={{ fontSize: "0.7em", p: 0 }}
+          />
+        </IconButton>
+      ),
+    },
+  ];
 
-	useEffect(() => {
-		if (menuTable.length === 0) setSelection([]);
-	}, [menuTable]);
+  useEffect(() => {
+    if (menuTable.length === 0) setSelection([]);
+  }, [menuTable]);
 
-	const handleSelectionChange = (newSelection: (string | number)[]) => {
-		if (newSelection.length > 0) {
-			// Only keep the most recent selection
-			setSelection([newSelection[newSelection.length - 1]]);
-		} else {
-			setSelection([]);
-		}
-	};
+  const handleSelectionChange = (newSelection: (string | number)[]) => {
+    if (newSelection.length > 0) {
+      // Only keep the most recent selection
+      setSelection([newSelection[newSelection.length - 1]]);
+    } else {
+      setSelection([]);
+    }
+  };
 
-	const handleAddItem = () => {
-		if (selection.length > 0) {
-			const _id = menuTable[selection[0] as number].id;
-			dispatch(incrementItemQuantity(_id));
-		} else {
-			//console.log("Menu item is not slected");
-		}
-	};
+  const handleAddItem = () => {
+    if (selection.length > 0) {
+      const _id = menuTable[selection[0] as number].id;
+      dispatch(incrementItemQuantity(_id));
+    } else {
+      //console.log("Menu item is not slected");
+    }
+  };
 
-	const handleRemoveItem = () => {
-		if (selection.length > 0) {
-			const _id = menuTable[selection[0] as number].id;
-			dispatch(decrementItemQuantity(_id));
-			if (menuTable[selection[0] as number].quantity === 1) setSelection([]);
-		} else {
-			//console.log("Menu item is not slected");
-		}
-	};
+  const handleRemoveItem = () => {
+    if (selection.length > 0) {
+      const _id = menuTable[selection[0] as number].id;
+      dispatch(decrementItemQuantity(_id));
+      if (menuTable[selection[0] as number].quantity === 1) setSelection([]);
+    } else {
+      //console.log("Menu item is not slected");
+    }
+  };
 
-	const handleConfirm = () => {
-		const _id = deleteRow && deleteRow.id;
-		dispatch(removePosMenu(_id!));
+  const handleConfirm = () => {
+    const _id = deleteRow && deleteRow.id;
+    dispatch(removePosMenu(_id!));
 
-		setOpen(false);
-	};
+    setOpen(false);
+  };
 
-	const handleCancel = () => {
-		setOpen(false);
-	};
+  const handleCancel = () => {
+    setOpen(false);
+  };
 
-	// useEffect(() => {
-	// 	if (mediaDownSm) {
-	// 		console.log("this si media md", mediaDownSm);
+  // useEffect(() => {
+  // 	if (mediaDownSm) {
+  // 		console.log("this si media md", mediaDownSm);
 
-	// 		setColumnWidths((prev) => [
-	// 			...prev,
-	// 			{ columnName: "description", width: "140" },
-	// 		]);
-	// 	}
-	// }, [mediaDownSm, mediaDownMd]);
+  // 		setColumnWidths((prev) => [
+  // 			...prev,
+  // 			{ columnName: "description", width: "140" },
+  // 		]);
+  // 	}
+  // }, [mediaDownSm, mediaDownMd]);
 
-	return (
-		<Box>
-			<TableHeader
-				handleAddItem={handleAddItem}
-				handleRemoveItem={handleRemoveItem}
-			/>
+  return (
+    <Box>
+      <TableHeader
+        handleAddItem={handleAddItem}
+        handleRemoveItem={handleRemoveItem}
+      />
 
-			<EditingCustomTable
-				hasHorizontalPadding={false}
-				hasVerticalPadding={false}
-				hasBoxShadow={false}
-				isLoading={false}
-				dynamicResize={true}
-				grid={{
-					columns: column,
-					rows: menuTable,
-				}}
-				table={
-					{
-						// columnExtensions: columnExtension,
-					}
-				}
-				columnWidths={columnWidths}
-				setColumnWidths={setColumnWidths}
-				// editingState={{
-				// 	onCommitChanges: commitChanges,
-				// 	editingCells: editingCells,
-				// 	onEditingCellsChange: setEditingCells,
-				// 	columnExtensions: editColumnExtension,
-				// }}
-				// hasSelect={true}
-				selection={selection}
-				rightColumns={rightColumns}
-				setSelection={handleSelectionChange}>
-				<DataTypeProvider
-					for={["unitPrice", "amount", "discount", "netAmount"]}
-					formatterComponent={CustomTableCellFormatter}
-				/>
-			</EditingCustomTable>
+      <EditingCustomTable
+        hasHorizontalPadding={false}
+        hasVerticalPadding={false}
+        hasBoxShadow={false}
+        isLoading={false}
+        dynamicResize={true}
+        grid={{
+          columns: column,
+          rows: menuTable,
+        }}
+        table={
+          {
+            // columnExtensions: columnExtension,
+          }
+        }
+        columnWidths={columnWidths}
+        setColumnWidths={setColumnWidths}
+        // editingState={{
+        // 	onCommitChanges: commitChanges,
+        // 	editingCells: editingCells,
+        // 	onEditingCellsChange: setEditingCells,
+        // 	columnExtensions: editColumnExtension,
+        // }}
+        // hasSelect={true}
+        selection={selection}
+        rightColumns={rightColumns}
+        setSelection={handleSelectionChange}
+      >
+        <DataTypeProvider
+          for={["unitPrice", "amount", "discount", "netAmount"]}
+          formatterComponent={CustomTableCellFormatter}
+        />
+      </EditingCustomTable>
 
-			<ConfirmationDialog
-				dialogType="delete"
-				open={open}
-				setOpen={setOpen}
-				title="Confirm Delete"
-				description="Do you want to delete the item"
-				onConfirm={handleConfirm}
-				onCancel={handleCancel}
-			/>
-		</Box>
-	);
+      <ConfirmationDialog
+        dialogType="delete"
+        open={open}
+        setOpen={setOpen}
+        title="Confirm Delete"
+        description="Do you want to delete the item"
+        onConfirm={handleConfirm}
+        onCancel={handleCancel}
+      />
+    </Box>
+  );
 };
 
 interface TableHeader {
-	handleAddItem: () => void;
-	handleRemoveItem: () => void;
+  handleAddItem: () => void;
+  handleRemoveItem: () => void;
 }
 
 const TableHeader: React.FC<TableHeader> = ({
-	handleAddItem,
-	handleRemoveItem,
+  handleAddItem,
+  handleRemoveItem,
 }) => {
-	return (
-		<Box
-			sx={{
-				display: "flex",
-				flexDirection: "row",
-				flexGrow: 1,
-				alignItems: "center",
-				mb: 1,
-			}}>
-			<AnimateOpButton handleClick={handleAddItem}>
-				<AddIcon />
-			</AnimateOpButton>
-			<Typography
-				variant="body1"
-				flexGrow={1}
-				textAlign={"center"}
-				fontWeight={"bold"}>
-				Selected Items
-			</Typography>
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "row",
+        flexGrow: 1,
+        alignItems: "center",
+        mb: 1,
+      }}
+    >
+      <AnimateOpButton handleClick={handleAddItem}>
+        <AddIcon />
+      </AnimateOpButton>
+      <Typography
+        variant="body1"
+        flexGrow={1}
+        textAlign={"center"}
+        fontWeight={"bold"}
+      >
+        Selected Items
+      </Typography>
 
-			<AnimateOpButton handleClick={handleRemoveItem}>
-				<RemoveIcon />
-			</AnimateOpButton>
-		</Box>
-	);
+      <AnimateOpButton handleClick={handleRemoveItem}>
+        <RemoveIcon />
+      </AnimateOpButton>
+    </Box>
+  );
 };
 
 interface AnimateOpButtonProps {
-	handleClick: () => void;
-	children: ReactNode;
+  handleClick: () => void;
+  children: ReactNode;
 }
 
 const AnimateOpButton: React.FC<AnimateOpButtonProps> = ({
-	handleClick,
-	children,
+  handleClick,
+  children,
 }) => {
-	const theme = useTheme();
-	return (
-		<AnimateButton>
-			<ButtonBase
-				onClick={handleClick}
-				color="secondary"
-				sx={{
-					height: "2rem",
-					width: "2rem",
-					bgcolor: "secondary.main",
-					color: theme.palette.text.secondary,
-					borderRadius: 0.5,
-					p: 1,
-				}}>
-				{children}
-			</ButtonBase>
-		</AnimateButton>
-	);
+  const theme = useTheme();
+  return (
+    <AnimateButton>
+      <ButtonBase
+        onClick={handleClick}
+        color="secondary"
+        sx={{
+          height: "2rem",
+          width: "2rem",
+          bgcolor: "secondary.main",
+          color: theme.palette.text.secondary,
+          borderRadius: 0.5,
+          p: 1,
+        }}
+      >
+        {children}
+      </ButtonBase>
+    </AnimateButton>
+  );
 };
 
 export default MenuTable;

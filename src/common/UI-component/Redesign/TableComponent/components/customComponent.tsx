@@ -5,7 +5,7 @@ import {
   TableFilterRow,
 } from "@devexpress/dx-react-grid-material-ui";
 import DeleteButton from "./DeleteButton";
-import { TableHeadStyled, TableStyled } from "../CustomTable.style";
+import { TableHeadStyled, TableStyled } from "../CustomTable2.style2";
 import { ComponentType } from "react";
 import {
   FormControl,
@@ -71,11 +71,11 @@ export const FocusableCell: React.FC<FocusableCellProps> = ({
 }) => <Table.Cell {...restProps} tabIndex={0} onFocus={onClick} />;
 
 export const TableComponent: ComponentType<object> = (props) => {
-  return <TableStyled {...props} className="table" />;
+  return <TableStyled {...props} />;
 };
 
 export const HeadComponent: ComponentType<object> = (props) => {
-  return <TableHeadStyled {...props} className="tableHead" />;
+  return <TableHeadStyled {...props} />;
 };
 
 const SelectStyled = styled(Select)`

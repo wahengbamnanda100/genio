@@ -30,7 +30,7 @@ import {
   TableComponent,
 } from "./components/customComponent";
 // import StyledEditCell from "./components/EditCell";
-import { EditTableProps } from "./CustomTable.types";
+import { EditTableProps } from "./CustomTable.types2";
 // import { CustomSelectCell } from "./components/SelectionCell";
 
 // const getRowId = (row: Row) => row.id;

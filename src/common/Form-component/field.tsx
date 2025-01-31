@@ -9,6 +9,11 @@ import BootstrapInputField from "./BootstrapInput";
 import AsyncAutoCompleteField from "./AsyncAutocompleteField";
 // import ReactDropZoneField from "./ReactDropZoneField";
 
+import {
+  NewInputField,
+  NewSelectField,
+} from "../UI-component/Redesign/FormComponent";
+
 const Field = (props: FieldProps) => {
   const { fieldType } = props;
 
@@ -33,7 +38,11 @@ const Field = (props: FieldProps) => {
   // ) : fieldType === "dateTime" ? (
   //   <AsyncSearchField {..._.omit(props, ["fieldType"])} />
   // )
-  null;
+  fieldType === "new-input" ? (
+    <NewInputField {..._.omit(props, ["fieldType"])} />
+  ) : fieldType === "new-select" ? (
+    <NewSelectField {..._.omit(props, ["fieldType"])} />
+  ) : null;
 };
 
 export default Field;

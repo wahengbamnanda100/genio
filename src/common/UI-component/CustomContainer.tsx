@@ -1,4 +1,4 @@
-import { Grid, GridProps, SxProps } from "@mui/material";
+import { Grid, GridProps, Paper, SxProps } from "@mui/material";
 import { FC } from "react";
 
 interface CustomConatainerProps extends GridProps {
@@ -9,6 +9,7 @@ interface CustomConatainerProps extends GridProps {
 const CustomConatainer: FC<CustomConatainerProps> = ({ children, sx }) => {
   return (
     <Grid
+      component={Paper}
       container
       sx={{
         width: "100%",

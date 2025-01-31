@@ -136,6 +136,10 @@ type InputFieldProps = {
 } & common_type;
 
 export type InputFieldType = { fieldType: "text" } & InputFieldProps;
+
+export type NewInputFieldType = {
+  fieldType: "new-input";
+} & InputFieldProps;
 export type BootstrapInputFieldType = {
   fieldType: "boot-text";
 } & InputFieldProps;
@@ -158,6 +162,12 @@ type CheckBoxFieldProps = {
 
 export type CheckBoxFieldType = {
   fieldType: "checkbox";
+} & CheckBoxFieldProps & {
+    name: string;
+  };
+
+export type SwitchFieldType = {
+  fieldType: "switch";
 } & CheckBoxFieldProps & {
     name: string;
   };
@@ -262,6 +272,8 @@ type SelectFieldProps = {
 
 export type SelectFieldType = { fieldType: "select" } & SelectFieldProps;
 
+export type NewSelectFieldType = { fieldType: "new-select" } & SelectFieldProps;
+
 type DateFieldProps = {
   inputFormat?: string;
   minDate?: Date;
@@ -305,6 +317,7 @@ export type ReactDropzoneFieldType = {
 
 type FieldProps =
   | InputFieldType
+  | NewInputFieldType
   | BootstrapInputFieldType
   | AsyncSearchFieldType
   | AsyncAutoCompleteField
@@ -312,7 +325,9 @@ type FieldProps =
   | DateTimeFieldType
   | DropzoneFieldType
   | SelectFieldType
+  | NewSelectFieldType
   | CheckBoxFieldType
+  | SwitchFieldType
   | ReactDropzoneFieldType;
 
 export type {
