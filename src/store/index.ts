@@ -3,11 +3,13 @@ import { configureStore } from "@reduxjs/toolkit";
 
 import posMenuReducer from "./slices/posMenuSlice";
 import menuMasterReducer from "./slices/menuMasterSlice";
+import menuItemReducer from "./slices/menuItems.slice";
 
 const store = configureStore({
   reducer: {
     posMenuTable: posMenuReducer,
     menuMaster: menuMasterReducer,
+    menuItem: menuItemReducer,
   },
 });
 

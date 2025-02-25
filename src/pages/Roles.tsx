@@ -43,7 +43,7 @@ const Roles = () => {
   };
 
   const handleSearchList = () => {
-    navigate("/role-list");
+    navigate("/demo-layout/roles/list");
   };
 
   const pageStyles = useMemo(
@@ -78,7 +78,13 @@ const Roles = () => {
           alignItems={"center"}
           justifyContent={"space-between"}
         >
-          <BasicBreadcrumbs />
+          <BasicBreadcrumbs
+            pages={[
+              { label: "Home", href: "/" },
+              { label: "Role", href: "/" },
+              { label: "Create", href: "/" },
+            ]}
+          />
         </Grid>
 
         <Grid
@@ -88,7 +94,12 @@ const Roles = () => {
           alignItems={"center"}
           justifyContent={"space-between"}
         >
-          <Typography variant="h6" fontWeight={"500"} gutterBottom>
+          <Typography
+            variant="h6"
+            fontWeight={"500"}
+            color={"primary"}
+            gutterBottom
+          >
             {t("Roles")}
           </Typography>
           <Button

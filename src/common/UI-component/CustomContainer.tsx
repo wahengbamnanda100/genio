@@ -13,11 +13,12 @@ const CustomConatainer: FC<CustomConatainerProps> = ({ children, sx }) => {
       container
       sx={{
         width: "100%",
-        border: "1px solid",
+        // border: "1px solid",
         borderRadius: 1,
-        borderColor: "primary.main",
+        // borderColor: "primary.main",
         overflowY: "hidden",
         overflowX: "hidden",
+        boxShadow: 3,
         ...sx,
       }}
     >

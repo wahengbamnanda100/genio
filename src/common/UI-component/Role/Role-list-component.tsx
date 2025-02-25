@@ -11,15 +11,24 @@ export const CustomStatusCellFormatter: React.ComponentType<
   return (
     <Box
       sx={{
-        bgcolor: lighten(color, 0.8),
-        borderRadius: "0.5rem",
-        width: "fit-content",
-        padding: "0.2rem 0.5rem",
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
       }}
     >
-      <Typography sx={{ color, fontWeight: "400", fontSize: "1em" }}>
-        {status}
-      </Typography>
+      <Box
+        sx={{
+          bgcolor: lighten(color, 0.8),
+          borderRadius: "0.5rem",
+          width: "fit-content",
+          padding: "0.2rem 0.5rem",
+        }}
+      >
+        <Typography sx={{ color, fontWeight: "400", fontSize: "1em" }}>
+          {status}
+        </Typography>
+      </Box>
     </Box>
   );
 };

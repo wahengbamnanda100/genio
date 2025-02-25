@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Button, Grid, Paper, Typography } from "@mui/material";
+import { Box, Button, Grid, Typography } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import RoleListTable from "../common/UI-component/Role/Role.List";
 import { useNavigate } from "react-router";
 import { useState } from "react";
 import { UnitMasterSearchReqType } from "../services/aoi.type";
+import BasicBreadcrumbs from "../common/UI-component/Breadcrumbs/BreadCrumbs";
 
 const RoleList = () => {
   const navigate = useNavigate();
@@ -19,7 +20,8 @@ const RoleList = () => {
   });
 
   const handleCreate = () => {
-    navigate("/role");
+    // navigate("/role");
+    navigate("/demo-layout/roles/create");
   };
 
   const handleDelete = (id: string) => {
@@ -28,11 +30,11 @@ const RoleList = () => {
 
   return (
     <>
-      <Paper
+      <Box
         sx={{
           py: 2,
           mt: 4,
-          border: "1px solid",
+          // border: "1px solid",
           borderColor: "primary.main",
         }}
       >
@@ -47,6 +49,25 @@ const RoleList = () => {
             p: 1,
           }}
         >
+          <Grid
+            item
+            xs={12}
+            textAlign={"end"}
+            px={2}
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <BasicBreadcrumbs
+              pages={[
+                { label: "Home", href: "/" },
+                { label: "Role", href: "/" },
+                { label: "List", href: "/" },
+              ]}
+            />
+          </Grid>
           <Grid
             item
             xs={12}
@@ -96,7 +117,7 @@ const RoleList = () => {
             />
           </Grid>
         </Grid>
-      </Paper>
+      </Box>
     </>
   );
 };
@@ -107,15 +128,71 @@ const RoleMockData: any[] = [
   {
     id: "1",
     RoleCode: "Admin",
-    RoleName: "Administartor",
-    Description: "Administartor for all department",
+    RoleName: "Administrator",
+    Description: "Administrator for all departments",
     Status: "Active",
   },
   {
     id: "2",
-    RoleCode: "Admin 1",
-    RoleName: "Administartor 1",
-    Description: "Administartor for all department 1",
+    RoleCode: "Admin1",
+    RoleName: "Administrator 1",
+    Description: "Administrator for all departments 1",
     Status: "Active",
+  },
+  {
+    id: "3",
+    RoleCode: "Manager",
+    RoleName: "Department Manager",
+    Description: "Manager for specific departments",
+    Status: "Active",
+  },
+  {
+    id: "4",
+    RoleCode: "Supervisor",
+    RoleName: "Team Supervisor",
+    Description: "Supervisor for team operations",
+    Status: "Inactive",
+  },
+  {
+    id: "5",
+    RoleCode: "Analyst",
+    RoleName: "Data Analyst",
+    Description: "Analyzes data and generates reports",
+    Status: "Active",
+  },
+  {
+    id: "6",
+    RoleCode: "Developer",
+    RoleName: "Software Developer",
+    Description: "Develops and maintains software applications",
+    Status: "Active",
+  },
+  {
+    id: "7",
+    RoleCode: "Support",
+    RoleName: "Technical Support",
+    Description: "Provides technical support to users",
+    Status: "Inactive",
+  },
+  {
+    id: "8",
+    RoleCode: "HR",
+    RoleName: "Human Resources",
+    Description: "Manages employee relations and recruitment",
+    Status: "Active",
+  },
+  {
+    id: "9",
+    RoleCode: "Finance",
+    RoleName: "Finance Manager",
+    Description: "Manages financial operations and budgeting",
+    Status: "Active",
+  },
+  {
+    id: "10",
+    RoleCode: "Intern",
+    RoleName: "Intern",
+    Description: "Temporary intern role for training purposes",
+    Status: "Inactive",
   },
 ];

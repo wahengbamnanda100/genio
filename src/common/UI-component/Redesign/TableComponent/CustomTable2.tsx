@@ -149,6 +149,16 @@ const ToolbarComponent: ComponentType<
             minWidth: "fit-content",
             marginRight: 0,
           }}
+          sx={{
+            color: "inherit",
+            bgcolor: "inherit",
+            outline: "1px solid black",
+            outlineColor: "black",
+            "&:hover": {
+              bgcolor: "black",
+              color: "white",
+            },
+          }}
           onClick={handleClick}
         >
           Export
@@ -219,14 +229,26 @@ const ToggleButtonComponent: ComponentType<ColumnChooser.ToggleButtonProps> = ({
     <Button
       variant="outlined"
       startIcon={<FilterListIcon />}
-      color="primary"
+      // color="primary"
       onClick={onToggle}
       ref={(filterButtonRef) => buttonRef(filterButtonRef!)}
+      sx={{
+        color: "inherit",
+        bgcolor: "inherit",
+        outline: "1px solid black",
+        outlineColor: "black",
+        "&:hover": {
+          bgcolor: "black",
+          color: "white",
+        },
+      }}
     >
       Filter
     </Button>
   );
 };
+
+type CustomTable2Props = CustomTableProps & { densed: boolean };
 
 const CustomTable2 = ({
   isLoading,
@@ -264,7 +286,8 @@ const CustomTable2 = ({
   hasSummary,
   columnReordering = [],
   defaultColumnWidths = [],
-}: CustomTableProps) => {
+  densed = false,
+}: CustomTable2Props) => {
   const theme = useTheme();
   const [
     columnIntegratedFilteringExtensionsState,
@@ -294,6 +317,10 @@ const CustomTable2 = ({
     setExpandedRowId(
       expandedRowIds.length ? expandedRowIds[expandedRowIds.length - 1] : null,
     );
+  };
+
+  const TableComponent: ComponentType<object> = (props) => {
+    return <TableStyled densed={densed} {...props} />;
   };
 
   return (

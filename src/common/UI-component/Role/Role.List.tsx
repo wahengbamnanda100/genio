@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { FC, ReactNode, useState } from "react";
 
 import {
@@ -7,6 +8,7 @@ import {
 import { IconButton, Stack, Tooltip } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 // import { UserDetailsType } from "../../Component-types/localStorageData.type";
 // import { anyOneIsTrue } from "../../../utils/utils";
 import { ListFilterCellComponent } from "../../CutomTable/components/customComponent";
@@ -51,8 +53,9 @@ const ActionIconBtn: FC<ActionIconBtnProps> = ({
       <IconButton
         onClick={onClick}
         sx={{
-          width: "1.2rem",
-          height: "1.2rem",
+          // width: "1.2rem",
+          // height: "1.2rem",
+          borderRadius: 0,
           color:
             varient === "print" || varient === "edit"
               ? "primary.main"
@@ -91,11 +94,17 @@ const ActionBtnGroup: FC<ActionBtnGroupProps> = ({
   return (
     <Stack
       direction={"row"}
-      gap={2}
+      gap={0.5}
       justifyContent={"center"}
       alignItems={"center"}
       flex={1}
     >
+      <ActionIconBtn
+        varient="view"
+        onClick={() => onClickDelete && onClickDelete(row)}
+      >
+        <RemoveRedEyeIcon fontSize="small" />
+      </ActionIconBtn>
       <ActionIconBtn
         varient="edit"
         onClick={() => onClickEdit && onClickEdit(row)}
@@ -136,13 +145,9 @@ const RoleListTable: FC<DemoListTableProps> = ({
     {
       title: "Sl",
       name: "index",
-      getCellValue: (row: UnitMasterItem) => {
+      getCellValue: (row: any) => {
         if (data && data) {
-          return (
-            data.findIndex(
-              (dataRow: UnitMasterItem) => dataRow.UnitID === row.UnitID,
-            ) + 1
-          );
+          return data.findIndex((dataRow: any) => dataRow.id === row.id) + 1;
         }
         return "";
       },
@@ -170,10 +175,10 @@ const RoleListTable: FC<DemoListTableProps> = ({
     {
       columnName: "action",
       align: "center",
-      width: 100,
+      width: 120,
     },
     {
-      columnName: "StatusDesc",
+      columnName: "Status",
       align: "center",
     },
     {

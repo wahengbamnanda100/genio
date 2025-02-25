@@ -84,6 +84,9 @@ const InputField = ({
                 right: rtl ? 25 : "unset",
                 // left: rtl ? "unset" : 25,
                 textAlign: rtl ? "right" : "left",
+                "&.Mui-focused": {
+                  color: "black",
+                },
               },
               "& .MuiInputBase-root": {},
               "& .MuiOutlinedInput-notchedOutline": {

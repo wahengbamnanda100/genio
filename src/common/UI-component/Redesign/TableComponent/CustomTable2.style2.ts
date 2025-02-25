@@ -16,12 +16,12 @@ export const LoadingShade = styled("div")`
   }
 `;
 
-export const TableStyled = styled(Table.Table)(({ theme }) => ({
+export const TableStyled = styled(Table.Table)(({ theme, densed }) => ({
   //   boxShadow: `inset 0 0 0 1px ${theme.palette.grey[500]}`,
   //   border: `1px solid ${theme.palette.primary.main}`,
   "& th, & td": {
     border: "none",
-    padding: "18px",
+    padding: densed ? "12px" : "18px",
   },
   "& th": {
     borderRight: "1px solid #ccc",
@@ -46,10 +46,12 @@ export const TableHeadStyled = styled(Table.TableHead)(({ theme }) => ({
     backgroundColor: theme.palette.grey.A100,
     textTransform: "uppercase",
     "& th": {
-      color: theme.palette.primary.main,
+      // color: theme.palette.primary.main,
+      color: "black",
       fontSize: theme.typography.fontSize,
       fontWeight: theme.typography.fontWeightBold,
       backgroundColor: "inherit",
+      // padding: densed ? "4px 8px" : "8px 16px",
     },
   },
   "& tr:nth-of-type(3)": {

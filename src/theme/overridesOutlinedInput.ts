@@ -7,7 +7,11 @@ export const overridesOutlinedInput = (
     styleOverrides: {
       root: {
         "&:hover .MuiOutlinedInput-notchedOutline": {
-          borderColor: palette.primary.main,
+          borderColor: palette.text.primary,
+        },
+        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+          borderColor: palette.text.primary, // Focus state
+          borderWidth: "2px", // Optional: ensures consistency with notchedOutline
         },
         "&.Mui-disabled": {
           color: palette.secondary.dark,
@@ -18,6 +22,7 @@ export const overridesOutlinedInput = (
       notchedOutline: {
         borderColor: palette.info.light,
         border: `2px solid ${palette.info.light}`,
+        // border: `2px solid black`,
       },
       input: {
         color: palette.text.primary,

@@ -78,7 +78,7 @@ const MainRoutes: RouteObject = {
 
   children: [
     {
-      path: "/",
+      path: "/pos",
       element: (
         <PrivateRoute>
           <PosMenu />
@@ -195,7 +195,7 @@ const MainRoutes: RouteObject = {
       path: "Manufacturer/:id",
       element: (
         <PrivateRoute>
-          <Manufacturer/>
+          <Manufacturer />
         </PrivateRoute>
       ),
       errorElement: <ErrorElement />,

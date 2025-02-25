@@ -63,7 +63,15 @@ const SelectField = ({
       <FormControl size={size} variant={variant} fullWidth>
         <InputLabel
           id={`label-select-field-${name}`}
-          sx={{ color: hasError ? theme.palette.error.main : undefined }}
+          sx={{
+            color: hasError ? theme.palette.error.main : "black",
+            "&:hover": {
+              color: "black", // Label color on hover
+            },
+            "&.Mui-focused": {
+              color: "black", // Label color on focus
+            },
+          }}
         >
           {label}
         </InputLabel>

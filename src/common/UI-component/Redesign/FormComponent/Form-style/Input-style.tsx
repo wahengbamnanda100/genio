@@ -19,6 +19,10 @@ export const NewTextField = styled(InputBase)(({ theme }) => ({
       "background-color",
       "box-shadow",
     ]),
+    "&:hover": {
+      borderColor: theme.palette.primary.main,
+      backgroundColor: alpha(theme.palette.primary.light, 0.1),
+    },
     "&:focus": {
       boxShadow: `${alpha(theme.palette.primary.main, 0.25)} 0 0 0 0.2rem`,
       borderColor: theme.palette.primary.main,
