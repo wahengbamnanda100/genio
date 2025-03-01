@@ -1,6 +1,6 @@
+import CompanySettings from "@/pages/admin/companySetting/CompanySetting";
+import CompanySettingList from "@/pages/admin/companySetting/CompanySettingList";
 import { RouteObject } from "react-router";
-import CompanySettingList from "../../../pages/companySetting/CompanySettingList";
-import CompanySettings from "../../../pages/companySetting/CompanySetting";
 
 const CompanySettingsRoutes: RouteObject[] = [
   {

@@ -49,6 +49,8 @@ import {
   SummaryState,
   // DataTypeProvider,
   IntegratedSummary,
+  IntegratedSelection,
+  IntegratedPaging,
 } from "@devexpress/dx-react-grid";
 import React, { ComponentType, useEffect, useState } from "react";
 import FilterListIcon from "@mui/icons-material/FilterList";
@@ -67,6 +69,7 @@ import {
   tableExportFn,
   tableExportFnProps,
 } from "../../../../helpers/tableExportFn";
+import { SelectionCell } from "./components/customComponent";
 
 const messages = {
   Total: "Total",
@@ -341,6 +344,7 @@ const CustomTable2 = ({
       <Grid {...grid}>
         {children}
         {/* <RowDetailState /> */}
+
         <RowDetailState
           expandedRowIds={expandedRowId !== null ? [expandedRowId] : []}
           onExpandedRowIdsChange={handleDetailRowExpand}
@@ -374,12 +378,13 @@ const CustomTable2 = ({
 
         <PagingState {...pagingState} />
         <CustomPaging {...customPaging} />
+        <IntegratedPaging />
 
         <SelectionState
           selection={selection}
           onSelectionChange={setSelection}
         />
-        {/* <IntegratedSelection /> */}
+        <IntegratedSelection />
 
         {/* <TableGroupRow.InlineSummary getMessage={(messageKey: string) => "string"}  /> */}
 
@@ -408,7 +413,12 @@ const CustomTable2 = ({
 
         {tableRowDetail && <TableRowDetail {...tableRowDetail} />}
 
-        {hasSelect && <TableSelection /*selectByRowClick*/ showSelectAll />}
+        {hasSelect && (
+          <TableSelection
+            cellComponent={SelectionCell}
+            /*selectByRowClick*/ showSelectAll
+          />
+        )}
 
         {hasGrouping && <TableGroupRow />}
 

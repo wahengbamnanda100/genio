@@ -1,8 +1,7 @@
+import UserListTable from "@/components/user/userListTable";
+import UserSearchList from "@/components/user/UserSearchList";
+import { useUserList } from "@/hooks/admin/user/useUserLIst";
 import { Box, Grid } from "@mui/material";
-
-import { useUserList } from "../../hooks/user/useUserLIst";
-import UserSearchList from "../../components/user/UserSearchList";
-import UserListTable from "../../components/user/userListTable";
 
 const UserList = () => {
   const { method, expanded, setExpanded, handleSearch, handleCreateNew } =

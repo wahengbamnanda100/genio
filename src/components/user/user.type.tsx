@@ -36,10 +36,17 @@ export type CompanyList = {
   showroomAllocatin: string;
 };
 
+export type ShowroomListType = {
+  id: number;
+  name: string;
+  selected: boolean;
+  isDefault: boolean;
+};
+
 export type UserFormType = {
   EmpCode: string;
   EmpName: string;
-  useId: string;
+  userId: string;
   password: string;
   confirmPassword: string;
   pin: string;
@@ -75,7 +82,7 @@ export const UserFields = (): FieldProps[] => [
   },
   {
     fieldType: "text",
-    name: "useId",
+    name: "userId",
     label: "User Id",
     size: "medium",
     xs: 12,

@@ -1,6 +1,6 @@
+import User from "@/pages/admin/user/User";
+import UserList from "@/pages/admin/user/UserList";
 import { RouteObject } from "react-router";
-import UserList from "../../../pages/user/UserList";
-import User from "../../../pages/user/User";
 
 const UserRoutes: RouteObject[] = [
   {

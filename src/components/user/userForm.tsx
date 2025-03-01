@@ -1,6 +1,11 @@
 import { Box, Button, Grid, Typography } from "@mui/material";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
-import { DescriptonField, UserFields, UserFields2 } from "./user.type";
+import {
+  CompanyList,
+  DescriptonField,
+  UserFields,
+  UserFields2,
+} from "./user.type";
 import Field from "../../common/Form-component/field";
 import UserDetailTable from "./UserFormTable";
 import CustomBreadcrumbs from "../../common/CustomBreadcrumb";
@@ -23,7 +28,7 @@ export const UserFormTitle = ({
         borderRadius: 1,
         overflowY: "hidden",
         overflowX: "hidden",
-        p: 1,
+        // p: 1,
       }}
     >
       <Grid
@@ -125,7 +130,7 @@ const UserForm = () => {
             </Typography>
           </Grid>
 
-          <UserDetailTable />
+          <UserDetailTable data={CompanyDetail} />
         </Grid>
       </Box>
     </Grid>
@@ -133,3 +138,22 @@ const UserForm = () => {
 };
 
 export default UserForm;
+
+const CompanyDetail: CompanyList[] = [
+  {
+    cmpCode: "123",
+    companyName: "ABC Company",
+    address: "This is address",
+    default: false,
+    type: "type",
+    showroomAllocatin: "allocate",
+  },
+  {
+    cmpCode: "1234",
+    companyName: "ABC Company1",
+    address: "This is address1",
+    default: false,
+    type: "type",
+    showroomAllocatin: "allocate",
+  },
+];

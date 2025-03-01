@@ -33,7 +33,7 @@ interface ConfirmationDialogProps extends DialogProps {
   dialogType: DialogType;
   setOpen?: Dispatch<SetStateAction<boolean>>;
   onConfirm: () => void;
-  onCancel?: () => void;
+  onCancel: () => void;
 }
 
 export function PaperComponent(props: PaperProps) {

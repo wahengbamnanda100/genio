@@ -3,6 +3,7 @@ import react from "@vitejs/plugin-react-swc";
 import tsConfigPaths from "vite-tsconfig-paths";
 import sassDts from "vite-plugin-sass-dts";
 import svgr from "vite-plugin-svgr";
+import path from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -18,5 +19,10 @@ export default defineConfig({
     host: "0.0.0.0",
     port: 3000,
     open: true,
+  },
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "src"),
+    },
   },
 });

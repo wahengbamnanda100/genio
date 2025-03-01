@@ -8,6 +8,7 @@ import DeleteButton from "./DeleteButton";
 import { TableHeadStyled, TableStyled } from "../CustomTable2.style2";
 import { ComponentType } from "react";
 import {
+  Checkbox,
   FormControl,
   MenuItem,
   Select,
@@ -190,6 +191,23 @@ export const CustomTableCellFormatter: React.ComponentType<
     />
   );
 };
+
+export const SelectionCell = ({ row, selected, onToggle }: any) => {
+  return (
+    <TableCell>
+      <Checkbox
+        size="small" // Set size to small
+        checked={selected}
+        onChange={() => onToggle(row.id)}
+        color="primary" // Optional: Customize color
+      />
+    </TableCell>
+  );
+};
+
+// export const CustomRadioCell: React.ComponentType<Table.DataCellProps> = () => {
+
+// }
 
 export const currencyFilterPredicate = (
   value: number | string,

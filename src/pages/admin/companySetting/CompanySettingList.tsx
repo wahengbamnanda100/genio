@@ -3,12 +3,12 @@ import { Box, Button, Collapse, Grid, Stack, Typography } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { FormProvider } from "react-hook-form";
-import { useCompanySettingList } from "../../hooks/companySetting/useCompanySetting";
-import CustomBreadcrumbs from "../../common/CustomBreadcrumb";
-import SearchContainer from "../../common/SearchButtons";
-import { CompanySettingSeachField } from "../../components/companySetting/CompanySettings.type";
-import Field from "../../common/Form-component/field";
-import CompanySettingTable from "../../components/companySetting/CompanySettingTable";
+import { useCompanySettingList } from "@/hooks/admin/companySetting/useCompanySetting";
+import CustomBreadcrumbs from "@/common/CustomBreadcrumb";
+import CompanySettingTable from "@/components/companySetting/CompanySettingTable";
+import SearchContainer from "@/common/SearchButtons";
+import { CompanySettingSeachField } from "@/components/companySetting/CompanySettings.type";
+import Field from "@/common/Form-component/field";
 
 const CompanySettingList = () => {
   const { method, expanded, setExpanded, handleCreateNew } =

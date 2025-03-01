@@ -1,9 +1,9 @@
 import { Box, Button, Grid, Typography } from "@mui/material";
 import { FormProvider } from "react-hook-form";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
-import CustomBreadcrumbs from "../../common/CustomBreadcrumb";
-import { useCompanySettingForm } from "../../hooks/companySetting/useCompanySettingForm";
-import CompanySettingForm from "../../components/companySetting/CompanySettingForm";
+import { useCompanySettingForm } from "@/hooks/admin/companySetting/useCompanySettingForm";
+import CompanySettingForm from "@/components/companySetting/CompanySettingForm";
+import CustomBreadcrumbs from "@/common/CustomBreadcrumb";
 
 const CompanySettings = () => {
   const { method, handleSearchList } = useCompanySettingForm();
