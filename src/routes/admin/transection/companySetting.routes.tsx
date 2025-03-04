@@ -1,6 +1,13 @@
-import CompanySettings from "@/pages/admin/companySetting/CompanySetting";
-import CompanySettingList from "@/pages/admin/companySetting/CompanySettingList";
+import { lazy } from "react";
 import { RouteObject } from "react-router";
+import CenteredLoadable from "@/common/UI-component/CeteredLoadable";
+
+const CompanySettingList = CenteredLoadable(
+  lazy(() => import("@/pages/admin/companySetting/CompanySettingList")),
+);
+const CompanySettings = CenteredLoadable(
+  lazy(() => import("@/pages/admin/companySetting/CompanySetting")),
+);
 
 const CompanySettingsRoutes: RouteObject[] = [
   {

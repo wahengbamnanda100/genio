@@ -9,9 +9,13 @@ import {
   SwitchCell,
 } from "./userForm.table.component";
 
-const UserDetailTable = ({ data = [] }: { data: CompanyList[] }) => {
-  // const [leftColumns] = useState(["rowIndex"]);
-  // const [rightColumns] = useState(["action"]);
+const UserDetailTable = ({
+  data = [],
+  isLoading,
+}: {
+  data: CompanyList[];
+  isLoading: boolean;
+}) => {
   const [tableData, setTableData] = useState<CompanyList[]>(data || []);
   const [openAllocate, setOpenAllocate] = useState<boolean>(false);
   const [selection, setSelection] = useState<string[]>([]);
@@ -161,7 +165,7 @@ const UserDetailTable = ({ data = [] }: { data: CompanyList[] }) => {
         hasHorizontalPadding={false}
         hasVerticalPadding={false}
         hasBoxShadow={false}
-        isLoading={false}
+        isLoading={isLoading}
         grid={{
           columns,
           rows: tableData,
@@ -197,8 +201,6 @@ const UserDetailTable = ({ data = [] }: { data: CompanyList[] }) => {
         sortingState={{
           columnExtensions: [{ columnName: "action", sortingEnabled: false }],
         }}
-        // rightColumns={rightColumns}
-        // leftColumns={leftColumns}
         hasPaging
         hasSelect
       ></CustomTable2>

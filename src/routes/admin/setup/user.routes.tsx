@@ -1,6 +1,11 @@
-import User from "@/pages/admin/user/User";
-import UserList from "@/pages/admin/user/UserList";
+import CenteredLoadable from "@/common/UI-component/CeteredLoadable";
+import { lazy } from "react";
 import { RouteObject } from "react-router";
+
+const UserList = CenteredLoadable(
+  lazy(() => import("@/pages/admin/user/UserList")),
+);
+const User = CenteredLoadable(lazy(() => import("@/pages/admin/user/User")));
 
 const UserRoutes: RouteObject[] = [
   {

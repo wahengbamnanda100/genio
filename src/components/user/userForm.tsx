@@ -1,89 +1,19 @@
-import { Box, Button, Grid, Typography } from "@mui/material";
-import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
+import { Box, Grid, Typography } from "@mui/material";
+import Field from "../../common/Form-component/field";
+import UserDetailTable from "./UserFormTable";
 import {
-  CompanyList,
   DescriptonField,
   UserFields,
   UserFields2,
-} from "./user.type";
-import Field from "../../common/Form-component/field";
-import UserDetailTable from "./UserFormTable";
-import CustomBreadcrumbs from "../../common/CustomBreadcrumb";
-
-interface UseFromTitleProps {
-  title: string;
-  handleSearchList: () => void;
-}
-export const UserFormTitle = ({
-  title,
-  handleSearchList,
-}: UseFromTitleProps) => {
-  return (
-    <Grid
-      component={"form"}
-      container
-      rowSpacing={1}
-      sx={{
-        width: "100%",
-        borderRadius: 1,
-        overflowY: "hidden",
-        overflowX: "hidden",
-        // p: 1,
-      }}
-    >
-      <Grid
-        item
-        xs={12}
-        textAlign={"end"}
-        px={2}
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <CustomBreadcrumbs />
-      </Grid>
-
-      <Grid
-        item
-        xs={12}
-        textAlign={"end"}
-        px={2}
-        mb={1}
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          mb: 2,
-        }}
-      >
-        <Typography variant="h6" fontWeight={"medium"}>
-          {title}
-        </Typography>
-
-        <Button
-          variant="contained"
-          startIcon={<SearchOutlinedIcon />}
-          onClick={handleSearchList}
-          sx={{
-            bgcolor: "black",
-            color: "white",
-            "&:hover": {
-              bgcolor: "white",
-              color: "black",
-              outline: "1px solid black",
-            },
-          }}
-        >
-          Search List
-        </Button>
-      </Grid>
-    </Grid>
-  );
-};
+} from "./user.input.components";
+import { useFormContext } from "react-hook-form";
+import { UserFormType } from "./user.type";
 
 const UserForm = () => {
+  const { watch } = useFormContext<UserFormType>();
+
+  const companyDetails = watch("companyList");
+
   return (
     <Grid item xs={12} container spacing={1} columnSpacing={2} rowSpacing={2}>
       <Box
@@ -130,7 +60,7 @@ const UserForm = () => {
             </Typography>
           </Grid>
 
-          <UserDetailTable data={CompanyDetail} />
+          <UserDetailTable data={companyDetails} isLoading={false} />
         </Grid>
       </Box>
     </Grid>
@@ -138,22 +68,3 @@ const UserForm = () => {
 };
 
 export default UserForm;
-
-const CompanyDetail: CompanyList[] = [
-  {
-    cmpCode: "123",
-    companyName: "ABC Company",
-    address: "This is address",
-    default: false,
-    type: "type",
-    showroomAllocatin: "allocate",
-  },
-  {
-    cmpCode: "1234",
-    companyName: "ABC Company1",
-    address: "This is address1",
-    default: false,
-    type: "type",
-    showroomAllocatin: "allocate",
-  },
-];

@@ -28,7 +28,9 @@ const UserList = () => {
           onSubmit={handleSearch}
           handleCreateNew={handleCreateNew}
         />
-        <UserListTable data={[]} />
+        <Grid item xs={12} ml={-3.5}>
+          <UserListTable data={[]} />
+        </Grid>
       </Grid>
     </Box>
   );

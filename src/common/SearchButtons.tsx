@@ -5,6 +5,23 @@ import ClearIcon from "@mui/icons-material/Clear";
 import { FC } from "react";
 import AnimateButton from "./UI-component/Extended/AnimateButton";
 
+const getButtonXsSize = (items: number) => {
+  switch (items) {
+    case 1:
+      return 6;
+    case 2:
+      return 4;
+    case 3:
+      return 3;
+    case 4:
+      return 3;
+    case 5:
+      return 4; // Assuming you meant 4 here based on your request
+    default:
+      return 3; // For 6 or more
+  }
+};
+
 interface SearchContainerProps {
   children: React.ReactNode;
   itemsNo: number;
@@ -18,12 +35,7 @@ const SearchContainer = ({
   onSearch,
   onCancel,
 }: SearchContainerProps) => {
-  const buttonCols = 2;
-  const fieldCols = 12 - buttonCols;
-
-  const fieldItemCols = Math.floor(fieldCols / itemsNo);
-
-  const isSingleRow = itemsNo < 4;
+  const buttonXsSize = getButtonXsSize(itemsNo);
   return (
     <Grid container item spacing={2}>
       {fields}
@@ -31,14 +43,14 @@ const SearchContainer = ({
         item
         container
         spacing={2}
-        xs={3}
+        xs={buttonXsSize}
         textAlign={"end"}
-        wrap={isSingleRow ? "nowrap" : "wrap"}
+        // wrap={isSingleRow ? "nowrap" : "wrap"}
       >
-        <Grid item xs={isSingleRow ? 6 : fieldItemCols}>
+        <Grid item xs={6}>
           <ActionButton varient="search" onClick={onSearch} />
         </Grid>
-        <Grid item xs={isSingleRow ? 6 : fieldItemCols}>
+        <Grid item xs={6}>
           <ActionButton varient="cancel" onClick={onCancel} />
         </Grid>
       </Grid>

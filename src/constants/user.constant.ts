@@ -1,4 +1,4 @@
-import { ShowroomListType } from "@/components/user/user.type";
+import { CompanyList, ShowroomListType } from "@/components/user/user.type";
 
 export const SHOWROOM_MOCK_DATA: ShowroomListType[] = [
   {
@@ -30,5 +30,24 @@ export const SHOWROOM_MOCK_DATA: ShowroomListType[] = [
     name: "JAZZ CAFE -CAFETERIA",
     selected: false,
     isDefault: false,
+  },
+];
+
+export const CompanyDetail: CompanyList[] = [
+  {
+    cmpCode: "123",
+    companyName: "ABC Company",
+    address: "This is address",
+    default: false,
+    type: "type",
+    showroomAllocatin: [],
+  },
+  {
+    cmpCode: "1234",
+    companyName: "ABC Company1",
+    address: "This is address1",
+    default: false,
+    type: "type",
+    showroomAllocatin: [],
   },
 ];

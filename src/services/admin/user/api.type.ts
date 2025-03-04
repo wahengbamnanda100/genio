@@ -2,6 +2,7 @@ import { ApiResponse } from "@/services/common.type";
 
 type UserSaveType = {
   UserId: string;
+  Date?: unknown;
 };
 
 export type UserSaveResType = UserSaveType & ApiResponse;
@@ -31,4 +32,33 @@ export type UserSavePayload = {
   LoggedUserId: string;
   CompanyDtls: ComapanyDtlsType[];
   ShowroomDtls: ShowroomDtls[];
+};
+
+type SearchCommonType = {
+  Rows: string;
+  Page: string;
+  SearchText: string;
+};
+
+export type UserEmployeeListPayloadType = SearchCommonType;
+
+export type UserRoleLisrPayloadType = SearchCommonType;
+
+type UserRoleData = {
+  Data: unknown[];
+};
+export type UserRoleResType = UserRoleData & ApiResponse;
+
+type UserEmployeeData = {
+  Data: unknown[];
+};
+
+export type UserEmployeeResType = UserEmployeeData & ApiResponse;
+
+//!_______________List type______________
+
+export type SearchUserListPayloadType = {
+  Rows: string;
+  Page: string;
+  SearchText: string;
 };

@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
-import { UserFormType } from "../../components/user/user.type";
+
 import { mutateUserSaveApi } from "@/services/admin/user/api";
 import { useMutation } from "@tanstack/react-query";
 import { useAppProvider } from "@/AppProvider";
 import { UserSavePayload } from "@/services/admin/user/api.type";
+import { UserFormType } from "@/components/user/user.type";
+import { CompanyDetail } from "@/constants/user.constant";
 
 export const useUserForm = () => {
   const navigate = useNavigate();
@@ -25,7 +27,7 @@ export const useUserForm = () => {
       roleName: "",
       securityQestion: "",
       desc: "",
-      companyList: [],
+      companyList: CompanyDetail,
       active: true,
     },
   });

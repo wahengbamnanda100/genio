@@ -1,6 +1,7 @@
 import ConfirmationDialog from "@/common/ModalComponent/ConfirmationDialog";
 import SubmitButtons from "@/common/UI-component/SubmitButtons";
-import UserForm, { UserFormTitle } from "@/components/user/userForm";
+import UserForm from "@/components/user/userForm";
+import UserFormTitle from "@/components/user/userFormTitle";
 import { useUserForm } from "@/hooks/admin/user/useUserForm";
 import { Grid } from "@mui/material";
 import { FormProvider } from "react-hook-form";

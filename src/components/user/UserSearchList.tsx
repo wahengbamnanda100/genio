@@ -5,14 +5,14 @@ import AddIcon from "@mui/icons-material/Add";
 
 import CustomBreadcrumbs from "../../common/CustomBreadcrumb";
 import SearchContainer from "../../common/SearchButtons";
-import { useListSearchType, UserSearchField } from "./user.type";
+import { userListSearchType, UserSearchField } from "./user.type";
 import Field from "../../common/Form-component/field";
 import React from "react";
 
 interface UserSearchFieldProps {
-  method: UseFormReturn<useListSearchType>;
+  method: UseFormReturn<userListSearchType>;
   expanded: boolean;
-  onSubmit: (data: useListSearchType) => void;
+  onSubmit: (data: userListSearchType) => void;
   setExpanded: React.Dispatch<React.SetStateAction<boolean>>;
   handleCreateNew: () => void;
 }
@@ -93,17 +93,18 @@ const UserSearchList = ({
         </Stack>
       </Grid>
 
-      <Grid item xs={12} px={2} mt={1}>
-        <Collapse in={expanded} timeout={300} unmountOnExit>
+      <Grid item xs={12} px={2}>
+        <Collapse in={expanded} unmountOnExit sx={{}}>
           <Box
             sx={{
               bgcolor: "grey.100",
               padding: 2,
               borderRadius: 1,
               boxShadow: 3,
+              mb: 2,
+              mt: 1,
             }}
           >
-            {" "}
             <FormProvider {...method}>
               <SearchContainer
                 onSearch={method.handleSubmit(onSubmit)}

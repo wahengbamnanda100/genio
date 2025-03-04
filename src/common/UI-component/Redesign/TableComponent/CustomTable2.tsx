@@ -137,8 +137,8 @@ const ToolbarComponent: ComponentType<
       style={{
         borderBottom: "none",
         padding: "0",
-        paddingLeft: 20,
-        paddingRight: 20,
+        // paddingLeft: 20,
+        // paddingRight: 20,
       }}
     >
       {props.children}
@@ -331,11 +331,11 @@ const CustomTable2 = ({
       elevation={paperElevation}
       style={{
         position: "relative",
-        // padding: `${hasVerticalPadding ? 20 : 0}px ${
-        //   hasHorizontalPadding ? 20 : 0
-        // }px`,
-        padding: 0,
+        padding: `${hasVerticalPadding ? 0 : 0}px ${
+          hasHorizontalPadding ? 20 : 0
+        }px`,
         zIndex: 0,
+        marginLeft: 14,
         boxShadow: hasBoxShadow ? theme.shadows[4] : undefined,
         // border: "1px solid red",
       }}

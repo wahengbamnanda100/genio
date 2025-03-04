@@ -1,7 +1,7 @@
+import { userListSearchType } from "@/components/user/user.type";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
-import { useListSearchType } from "../../components/user/user.type";
 
 export const useUserList = () => {
   const navigate = useNavigate();
@@ -10,7 +10,7 @@ export const useUserList = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [deleteID, setDeleteId] = useState<string>("");
 
-  const method = useForm<useListSearchType>({
+  const method = useForm<userListSearchType>({
     defaultValues: {
       UserId: "",
       EmployeeCode: "",
@@ -23,7 +23,7 @@ export const useUserList = () => {
     },
   });
 
-  const handleSearch = (data: useListSearchType) => {
+  const handleSearch = (data: userListSearchType) => {
     console.log("search click", data);
   };
 
