@@ -2,18 +2,28 @@ import { Box, Grid, Typography } from "@mui/material";
 import Field from "../../common/Form-component/field";
 import UserDetailTable from "./UserFormTable";
 import {
+  ActiveCheckbox,
   DescriptonField,
   UserFields,
   UserFields2,
 } from "./user.input.components";
-import { useFormContext } from "react-hook-form";
-import { UserFormType } from "./user.type";
+import { Dispatch, SetStateAction } from "react";
+// import { method } from "lodash";
 
-const UserForm = () => {
-  const { watch } = useFormContext<UserFormType>();
+// import { useFormContext } from "react-hook-form";
+// import { UserFormType } from "./user.type";
 
-  const companyDetails = watch("companyList");
-
+const UserForm = ({
+  userIdDisable,
+  reset,
+  employeeFocus,
+  roleFocus,
+}: {
+  userIdDisable: boolean;
+  reset: boolean;
+  employeeFocus: Dispatch<SetStateAction<string>>;
+  roleFocus: Dispatch<SetStateAction<string>>;
+}) => {
   return (
     <Grid item xs={12} container spacing={1} columnSpacing={2} rowSpacing={2}>
       <Box
@@ -27,12 +37,12 @@ const UserForm = () => {
       >
         <Grid item container spacing={2} mb={2}>
           <Grid item xs={6} container spacing={1} columnSpacing={2}>
-            {...UserFields().map((field) => (
+            {...UserFields(userIdDisable, employeeFocus).map((field) => (
               <Field key={field.name} {...field} />
             ))}
           </Grid>
           <Grid item xs={6} container spacing={1} columnSpacing={2}>
-            {...UserFields2().map((field) => (
+            {...UserFields2(true, roleFocus).map((field) => (
               <Field key={field.name} {...field} />
             ))}
           </Grid>
@@ -60,9 +70,12 @@ const UserForm = () => {
             </Typography>
           </Grid>
 
-          <UserDetailTable data={companyDetails} isLoading={false} />
+          <UserDetailTable reset={reset} />
         </Grid>
       </Box>
+      <Grid item container xs={12} spacing={2}>
+        <Field {...ActiveCheckbox()} />
+      </Grid>
     </Grid>
   );
 };

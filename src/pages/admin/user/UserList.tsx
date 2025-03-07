@@ -4,11 +4,20 @@ import { useUserList } from "@/hooks/admin/user/useUserLIst";
 import { Box, Grid } from "@mui/material";
 
 const UserList = () => {
-  const { method, expanded, setExpanded, handleSearch, handleCreateNew } =
-    useUserList();
+  const {
+    method,
+    tableData,
+    isLoading,
+    searchQuery,
+    expanded,
+    setSearchQuery,
+    setExpanded,
+    handleSearch,
+    handleCreateNew,
+  } = useUserList();
 
   return (
-    <Box padding={2}>
+    <Box px={2}>
       <Grid
         container
         justifyContent={"center"}
@@ -18,7 +27,7 @@ const UserList = () => {
           borderRadius: 1,
           overflowY: "hidden",
           overflowX: "hidden",
-          p: 1,
+          px: 1,
         }}
       >
         <UserSearchList
@@ -29,7 +38,13 @@ const UserList = () => {
           handleCreateNew={handleCreateNew}
         />
         <Grid item xs={12} ml={-3.5}>
-          <UserListTable data={[]} />
+          <UserListTable
+            isLoading={isLoading}
+            data={tableData?.Data || []}
+            totalCount={tableData?.OverallCount || "0"}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+          />
         </Grid>
       </Grid>
     </Box>

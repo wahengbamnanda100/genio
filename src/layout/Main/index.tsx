@@ -58,7 +58,7 @@ const MainLayout = () => {
           // border: "1px solid red",
         }}
       >
-        <Toolbar />
+        <Toolbar sx={{ mb: 2 }} />
         {/* Main Content Area */}
         <Box
           sx={{

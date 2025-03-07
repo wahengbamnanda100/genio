@@ -125,6 +125,7 @@ type InputFieldProps = {
   InputProps?: Partial<
     OutlinedInputProps | FilledInputProps | InputProps | InputBaseProps
   >;
+  helperText?: ReactNode;
   rtl?: boolean;
   bgColor?: string;
   condition?: RegExp;

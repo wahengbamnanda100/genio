@@ -64,9 +64,11 @@ const SelectField = ({
         <InputLabel
           id={`label-select-field-${name}`}
           sx={{
-            color: hasError ? theme.palette.error.main : "black",
+            color: hasError
+              ? theme.palette.error.main
+              : (theme) => theme.palette.grey[800],
             "&:hover": {
-              color: "black", // Label color on hover
+              color: (theme) => theme.palette.grey[300], // Label color on hover
             },
             "&.Mui-focused": {
               color: "black", // Label color on focus

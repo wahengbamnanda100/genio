@@ -1,9 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
-  Box,
   Button,
-  Checkbox,
-  Divider,
   IconButton,
   Stack,
   SwipeableDrawer,
@@ -11,12 +8,13 @@ import {
   Typography,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import React, { useEffect, useState } from "react";
-import { ScrollableCardContainer, StyledSwitch } from "./User.styled";
+import React, { useState } from "react";
+import { StyledSwitch } from "./User.styled";
 import { ShowroomListType } from "./user.type";
-import { fetchShowroomData } from "@/store/slices/admin/user/userShoroom.slice";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/store";
+import { Column, GridColumnExtension } from "@devexpress/dx-react-grid";
+
+import CustomTable2 from "@/common/UI-component/Redesign/TableComponent/CustomTable2";
+import { ListFilterCellComponent } from "@/common/CutomTable/components/customComponent";
 
 export const SwitchCell = <T,>({
   row,
@@ -43,23 +41,19 @@ export const AllocateButton = ({
   rowId,
   open,
   disabled = false,
-  setOpen,
+  onClickAllocation,
 }: {
   rowId: string;
   open: boolean;
   disabled?: boolean;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  onClickAllocation: (id: string) => void;
 }) => {
-  const dispatch = useDispatch<AppDispatch>();
   return (
     <Button
       size="small"
       variant={disabled ? "text" : "outlined"}
       disabled={disabled}
-      onClick={() => {
-        setOpen(!open);
-        dispatch(fetchShowroomData(rowId));
-      }}
+      onClick={() => onClickAllocation(rowId)}
       sx={{
         color: open ? "white" : "inherit",
         bgcolor: open ? "black" : "inherit",
@@ -74,22 +68,37 @@ export const AllocateButton = ({
   );
 };
 
-export const AllocateDrawer = ({
-  open,
-  toggleDrawer,
-  onSelect,
-  onCancel,
-}: {
+interface AllocationDrawerProps {
   open: boolean;
+  showrooms: ShowroomListType[];
+  isLoading: boolean;
+  selection: string[];
   toggleDrawer: (open: boolean) => any;
+  handleSelectChange: (id: string[]) => void;
+  handleDefaultChange: (
+    event: React.ChangeEvent<HTMLInputElement>,
+    row: ShowroomListType,
+  ) => void;
   onSelect: () => void;
   onCancel: () => void;
-}) => {
+}
+
+export const AllocateDrawer = ({
+  open,
+  showrooms,
+  isLoading,
+  selection,
+  toggleDrawer,
+  handleSelectChange,
+  handleDefaultChange,
+  onSelect,
+  onCancel,
+}: AllocationDrawerProps) => {
   return (
     <SwipeableDrawer
       anchor={"right"}
       open={open}
-      onClose={toggleDrawer(false)}
+      onClose={onCancel}
       onOpen={toggleDrawer(true)}
     >
       <Toolbar sx={{ mb: 1 }} />
@@ -101,9 +110,15 @@ export const AllocateDrawer = ({
           minHeight: "calc(100vh - 74px)",
         }}
       >
-        <Stack>
+        <Stack direction={"column"} sx={{ maxWidth: "480px" }}>
           <AllocateTitle setOpen={toggleDrawer(false)} />
-          <ShowroomList />
+          <ShowroomList
+            data={showrooms}
+            isLoading={isLoading}
+            selection={selection}
+            handleSelectChange={handleSelectChange}
+            handleDefaultChange={handleDefaultChange}
+          />
         </Stack>
 
         <ShowroomSelectButtons onSelect={onSelect} onCancel={onCancel} />
@@ -138,77 +153,121 @@ const AllocateTitle = ({
   );
 };
 
-const ShowroomList = () => {
-  // const dispatch = useDispatch<AppDispatch>();
-  const { data, status, error } = useSelector(
-    (state: RootState) => state.userShowroom,
-  );
-  const [showrooms, setShowrooms] = useState<ShowroomListType[]>(data);
-  const [defaultShowroom, setDefaultShowroom] = useState<number | null>(null);
+interface ShowroomListProps {
+  data: ShowroomListType[];
+  isLoading: boolean;
+  selection: string[];
+  handleSelectChange: (id: string[]) => void;
+  handleDefaultChange: (
+    event: React.ChangeEvent<HTMLInputElement>,
+    row: ShowroomListType,
+  ) => void;
+}
 
-  useEffect(() => {
-    setShowrooms(data);
-  }, [data]);
+const ShowroomList = ({
+  data,
+  isLoading,
+  selection,
+  handleSelectChange,
+  handleDefaultChange,
+}: ShowroomListProps) => {
+  const [searchQuery, setSearchQuery] = useState({
+    department: "",
+    status: "",
+    PageNo: 1,
+    Rows: 10,
+  });
 
-  const handleSelectChange = (id: number) => {
-    setShowrooms((prevShowrooms) =>
-      prevShowrooms.map((item) =>
-        item.id === id ? { ...item, selected: !item.selected } : item,
-      ),
-    );
-  };
+  const columns: Column[] = [
+    {
+      title: "SL",
+      name: "rowIndex",
+      getCellValue: (row: ShowroomListType) => {
+        if (data) {
+          return data.findIndex((tr: ShowroomListType) => tr.id === row.id) + 1;
+        }
 
-  const handleDefaultChange = (id: number) => {
-    setDefaultShowroom(id);
+        return "";
+      },
+    },
+    {
+      title: "ShowroomName",
+      name: "name",
+    },
+    {
+      title: "Default",
+      name: "isDefault",
+      getCellValue: (row: ShowroomListType) => {
+        return (
+          <SwitchCell
+            row={row}
+            checked={!selection.includes(row.id) ? false : row.isDefault}
+            disabled={!selection.includes(row.id)}
+            onChangeSwitch={handleDefaultChange}
+          />
+        );
+      },
+    },
+  ];
 
-    setShowrooms((prevShowrooms) =>
-      prevShowrooms.map((item) => ({ ...item, isDefault: item.id === id })),
-    );
-  };
-
-  if (status === "loading") return <div>Loading...</div>;
-  if (status === "failed") return <div>Error: {error}</div>;
-
-  if (showrooms?.length === 0) {
-    return (
-      <Box
-        sx={{ mt: 1, p: 1, m: 4, bgcolor: (theme) => theme.palette.grey[300] }}
-      >
-        <Typography
-          variant="h6"
-          fontWeight={"medium"}
-          padding={4}
-          sx={{ color: (theme) => theme.palette.grey[800] }}
-        >
-          No Showroom Data Found
-        </Typography>
-      </Box>
-    );
-  }
+  const columnExtension: GridColumnExtension[] = [
+    {
+      columnName: "rowIndex",
+      width: 70,
+      align: "center",
+    },
+    {
+      columnName: "isDefault",
+      width: 100,
+      align: "center",
+    },
+  ];
 
   return (
-    <Stack direction={"column"} gap={2} minWidth={"400px"} height={"100%"}>
-      <ScrollableCardContainer>
-        {showrooms.map((showroom, index) => (
-          <React.Fragment key={showroom.id}>
-            <ShowroomCard
-              checked={showroom.selected}
-              switched={defaultShowroom === showroom.id}
-              title={showroom.name}
-              onChange={() => handleSelectChange(showroom.id)}
-              onChangeDefault={() => handleDefaultChange(showroom.id)}
-            />
-            {index !== showrooms.length - 1 && (
-              <Divider
-                flexItem
-                variant="middle"
-                sx={{ borderBottom: "1px solid" }}
-              />
-            )}
-          </React.Fragment>
-        ))}
-      </ScrollableCardContainer>
-    </Stack>
+    <CustomTable2
+      densed={true}
+      hasHorizontalPadding={false}
+      hasVerticalPadding={false}
+      hasBoxShadow={false}
+      isLoading={isLoading}
+      grid={{
+        columns,
+        rows: data,
+        getRowId: (row: ShowroomListType) => row.id,
+      }}
+      table={{
+        columnExtensions: columnExtension,
+        // rowComponent: EmployeeAllowanceListTableRowComponent,
+      }}
+      selection={selection}
+      setSelection={handleSelectChange}
+      pagingState={{
+        currentPage: searchQuery?.PageNo - 1,
+        onCurrentPageChange: (currentPage) =>
+          setSearchQuery({
+            ...searchQuery,
+            PageNo: currentPage + 1,
+          }),
+        pageSize: searchQuery.Rows,
+        onPageSizeChange: (pageSize) =>
+          setSearchQuery({
+            ...searchQuery,
+            PageNo: 1,
+            Rows: pageSize,
+          }),
+      }}
+      customPaging={{
+        totalCount: data && Array.isArray(data) ? data.length : 0,
+      }} //todo count page
+      tableFilterRow={{
+        cellComponent: ListFilterCellComponent,
+      }}
+      sortingState={{
+        columnExtensions: [{ columnName: "action", sortingEnabled: false }],
+      }}
+      hasPaging
+      hasSelect
+    ></CustomTable2>
   );
 };
 
@@ -236,56 +295,5 @@ const ShowroomSelectButtons = ({
         Cancel
       </Button>
     </Stack>
-  );
-};
-
-interface ShowroomCardProps {
-  checked: boolean;
-  switched: boolean;
-  title: string;
-  onChange: () => void;
-  onChangeDefault: () => void;
-}
-const ShowroomCard = ({
-  checked,
-  switched,
-  title,
-  onChange,
-  onChangeDefault,
-}: ShowroomCardProps) => {
-  return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "row",
-        borderRadius: 2,
-        gap: 1,
-        mb: 1,
-        p: 1,
-      }}
-    >
-      <Checkbox checked={checked} onChange={onChange} />
-      <Stack direction={"column"} gap={1}>
-        <Typography variant="body2" fontWeight={"medium"}>
-          {title}
-        </Typography>
-        <Stack
-          direction={"row"}
-          justifyContent={"flex-start"}
-          alignItems={"center"}
-          gap={2}
-        >
-          <Typography variant="subtitle2" fontWeight={"400"}>
-            Default
-          </Typography>{" "}
-          <StyledSwitch
-            checked={!checked ? false : switched}
-            disabled={!checked}
-            onChange={onChangeDefault}
-            inputProps={{ "aria-label": "switch_default_card" }}
-          />
-        </Stack>
-      </Stack>
-    </Box>
   );
 };

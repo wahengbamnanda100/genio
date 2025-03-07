@@ -1,3 +1,9 @@
+import {
+  UserEmployeeData,
+  UserRoleData,
+  UserSQData,
+} from "@/services/admin/user/api.type";
+
 export type userListSearchType = {
   UserId: string;
   EmployeeCode: string;
@@ -26,39 +32,41 @@ export interface RowDataType {
 }
 
 export type CompanyList = {
+  cmpId: string;
   cmpCode: string;
   companyName: string;
   address: string;
   type: string;
   default: boolean;
-  showroomAllocatin: ShowroomListType[];
+  selected: boolean;
+  showroomAllocatin?: ShowroomListType[];
 };
 
 export type ShowroomListType = {
-  id: number;
+  id: string;
   name: string;
+  cmpId: string;
   selected: boolean;
   isDefault: boolean;
 };
 
 export type UserFormType = {
-  EmpCode: string;
-  EmpName: string;
+  EmpCode: string | UserEmployeeData;
+  EmpName: string | UserEmployeeData;
   userId: string;
   password: string;
   confirmPassword: string;
   pin: string;
 
   desg: string;
-  roleCode: string;
-  roleName: string;
-  securityQestion: string;
+  roleCode: string | UserRoleData;
+  roleName: string | UserRoleData;
+  securityQestion: string | UserSQData;
   answer: string;
   defaultLoginModule: string;
 
   desc: string;
 
   companyList: CompanyList[];
-
   active: boolean;
 };

@@ -51,6 +51,7 @@ const AsyncAutoCompleteField = ({
 }: AsyncAutoCompleteFieldProps) => {
   const { control } = useFormContext();
   const { errors } = useFormState({ control });
+  const hasError = Boolean(_.get(errors, name));
 
   const [keyStrocke, setKeyStrocke] = useState("");
   const [isFocused, setIsFocused] = useState(false);
@@ -75,6 +76,7 @@ const AsyncAutoCompleteField = ({
           <Autocomplete
             // open={true}
             freeSolo={freeSolo}
+            id={`search-field-${name}`}
             // autoSelect
             {...rest}
             fullWidth
@@ -144,6 +146,14 @@ const AsyncAutoCompleteField = ({
                         {params.InputProps.endAdornment}
                       </React.Fragment>
                     ),
+                  }}
+                  sx={{
+                    "& .MuiInputLabel-root.Mui-focused": {
+                      color: (theme) =>
+                        hasError
+                          ? theme.palette.error.main
+                          : theme.palette.text.primary,
+                    },
                   }}
                 />
               );

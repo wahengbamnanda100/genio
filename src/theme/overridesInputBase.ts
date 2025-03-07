@@ -1,4 +1,4 @@
-import { Components, Theme, alpha } from "@mui/material";
+import { Components, Theme } from "@mui/material";
 
 export const overridesInputBase: Pick<
   Components<Theme>,
@@ -13,8 +13,10 @@ export const overridesInputBase: Pick<
             fontSize: "1em",
             height: 30,
             "&.Mui-disabled": {
-              color: theme.palette.text.disabled,
-              backgroundColor: alpha(theme.palette.secondary.light, 0.4),
+              // color: theme.palette.text.disabled,
+              // backgroundColor: alpha(theme.palette.secondary.light, 0.4),
+              color: theme.palette.grey[500],
+              backgroundColor: theme.palette.grey[200],
             },
           }),
         ...(ownerState.size === "medium" &&
@@ -22,8 +24,8 @@ export const overridesInputBase: Pick<
             fontSize: "1em",
             height: 35, // Customize the height for medium size here
             "&.Mui-disabled": {
-              color: theme.palette.text.disabled,
-              backgroundColor: alpha(theme.palette.secondary.light, 0.3),
+              color: theme.palette.grey[500],
+              backgroundColor: theme.palette.grey[200],
             },
           }),
         notchedOutline: {

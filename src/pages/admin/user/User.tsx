@@ -10,10 +10,13 @@ const User = () => {
   const {
     method,
     isModalOpen,
+    isPending,
+    reset,
+    setEmpFocus,
+    setRoleFocus,
     setIsModalOpen,
     handleSeachList,
     handleSubmit,
-    handleReset,
     handleSave,
   } = useUserForm();
 
@@ -32,13 +35,18 @@ const User = () => {
       >
         <UserFormTitle title="Create" handleSearchList={handleSeachList} />
         <FormProvider {...method}>
-          <Grid item container xs={12} mt={1} px={2} rowSpacing={2}>
-            <UserForm />
+          <Grid item container xs={12} mt={1} px={2} mb={2} rowSpacing={2}>
+            <UserForm
+              reset={reset}
+              userIdDisable={false}
+              employeeFocus={setEmpFocus}
+              roleFocus={setRoleFocus}
+            />
             <SubmitButtons
               primaryActions="Submit"
               secondaryActions="Cancel"
-              onSubmit={handleSubmit}
-              onCancel={handleReset}
+              onSubmit={method.handleSubmit(handleSubmit)}
+              onCancel={() => method.reset()}
               placement="center"
             />
           </Grid>
@@ -47,7 +55,7 @@ const User = () => {
 
       <ConfirmationDialog
         open={isModalOpen}
-        // setOpen={setIsModalOpen}
+        loading={isPending}
         onCancel={() => setIsModalOpen(false)}
         dialogType="submit"
         title="User"

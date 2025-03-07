@@ -1,18 +1,90 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { FieldProps } from "@/common/Form-component";
+import PasswordStrength from "@/common/UI-component/PasswordStrength";
+import {
+  GetUserEmployeeList,
+  GetUserModules,
+  GetUserRoleList,
+  GetUserSecurityQuesions,
+} from "@/services/admin/user/api";
+import {
+  UserEmployeeListPayloadType,
+  UserListType,
+} from "@/services/admin/user/api.type";
+import { getDropDownValues } from "@/utils/utils";
+import { Dispatch, SetStateAction } from "react";
 
-export const UserFields = (): FieldProps[] => [
+const getDefaultModule = () => {
+  const requestBody: UserListType = {
+    Page: "",
+    Rows: "",
+  };
+
+  const { data, isFetched } = GetUserModules(requestBody);
+  const dropdownValues =
+    isFetched && data?.Data?.length
+      ? getDropDownValues(data?.Data, "ModuleName", "ModuleID")
+      : [];
+
+  return dropdownValues;
+};
+
+const Search: UserEmployeeListPayloadType = {
+  Rows: "10",
+  Page: "1",
+  SearchText: "",
+};
+
+export const UserFields = (
+  userIdDisabled: boolean,
+  setFocusField: Dispatch<SetStateAction<string>>,
+): FieldProps[] => [
   {
-    fieldType: "text",
+    fieldType: "autoComplete",
     name: "EmpCode",
     label: "Employee Code",
     size: "medium",
+    onFocus: (name) => {
+      setFocusField(name);
+    },
+    searchApi: (keyStroke) =>
+      GetUserEmployeeList(
+        {
+          ...Search,
+          SearchText: keyStroke,
+        },
+        {
+          enabled: keyStroke !== "" ? true : false,
+        },
+      ),
+    optionKey: "EmployeeCode",
+    getOptionLabel: (option) => (option ? `${option.EmployeeCode}` : ""),
+    options: (searchData) => searchData?.Data ?? [],
+    hasErrorMessage: true,
     xs: 4,
   },
   {
-    fieldType: "text",
+    fieldType: "autoComplete",
     name: "EmpName",
     label: "Employee Name",
     size: "medium",
+    onFocus: (name) => {
+      setFocusField(name);
+    },
+    searchApi: (keyStroke) =>
+      GetUserEmployeeList(
+        {
+          ...Search,
+          SearchText: keyStroke,
+        },
+        {
+          enabled: keyStroke !== "" ? true : false,
+        },
+      ),
+    optionKey: "EmployeeName",
+    getOptionLabel: (option) => (option ? `${option.EmployeeName}` : ""),
+    options: (searchData) => searchData?.Data ?? [],
+    hasErrorMessage: true,
     xs: 8,
   },
   {
@@ -20,6 +92,11 @@ export const UserFields = (): FieldProps[] => [
     name: "userId",
     label: "User Id",
     size: "medium",
+    hasErrorMessage: true,
+    rules: {
+      required: "Password is required",
+    },
+    disabled: userIdDisabled,
     xs: 12,
   },
   {
@@ -27,6 +104,15 @@ export const UserFields = (): FieldProps[] => [
     name: "password",
     label: "Password",
     size: "medium",
+    helperText: <PasswordStrength name={"password"} />,
+    InputProps: {
+      type: "password",
+      autoComplete: "new-password",
+    },
+    rules: {
+      required: "Password is required",
+    },
+    hasErrorMessage: true,
     xs: 12,
   },
   {
@@ -34,6 +120,14 @@ export const UserFields = (): FieldProps[] => [
     name: "confirmPassword",
     label: "Confirm Password",
     size: "medium",
+    InputProps: {
+      type: "password",
+      autoComplete: "new-password",
+    },
+    rules: {
+      required: "Password is required",
+    },
+    hasErrorMessage: true,
     xs: 12,
   },
   {
@@ -45,33 +139,91 @@ export const UserFields = (): FieldProps[] => [
   },
 ];
 
-export const UserFields2 = (): FieldProps[] => [
+export const UserFields2 = (
+  designationDIsabled: boolean,
+  setFocusField: Dispatch<SetStateAction<string>>,
+): FieldProps[] => [
   {
     fieldType: "text",
     name: "desg",
     label: "Designation",
     size: "medium",
+    disabled: designationDIsabled,
     xs: 12,
   },
   {
-    fieldType: "text",
+    fieldType: "autoComplete",
     name: "roleCode",
     label: "Role Code",
     size: "medium",
+    onFocus: (name) => {
+      setFocusField(name);
+    },
+    searchApi: (keyStroke) =>
+      GetUserRoleList(
+        {
+          ...Search,
+          SearchText: keyStroke,
+        },
+        {
+          enabled: keyStroke !== "" ? true : false,
+        },
+      ),
+    optionKey: "RoleCode",
+    getOptionLabel: (option) => (option ? `${option.RoleCode}` : ""),
+    options: (searchData) => searchData?.Data ?? [],
+    hasErrorMessage: true,
     xs: 4,
   },
   {
-    fieldType: "text",
+    fieldType: "autoComplete",
     name: "roleName",
     label: "Role Name",
     size: "medium",
+    onFocus: (name) => {
+      setFocusField(name);
+    },
+    searchApi: (keyStroke) =>
+      GetUserRoleList(
+        {
+          ...Search,
+          SearchText: keyStroke,
+        },
+        {
+          enabled: keyStroke !== "" ? true : false,
+        },
+      ),
+    optionKey: "RoleName",
+    getOptionLabel: (option) => (option ? `${option.RoleName}` : ""),
+    options: (searchData) => searchData?.Data ?? [],
+    hasErrorMessage: true,
+    rules: {
+      required: "Role Name is required",
+    },
     xs: 8,
   },
   {
-    fieldType: "text",
+    fieldType: "autoComplete",
     name: "securityQestion",
     label: "Security Qestion",
     size: "medium",
+    searchApi: (keyStroke) =>
+      GetUserSecurityQuesions(
+        {
+          Rows: "10",
+          Page: "1",
+        },
+        {
+          enabled: keyStroke !== "" ? true : false,
+        },
+      ),
+    optionKey: "QuestionName",
+    getOptionLabel: (option) => (option ? `${option.QuestionName}` : ""),
+    options: (searchData) => searchData?.Data ?? [],
+    hasErrorMessage: true,
+    rules: {
+      required: "Qusetion is required",
+    },
     xs: 12,
   },
   {
@@ -79,13 +231,22 @@ export const UserFields2 = (): FieldProps[] => [
     name: "answer",
     label: "Answer",
     size: "medium",
+    hasErrorMessage: true,
+    rules: {
+      required: "Answer is required",
+    },
     xs: 12,
   },
   {
-    fieldType: "text",
+    fieldType: "select",
     name: "defaultLoginModule",
     label: "Default Login Module",
+    options: getDefaultModule(),
     size: "medium",
+    hasErrorMessage: true,
+    rules: {
+      required: "Default Module is required",
+    },
     xs: 12,
   },
 ];

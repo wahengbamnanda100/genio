@@ -28,6 +28,7 @@ const InputField = ({
   lg,
   md,
   label,
+  helperText,
   rtl = false,
   bgColor = "inherit",
   // numberFormate,
@@ -57,6 +58,7 @@ const InputField = ({
             inputRef={ref}
             variant={variant}
             size={size}
+            helperText={helperText}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
             onChange={(
@@ -87,11 +89,27 @@ const InputField = ({
                 "&.Mui-focused": {
                   color: "black",
                 },
+                "&.Mui-disabled": {
+                  color: (theme) => theme.palette.grey[700],
+                },
               },
-              "& .MuiInputBase-root": {},
+
+              "& .MuiInputBase-root": {
+                "&.Mui-disabled": {
+                  color: (theme) => theme.palette.grey[700],
+                  backgroundColor: (theme) => theme.palette.grey[200],
+                  border: (theme) => theme.palette.grey[300],
+                },
+              },
               "& .MuiOutlinedInput-notchedOutline": {
                 direction: rtl ? "rtl" : "ltr",
                 textAlign: rtl ? "right" : "left",
+
+                "&.Mui-disabled": {
+                  color: (theme) => theme.palette.grey[700],
+                  backgroundColor: (theme) => theme.palette.grey[200],
+                  border: (theme) => theme.palette.grey[300],
+                },
               },
             }}
           />

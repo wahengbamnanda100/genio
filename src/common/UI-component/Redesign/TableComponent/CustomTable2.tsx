@@ -378,7 +378,7 @@ const CustomTable2 = ({
 
         <PagingState {...pagingState} />
         <CustomPaging {...customPaging} />
-        <IntegratedPaging />
+        {/* <IntegratedPaging /> */}
 
         <SelectionState
           selection={selection}

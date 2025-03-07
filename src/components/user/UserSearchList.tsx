@@ -5,9 +5,10 @@ import AddIcon from "@mui/icons-material/Add";
 
 import CustomBreadcrumbs from "../../common/CustomBreadcrumb";
 import SearchContainer from "../../common/SearchButtons";
-import { userListSearchType, UserSearchField } from "./user.type";
+import { userListSearchType } from "./user.type";
 import Field from "../../common/Form-component/field";
 import React from "react";
+import { UserSearchField } from "./user.input.components";
 
 interface UserSearchFieldProps {
   method: UseFormReturn<userListSearchType>;

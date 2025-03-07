@@ -4,14 +4,14 @@ import { configureStore } from "@reduxjs/toolkit";
 import posMenuReducer from "./slices/posMenuSlice";
 import menuMasterReducer from "./slices/menuMasterSlice";
 import menuItemReducer from "./slices/menuItems.slice";
-import userShowroomReducer from "./slices/admin/user/userShoroom.slice";
+import userCompanyReducer from "./slices/admin/user/userCompanySelect";
 
 const store = configureStore({
   reducer: {
     posMenuTable: posMenuReducer,
     menuMaster: menuMasterReducer,
     menuItem: menuItemReducer,
-    userShowroom: userShowroomReducer,
+    userCompanySelect: userCompanyReducer,
   },
 });
 

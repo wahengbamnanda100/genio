@@ -1,25 +1,19 @@
 import { Column, GridColumnExtension } from "@devexpress/dx-react-grid";
 import { CompanyList } from "./user.type";
 import CustomTable2 from "../../common/UI-component/Redesign/TableComponent/CustomTable2";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ListFilterCellComponent } from "../../common/CutomTable/components/customComponent";
 import {
   AllocateButton,
   AllocateDrawer,
   SwitchCell,
 } from "./userForm.table.component";
+import {
+  useUserShowroomAllocation,
+  useUserTable,
+} from "@/hooks/admin/user/useUserTable";
 
-const UserDetailTable = ({
-  data = [],
-  isLoading,
-}: {
-  data: CompanyList[];
-  isLoading: boolean;
-}) => {
-  const [tableData, setTableData] = useState<CompanyList[]>(data || []);
-  const [openAllocate, setOpenAllocate] = useState<boolean>(false);
-  const [selection, setSelection] = useState<string[]>([]);
-  const [selectionFull, setSelectionFull] = useState<CompanyList[]>([]);
+const UserDetailTable = ({ reset }: { reset: boolean }) => {
   const [searchQuery, setSearchQuery] = useState({
     department: "",
     status: "",
@@ -27,15 +21,37 @@ const UserDetailTable = ({
     Rows: 10,
   });
 
+  const {
+    isLoading,
+    selection,
+    companyList,
+    // selectionFull,
+    handleDefaultSelection,
+    handleSelectionChange,
+  } = useUserTable(reset);
+
+  const {
+    showrooms,
+    isLoading: isLoadingShowrooms,
+    openAllocate,
+    selection: showroomSelection,
+    setOpenAllocate,
+    handleSelectChange,
+    handleDefaultChange,
+    handleAllocation,
+    handleSelect,
+    handleCancel,
+  } = useUserShowroomAllocation();
+
   const columns: Column[] = [
     {
       title: "Sl",
       name: "rowIndex",
       getCellValue: (row: CompanyList) => {
-        if (data && data) {
+        if (companyList && companyList) {
           return (
-            data.findIndex(
-              (dataRow: CompanyList) => dataRow.cmpCode === row.cmpCode,
+            companyList.findIndex(
+              (dataRow: CompanyList) => dataRow.cmpId === row.cmpId,
             ) + 1
           );
         }
@@ -53,8 +69,8 @@ const UserDetailTable = ({
         return (
           <SwitchCell
             row={row}
-            checked={!selection.includes(row.cmpCode) ? false : row.default}
-            disabled={!selection.includes(row.cmpCode)}
+            checked={!selection.includes(row.cmpId) ? false : row.default}
+            disabled={!selection.includes(row.cmpId)}
             onChangeSwitch={handleDefaultSelection}
           />
         );
@@ -66,10 +82,10 @@ const UserDetailTable = ({
       getCellValue: (row: CompanyList) => {
         return (
           <AllocateButton
-            rowId={row.cmpCode}
+            rowId={row.cmpId}
             open={openAllocate}
-            disabled={!selection.includes(row.cmpCode)}
-            setOpen={setOpenAllocate}
+            disabled={!selection.includes(row.cmpId)}
+            onClickAllocation={handleAllocation}
           />
         );
       },
@@ -108,11 +124,6 @@ const UserDetailTable = ({
     },
   ];
 
-  useEffect(() => {
-    console.log("selected rows", selection);
-    console.log("selected rows full", selectionFull);
-  }, [selection]);
-
   const toggleDrawer =
     (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
       if (
@@ -127,37 +138,6 @@ const UserDetailTable = ({
       setOpenAllocate(open);
     };
 
-  const handleSelectionChange = (selectedIds: string[]) => {
-    // Map selected IDs to full row objects
-    const newSelectedRows = tableData.filter((row: CompanyList) =>
-      selectedIds.includes(row.cmpCode),
-    );
-    setSelection(selectedIds); // Update local selection for grid
-    setSelectionFull(newSelectedRows);
-  };
-
-  const handleDefaultSelection = (
-    event: React.ChangeEvent<HTMLInputElement>,
-    row: CompanyList,
-  ) => {
-    if (!event.target.checked) {
-      return;
-    }
-
-    // Create a new array with updated default values
-    const updatedData = tableData.map((company) => ({
-      ...company,
-      default: company.cmpCode === row.cmpCode,
-    }));
-
-    setTableData(updatedData);
-    // setData(updatedData);
-  };
-
-  const handleSelect = () => {};
-
-  const handleCancel = () => {};
-
   return (
     <>
       <CustomTable2
@@ -168,8 +148,8 @@ const UserDetailTable = ({
         isLoading={isLoading}
         grid={{
           columns,
-          rows: tableData,
-          getRowId: (row: CompanyList) => row.cmpCode,
+          rows: companyList,
+          getRowId: (row: CompanyList) => row.cmpId,
         }}
         table={{
           columnExtensions: columnExtension,
@@ -193,7 +173,8 @@ const UserDetailTable = ({
             }),
         }}
         customPaging={{
-          totalCount: data && Array.isArray(data) ? data.length : 0,
+          totalCount:
+            companyList && Array.isArray(companyList) ? companyList.length : 0,
         }} //todo count page
         tableFilterRow={{
           cellComponent: ListFilterCellComponent,
@@ -207,6 +188,11 @@ const UserDetailTable = ({
 
       <AllocateDrawer
         open={openAllocate}
+        showrooms={showrooms}
+        isLoading={isLoadingShowrooms}
+        selection={showroomSelection}
+        handleDefaultChange={handleDefaultChange}
+        handleSelectChange={handleSelectChange}
         toggleDrawer={toggleDrawer}
         onSelect={handleSelect}
         onCancel={handleCancel}
