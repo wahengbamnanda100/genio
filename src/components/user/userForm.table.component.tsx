@@ -8,13 +8,14 @@ import {
   Typography,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import React, { useState } from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import { StyledSwitch } from "./User.styled";
 import { ShowroomListType } from "./user.type";
 import { Column, GridColumnExtension } from "@devexpress/dx-react-grid";
 
 import CustomTable2 from "@/common/UI-component/Redesign/TableComponent/CustomTable2";
 import { ListFilterCellComponent } from "@/common/CutomTable/components/customComponent";
+import { UserShowroomListPayload } from "@/services/admin/user/api.type";
 
 export const SwitchCell = <T,>({
   row,
@@ -72,7 +73,12 @@ interface AllocationDrawerProps {
   open: boolean;
   showrooms: ShowroomListType[];
   isLoading: boolean;
+  totalCount: string;
   selection: string[];
+  searchQuery: Omit<UserShowroomListPayload, "CompanyID">;
+  setSearchQuery: Dispatch<
+    SetStateAction<Omit<UserShowroomListPayload, "CompanyID">>
+  >;
   toggleDrawer: (open: boolean) => any;
   handleSelectChange: (id: string[]) => void;
   handleDefaultChange: (
@@ -88,6 +94,9 @@ export const AllocateDrawer = ({
   showrooms,
   isLoading,
   selection,
+  totalCount,
+  searchQuery,
+  setSearchQuery,
   toggleDrawer,
   handleSelectChange,
   handleDefaultChange,
@@ -116,6 +125,9 @@ export const AllocateDrawer = ({
             data={showrooms}
             isLoading={isLoading}
             selection={selection}
+            searchQuery={searchQuery}
+            totalCount={totalCount}
+            setSearchQuery={setSearchQuery}
             handleSelectChange={handleSelectChange}
             handleDefaultChange={handleDefaultChange}
           />
@@ -157,6 +169,11 @@ interface ShowroomListProps {
   data: ShowroomListType[];
   isLoading: boolean;
   selection: string[];
+  totalCount: string;
+  searchQuery: Omit<UserShowroomListPayload, "CompanyID">;
+  setSearchQuery: Dispatch<
+    SetStateAction<Omit<UserShowroomListPayload, "CompanyID">>
+  >;
   handleSelectChange: (id: string[]) => void;
   handleDefaultChange: (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -168,16 +185,12 @@ const ShowroomList = ({
   data,
   isLoading,
   selection,
+  totalCount,
+  searchQuery,
+  setSearchQuery,
   handleSelectChange,
   handleDefaultChange,
 }: ShowroomListProps) => {
-  const [searchQuery, setSearchQuery] = useState({
-    department: "",
-    status: "",
-    PageNo: 1,
-    Rows: 10,
-  });
-
   const columns: Column[] = [
     {
       title: "SL",
@@ -242,22 +255,22 @@ const ShowroomList = ({
       selection={selection}
       setSelection={handleSelectChange}
       pagingState={{
-        currentPage: searchQuery?.PageNo - 1,
+        currentPage: Number(searchQuery?.Page) - 1,
         onCurrentPageChange: (currentPage) =>
           setSearchQuery({
             ...searchQuery,
-            PageNo: currentPage + 1,
+            Page: (currentPage + 1).toString(),
           }),
-        pageSize: searchQuery.Rows,
+        pageSize: Number(searchQuery.Rows),
         onPageSizeChange: (pageSize) =>
           setSearchQuery({
             ...searchQuery,
-            PageNo: 1,
-            Rows: pageSize,
+            Page: "1",
+            Rows: pageSize.toString(),
           }),
       }}
       customPaging={{
-        totalCount: data && Array.isArray(data) ? data.length : 0,
+        totalCount: Number(totalCount),
       }} //todo count page
       tableFilterRow={{
         cellComponent: ListFilterCellComponent,

@@ -1,40 +1,36 @@
 import { Column, GridColumnExtension } from "@devexpress/dx-react-grid";
 import { CompanyList } from "./user.type";
 import CustomTable2 from "../../common/UI-component/Redesign/TableComponent/CustomTable2";
-import { useState } from "react";
 import { ListFilterCellComponent } from "../../common/CutomTable/components/customComponent";
 import {
   AllocateButton,
   AllocateDrawer,
   SwitchCell,
 } from "./userForm.table.component";
-import {
-  useUserShowroomAllocation,
-  useUserTable,
-} from "@/hooks/admin/user/useUserTable";
+import { useUserTable } from "@/hooks/admin/user/useUserTable";
+import { useUserShowroomAllocation } from "@/hooks/admin/user/useUserShowroom";
 
-const UserDetailTable = ({ reset }: { reset: boolean }) => {
-  const [searchQuery, setSearchQuery] = useState({
-    department: "",
-    status: "",
-    PageNo: 1,
-    Rows: 10,
-  });
-
+const UserDetailTable = () => {
   const {
     isLoading,
     selection,
     companyList,
+    totalCount: compnayTotalCount,
+    searchQuery,
+    setSearchQuery,
     // selectionFull,
     handleDefaultSelection,
     handleSelectionChange,
-  } = useUserTable(reset);
+  } = useUserTable();
 
   const {
     showrooms,
     isLoading: isLoadingShowrooms,
     openAllocate,
+    totalCount: showroomTotalCount,
     selection: showroomSelection,
+    searchQuery: showroomSearchQuery,
+    setSearchQuery: setShowroomSearchQuery,
     setOpenAllocate,
     handleSelectChange,
     handleDefaultChange,
@@ -158,23 +154,22 @@ const UserDetailTable = ({ reset }: { reset: boolean }) => {
         selection={selection}
         setSelection={handleSelectionChange}
         pagingState={{
-          currentPage: searchQuery?.PageNo - 1,
+          currentPage: Number(searchQuery?.Page) - 1,
           onCurrentPageChange: (currentPage) =>
             setSearchQuery({
               ...searchQuery,
-              PageNo: currentPage + 1,
+              Page: (currentPage + 1).toString(),
             }),
-          pageSize: searchQuery.Rows,
+          pageSize: Number(searchQuery.Rows),
           onPageSizeChange: (pageSize) =>
             setSearchQuery({
               ...searchQuery,
-              PageNo: 1,
-              Rows: pageSize,
+              Page: "1",
+              Rows: pageSize.toString(),
             }),
         }}
         customPaging={{
-          totalCount:
-            companyList && Array.isArray(companyList) ? companyList.length : 0,
+          totalCount: Number(compnayTotalCount),
         }} //todo count page
         tableFilterRow={{
           cellComponent: ListFilterCellComponent,
@@ -190,7 +185,10 @@ const UserDetailTable = ({ reset }: { reset: boolean }) => {
         open={openAllocate}
         showrooms={showrooms}
         isLoading={isLoadingShowrooms}
+        totalCount={showroomTotalCount}
         selection={showroomSelection}
+        searchQuery={showroomSearchQuery}
+        setSearchQuery={setShowroomSearchQuery}
         handleDefaultChange={handleDefaultChange}
         handleSelectChange={handleSelectChange}
         toggleDrawer={toggleDrawer}

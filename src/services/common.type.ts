@@ -7,4 +7,5 @@ export type ApiResponse = {
   Message: string;
   Info?: string;
   Error?: Error;
+  OverallCount?: string;
 };

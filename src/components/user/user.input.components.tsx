@@ -2,16 +2,19 @@
 import { FieldProps } from "@/common/Form-component";
 import PasswordStrength from "@/common/UI-component/PasswordStrength";
 import {
+  GetUserCompanyList,
   GetUserEmployeeList,
   GetUserModules,
   GetUserRoleList,
   GetUserSecurityQuesions,
+  SearchUserList,
 } from "@/services/admin/user/api";
 import {
+  SearchUserListPayloadType,
   UserEmployeeListPayloadType,
   UserListType,
 } from "@/services/admin/user/api.type";
-import { getDropDownValues } from "@/utils/utils";
+import { getDropDownValues, lsUserId } from "@/utils/utils";
 import { Dispatch, SetStateAction } from "react";
 
 const getDefaultModule = () => {
@@ -270,32 +273,129 @@ export const ActiveCheckbox = (): FieldProps => ({
   xs: 12,
 });
 
-export const UserSearchField = (): FieldProps[] => [
+//!______________SEARCH LIST___________________
+type optionType = {
+  label: string;
+  value: string;
+};
+
+const StatusOptions: optionType[] = [
   {
-    fieldType: "text",
-    name: "UserId",
-    label: "User Id",
-    size: "medium",
-    xs: 2,
+    label: "All",
+    value: "",
   },
   {
-    fieldType: "text",
+    label: "Active",
+    value: "1",
+  },
+  {
+    label: "InActive",
+    value: "0",
+  },
+];
+
+const UserType: optionType[] = [
+  {
+    label: "All",
+    value: "",
+  },
+  {
+    label: "Logged User",
+    value: lsUserId,
+  },
+];
+
+const SEARCH_PAYLOAD: SearchUserListPayloadType = {
+  Rows: "10",
+  Page: "1",
+  CompanyID: "",
+  EmployeeName: "",
+  EmployeezCode: "",
+  LoginID: "",
+  LogStatus: "",
+  ModuleID: "",
+  RoleName: "",
+  Status: "",
+};
+
+export const UserSearchField = (): FieldProps[] => [
+  // {
+  //   fieldType: "autoComplete",
+  //   name: "UserId",
+  //   label: "User Id",
+  //   searchApi: (keyStroke) =>
+  //     SearchUserList(
+  //       {
+  //         ...SEARCH_PAYLOAD,
+  //         LoginID: keyStroke,
+  //       },
+  //       {
+  //         enabled: keyStroke !== "" ? true : false,
+  //       },
+  //     ),
+  //   optionKey: "UserID",
+  //   getOptionLabel: (option) => (option ? `${option.UserID}` : ""),
+  //   options: (searchData) => searchData?.Data ?? [],
+  //   size: "medium",
+  //   xs: 2,
+  // },
+  {
+    fieldType: "autoComplete",
     name: "EmployeeCode",
     label: "Employee Code",
+    searchApi: (keyStroke) =>
+      SearchUserList(
+        {
+          ...SEARCH_PAYLOAD,
+          EmployeezCode: keyStroke,
+        },
+        {
+          enabled: keyStroke !== "" ? true : false,
+        },
+      ),
+    optionKey: "EmpCode",
+    getOptionLabel: (option) => (option ? `${option.EmpCode}` : ""),
+    options: (searchData) => searchData?.Data ?? [],
     size: "medium",
-    xs: 2,
+    xs: 1.5,
   },
   {
-    fieldType: "text",
+    fieldType: "autoComplete",
     name: "EmployeeName",
     label: "Employee Name",
+    searchApi: (keyStroke) =>
+      SearchUserList(
+        {
+          ...SEARCH_PAYLOAD,
+          EmployeeName: keyStroke,
+        },
+        {
+          enabled: keyStroke !== "" ? true : false,
+        },
+      ),
+    optionKey: "EmpName",
+    getOptionLabel: (option) => (option ? `${option.EmpName}` : ""),
+    options: (searchData) => searchData?.Data ?? [],
     size: "medium",
     xs: 3,
   },
   {
-    fieldType: "text",
+    fieldType: "autoComplete",
     name: "RoleName",
     label: "Role Name",
+    searchApi: (keyStroke) =>
+      SearchUserList(
+        {
+          ...SEARCH_PAYLOAD,
+          RoleName: keyStroke,
+        },
+        {
+          enabled: keyStroke !== "" ? true : false,
+        },
+      ),
+    optionKey: "RoleName",
+    getOptionLabel: (option) => (option ? `${option.RoleName}` : ""),
+    options: (searchData) => searchData?.Data ?? [],
     size: "medium",
     xs: 3,
   },
@@ -303,14 +403,28 @@ export const UserSearchField = (): FieldProps[] => [
     fieldType: "select",
     name: "DefaultLogin",
     label: "Default Login",
-    options: [],
+    options: getDefaultModule(),
     size: "medium",
-    xs: 2,
+    xs: 1.5,
   },
   {
-    fieldType: "text",
+    fieldType: "autoComplete",
     name: "CompanyName",
     label: "Company Name",
+    searchApi: (keyStroke) =>
+      GetUserCompanyList(
+        {
+          Page: "1",
+          Rows: "10",
+          CompanyID: keyStroke,
+        },
+        {
+          enabled: keyStroke !== "" ? true : false,
+        },
+      ),
+    optionKey: "CompanyName",
+    getOptionLabel: (option) => (option ? `${option.CompanyName}` : ""),
+    options: (searchData) => searchData?.Data ?? [],
     size: "medium",
     xs: 3,
   },
@@ -319,7 +433,7 @@ export const UserSearchField = (): FieldProps[] => [
     name: "Status",
     label: "Status",
     size: "medium",
-    options: [],
+    options: StatusOptions,
     xs: 2,
   },
   {
@@ -327,7 +441,7 @@ export const UserSearchField = (): FieldProps[] => [
     name: "UserType",
     label: "User Type",
     size: "medium",
-    options: [],
+    options: UserType,
     xs: 2,
   },
 ];

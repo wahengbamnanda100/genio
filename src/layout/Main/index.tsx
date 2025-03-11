@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Outlet } from "react-router";
 import MultiLevelSidebar from "./Sidebar/Sidebar2";
 import CustomAppbar from "./Header";
+import CustomSnackbar from "@/common/UI-component/Notification";
 
 const drawerWidth = 200;
 const minimizedSecondSidebarWidth = 50;
@@ -74,7 +75,6 @@ const MainLayout = () => {
             }),
           }}
         >
-          {/* Main Content */}
           <Box
             sx={{
               flexGrow: 1,
@@ -83,8 +83,10 @@ const MainLayout = () => {
           >
             <Outlet />
           </Box>
+          <Box sx={{ padding: "1.1rem" }}>
+            <CustomSnackbar />
+          </Box>
         </Box>
-        {/* <ExpandableIconButton /> */}
       </Box>
     </>
   );

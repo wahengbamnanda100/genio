@@ -5,9 +5,9 @@ export const CustomStatusCellFormatter: React.ComponentType<
   DataTypeProvider.ValueFormatterProps
 > = ({ value }) => {
   const theme = useTheme();
-  const status = value === "Active" ? "Active" : "Inactive";
+  const status = value === "True" ? "Active" : "Inactive";
   const color: string =
-    value === "Active" ? theme.palette.success.main : theme.palette.error.main;
+    value === "True" ? theme.palette.success.main : theme.palette.error.main;
   return (
     <Box
       sx={{

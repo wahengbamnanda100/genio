@@ -3,11 +3,20 @@ import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import CustomBreadcrumbs from "@/common/CustomBreadcrumb";
 
 interface UseFromTitleProps {
+  isEdit?: boolean;
+  isView?: boolean;
+  breadcrumbTitle: string;
   title: string;
   handleSearchList: () => void;
 }
 
-const UserFormTitle = ({ title, handleSearchList }: UseFromTitleProps) => {
+const UserFormTitle = ({
+  isEdit,
+  isView,
+  breadcrumbTitle,
+  title,
+  handleSearchList,
+}: UseFromTitleProps) => {
   return (
     <Grid
       component={"form"}
@@ -32,7 +41,11 @@ const UserFormTitle = ({ title, handleSearchList }: UseFromTitleProps) => {
           alignItems: "center",
         }}
       >
-        <CustomBreadcrumbs />
+        <CustomBreadcrumbs
+          isView={isView}
+          isEdit={isEdit}
+          breadcrumbTitle={breadcrumbTitle}
+        />
       </Grid>
 
       <Grid

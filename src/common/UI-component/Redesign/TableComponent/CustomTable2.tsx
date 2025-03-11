@@ -298,11 +298,10 @@ const CustomTable2 = ({
   ] = useState(integratedFiltering?.columnExtensions ?? []);
   const [grouping, setGrouping] = useState<Grouping[]>([]);
 
-  // const [rightColumns] = useState(["Action"]);
-  // const [leftColumns] = useState(["RowIndex", "ReferNo", "SectorCode"]);
   const [expandedRowId, setExpandedRowId] = useState(null);
 
   const onHiddenColumnNamesChange = (hiddenColumnNames: string[]) => {
+    console.log("columna name{}", hiddenColumnNames);
     setColumnIntegratedFilteringExtensionsState(
       hiddenColumnNames
         .map((columnName) => ({

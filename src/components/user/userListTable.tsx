@@ -19,6 +19,8 @@ interface UserListProps {
   totalCount: string;
   searchQuery: SearchUserListPayloadType;
   setSearchQuery: Dispatch<SetStateAction<SearchUserListPayloadType>>;
+  handleDelete: (row: SearchListType) => void;
+  handleEdit: (row: SearchListType) => void;
 }
 
 const UserListTable = ({
@@ -27,17 +29,32 @@ const UserListTable = ({
   totalCount,
   searchQuery,
   setSearchQuery,
+  handleDelete,
+  handleEdit,
 }: UserListProps) => {
   const rightFixed = ["action"];
   const columnExtensions: GridColumnExtension[] = [
+    {
+      columnName: "index",
+      align: "center",
+      width: 80,
+    },
+    {
+      columnName: "RoleCode",
+      align: "left",
+      width: 120,
+    },
+    {
+      columnName: "Status",
+      align: "center",
+      width: 100,
+    },
     {
       columnName: "action",
       align: "center",
       width: 120,
     },
   ];
-
-  console.log({ totalCount });
   const columns: Column[] = [
     {
       title: "Sl",
@@ -53,7 +70,7 @@ const UserListTable = ({
         return "";
       },
     },
-    { name: "UserID", title: "User ID" },
+    // { name: "UserID", title: "User ID" },
     { name: "EmpCode", title: "Emplopyee Code" },
     { name: "EmpName", title: "Employee Name" },
     { name: "Designatiom", title: "Designation" },
@@ -77,12 +94,6 @@ const UserListTable = ({
   ];
   const rows: SearchListType[] = data;
 
-  const handleDelete = (row: SearchListType) => {
-    console.log("Deleted row", row);
-  };
-  const handleEdit = (row: SearchListType) => {
-    console.log("edit row", row);
-  };
   return (
     <CustomTable2
       densed={false}
@@ -112,6 +123,26 @@ const UserListTable = ({
       customPaging={{
         // totalCount: Number(totalCount),
         totalCount: Number(totalCount),
+      }}
+      filteringState={{
+        columnExtensions: [
+          { columnName: "index", filteringEnabled: false },
+          { columnName: "action", filteringEnabled: false },
+        ],
+      }}
+      integratedFiltering={{
+        columnExtensions: [
+          {
+            columnName: "CardSwipe",
+            predicate: (value, filter) => filter.value === value,
+          },
+        ],
+      }}
+      tableColumnVisibility={{
+        columnExtensions: [
+          { columnName: "index", togglingEnabled: false },
+          { columnName: "action", togglingEnabled: false },
+        ],
       }}
       hasExport
       hasPaging

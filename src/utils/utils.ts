@@ -148,3 +148,6 @@ export function convertStringArray(
     throw new Error("Invalid mode. Use 'toString' or 'toArray'.");
   }
 }
+
+export const lsUserId =
+  JSON.parse(localStorage.getItem("userDetail")!)?.UserId || "";

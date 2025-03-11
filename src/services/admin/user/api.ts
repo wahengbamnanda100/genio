@@ -3,6 +3,10 @@ import {
   SearchUserListResponseType,
   UserCompanyListPayload,
   UserCompanyListResponse,
+  UserDeleteResponseType,
+  UserDeleteType,
+  UserDetailByIdResponse,
+  UserDetailPayload,
   UserEmployeeListPayloadType,
   UserEmployeeResType,
   UserListType,
@@ -127,4 +131,25 @@ export const SearchUserList = (
     data,
     queryOptions,
   );
+};
+
+export const UserDetailByID = (
+  data: UserDetailPayload,
+  queryOptions?: Partial<UseQueryOptions<UserDetailByIdResponse, Error>>,
+) => {
+  return useApiQuery<UserDetailPayload, UserDetailByIdResponse>(
+    "User_List",
+    "/API/UserMasterEditDetailsListing",
+    data,
+    queryOptions,
+  );
+};
+
+export const mutateUserDelete = async (
+  data: UserDeleteType,
+): Promise<UserDeleteResponseType> => {
+  const response: AxiosResponse<UserDeleteResponseType> =
+    await axiosInstance.post("/API/DeleteUserMasterAPI", data);
+
+  return response.data;
 };

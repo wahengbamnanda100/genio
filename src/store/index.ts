@@ -5,6 +5,7 @@ import posMenuReducer from "./slices/posMenuSlice";
 import menuMasterReducer from "./slices/menuMasterSlice";
 import menuItemReducer from "./slices/menuItems.slice";
 import userCompanyReducer from "./slices/admin/user/userCompanySelect";
+import userCompanyResetReducer from "./slices/admin/user/companyrestSlice";
 
 const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ const store = configureStore({
     menuMaster: menuMasterReducer,
     menuItem: menuItemReducer,
     userCompanySelect: userCompanyReducer,
+    userCompanyReset: userCompanyResetReducer,
   },
 });
 

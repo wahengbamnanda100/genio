@@ -1,3 +1,4 @@
+import ConfirmationDialog from "@/common/ModalComponent/ConfirmationDialog";
 import UserListTable from "@/components/user/userListTable";
 import UserSearchList from "@/components/user/UserSearchList";
 import { useUserList } from "@/hooks/admin/user/useUserLIst";
@@ -8,10 +9,17 @@ const UserList = () => {
     method,
     tableData,
     isLoading,
+    isPending,
     searchQuery,
     expanded,
+    isModalOpen,
+    setIsModalOpen,
     setSearchQuery,
     setExpanded,
+    handleDelete,
+    handleEdit,
+    handleConfirmeDelete,
+    handleCancelDelete,
     handleSearch,
     handleCreateNew,
   } = useUserList();
@@ -44,9 +52,22 @@ const UserList = () => {
             totalCount={tableData?.OverallCount || "0"}
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
+            handleDelete={handleDelete}
+            handleEdit={handleEdit}
           />
         </Grid>
       </Grid>
+      <ConfirmationDialog
+        dialogType="delete"
+        open={isModalOpen}
+        loading={isPending}
+        setOpen={setIsModalOpen}
+        title="Delete User"
+        description="Do you want to delete this user"
+        onConfirm={handleConfirmeDelete}
+        onCancel={handleCancelDelete}
+      />
+      .
     </Box>
   );
 };

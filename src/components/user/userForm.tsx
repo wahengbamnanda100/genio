@@ -15,7 +15,6 @@ import { Dispatch, SetStateAction } from "react";
 
 const UserForm = ({
   userIdDisable,
-  reset,
   employeeFocus,
   roleFocus,
 }: {
@@ -70,7 +69,7 @@ const UserForm = ({
             </Typography>
           </Grid>
 
-          <UserDetailTable reset={reset} />
+          <UserDetailTable />
         </Grid>
       </Box>
       <Grid item container xs={12} spacing={2}>

@@ -1,3 +1,4 @@
+// import { InputRounded } from "@mui/icons-material";
 import { Breadcrumbs, Link, Typography } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -7,7 +8,17 @@ const formatText = (text: string) => {
     .replace(/\b\w/g, (char) => char.toUpperCase()); // Capitalize first letter
 };
 
-const CustomBreadcrumbs = () => {
+interface CustombreadcrumbProps {
+  isEdit?: boolean;
+  isView?: boolean;
+  breadcrumbTitle?: string;
+}
+
+const CustomBreadcrumbs = ({
+  isEdit = false,
+  isView = false,
+  breadcrumbTitle = "",
+}: CustombreadcrumbProps) => {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -26,11 +37,13 @@ const CustomBreadcrumbs = () => {
       </Link>
       {pathnames.map((value, index) => {
         const last = index === pathnames.length - 1;
+        const displayValue =
+          last && isEdit && isView && breadcrumbTitle ? breadcrumbTitle : value;
         const to = `/${pathnames.slice(0, index + 1).join("/")}`;
 
         return last ? (
           <Typography color="text.primary" key={to} sx={{ fontWeight: "bold" }}>
-            {formatText(value)}
+            {formatText(displayValue)}
           </Typography>
         ) : (
           <Link
@@ -40,7 +53,7 @@ const CustomBreadcrumbs = () => {
             key={to}
             sx={{ cursor: "pointer" }}
           >
-            {formatText(value)}
+            {formatText(displayValue)}
           </Link>
         );
       })}

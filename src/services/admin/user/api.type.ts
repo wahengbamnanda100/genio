@@ -112,13 +112,21 @@ export type UserSQData = {
   QuestionName: string;
 };
 
-export type UserSQResponse = UserSQData & ApiResponse;
+export type UserSQResponse = { Data: UserSQData[] } & ApiResponse;
 
 //!_______________List type______________
 
 export type SearchUserListPayloadType = {
   Rows: string;
   Page: string;
+  Status: string;
+  LoginID: string;
+  EmployeezCode: string;
+  EmployeeName: string;
+  ModuleID: string;
+  RoleName: string;
+  LogStatus: string;
+  CompanyID: string;
 };
 
 export type SearchListType = {
@@ -150,3 +158,57 @@ export type ListResponse = {
 export type SearchUserListResponseType = {
   Data: SearchListType[];
 } & ListResponse;
+
+export type UserDeleteType = {
+  EmpID: string;
+};
+
+export type UserDeleteResponseType = {
+  Status: string;
+  Data: null;
+  Message: string;
+};
+
+export type UserDetailPayload = {
+  UserID: string;
+};
+
+export type UserDetailShowroom = {
+  ShowroomID: string;
+  ShowroomName: string;
+  AllocShowroomId: string;
+  DefaultShowroom: string;
+  CompnayID: string;
+};
+
+export type UserDetailCompany = {
+  CompanyID: string;
+  CompanyName: string;
+  CompanyType: string;
+  CompanyCode: string;
+  CompanyAddress: string;
+  CompanyAllocationID: string;
+  DefaultCompany: string;
+  Showroomdtls: UserDetailShowroom[];
+};
+export type UserDeails = {
+  UserID: string;
+  EmpID: string;
+  EmpCode: string;
+  EmpName: string;
+  Designatiom: string;
+  RoleID: string;
+  RoleCode: string;
+  RoleName: string;
+  UserLoginID: string;
+  Password: string;
+  Description: string;
+  Status: string;
+  UserPin: string;
+  ModuleID: string;
+  SecurityQuestion: string;
+  Answer: string;
+  Companydtls: UserDetailCompany[];
+};
+
+export type UserDetailByIdResponse = { Data: UserDeails[] } & ApiResponse;

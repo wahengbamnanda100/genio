@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   UserEmployeeData,
   UserRoleData,
@@ -5,12 +6,12 @@ import {
 } from "@/services/admin/user/api.type";
 
 export type userListSearchType = {
-  UserId: string;
-  EmployeeCode: string;
-  EmployeeName: string;
-  RoleName: string;
+  UserId: any;
+  EmployeeCode: any;
+  EmployeeName: any;
+  RoleName: any;
   DefaultLogin: string;
-  CompanyName: string;
+  CompanyName: any;
   Status: string;
   UserType: string;
 };

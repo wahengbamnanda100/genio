@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 
@@ -20,14 +20,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { setSelectCompanyIDs } from "@/store/slices/admin/user/userCompanySelect";
 
-export const useUserForm = () => {
+export const useUserForm = (detailData: UserFormType, id?: string) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const queryClient = useQueryClient();
+  const { setNotify } = useAppProvider();
   const selectedCompanies = useSelector(
     (state: RootState) => state.userCompanySelect.values,
   );
-  const { setNotify } = useAppProvider();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [reset, setReset] = useState<boolean>(false);
   const [empFocus, setEmpFocus] = useState<string>("");
@@ -45,6 +45,7 @@ export const useUserForm = () => {
       roleCode: "",
       roleName: "",
       securityQestion: "",
+      answer: "",
       defaultLoginModule: "",
       desc: "",
       companyList: [],
@@ -52,6 +53,27 @@ export const useUserForm = () => {
     },
     resolver: createResolver(),
   });
+
+  useEffect(() => {
+    if (id && detailData) {
+      method.setValue("EmpCode", detailData.EmpCode);
+      method.setValue("EmpName", detailData.EmpName);
+      method.setValue("userId", detailData.userId);
+      // method.setValue("password", detailData.password);
+      // method.setValue("confirmPassword", detailData.password);
+      method.setValue("pin", detailData.pin);
+      method.setValue("desg", detailData.desg);
+      method.setValue("roleCode", detailData.roleCode);
+      method.setValue("roleName", detailData.roleName);
+      method.setValue("securityQestion", detailData.securityQestion);
+      method.setValue("answer", detailData.answer);
+      method.setValue("desc", detailData.desc);
+      method.setValue("active", detailData.active);
+      method.setValue("companyList", detailData.companyList);
+    }
+  }, [detailData, id, method]);
+
+  const userTitle = (id && detailData && detailData.userId) || "---";
 
   const { resetFormAndRefs: resetRefEmployee } = useEmpSync(method, empFocus);
   const { resetFormAndRefs: resetRefRole } = useRoleSync(method, roleFocus);
@@ -70,6 +92,11 @@ export const useUserForm = () => {
         dispatch(setSelectCompanyIDs([]));
 
         // refetch();
+      } else if (data.Status === "-2") {
+        setNotify({
+          message: data.Message,
+          severity: "error",
+        });
       } else {
         setNotify({
           message: "Something went wrong",
@@ -97,7 +124,7 @@ export const useUserForm = () => {
     setIsModalOpen(true);
   }, []);
 
-  const handleSave = () => {
+  const handleSave = useCallback(() => {
     const data = method.getValues();
 
     const showroomSelectList: ShowroomListType[] = extractField(
@@ -160,13 +187,14 @@ export const useUserForm = () => {
     };
 
     mutateAsync(backendData);
-  };
+  }, []);
 
   return {
     method,
     isModalOpen,
     isPending,
     reset,
+    userTitle,
     setReset,
     setEmpFocus,
     setRoleFocus,
