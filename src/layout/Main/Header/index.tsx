@@ -22,10 +22,34 @@ import {
 } from "@mui/icons-material";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import GenioLogo from "../../../../staticData/image/Genio Logo.png";
+import {
+  lsCmpImg,
+  lsCmpName,
+  lsUserCode,
+  lsUserImg,
+  lsUserName,
+  queryCache,
+} from "@/utils/utils";
+import ConfirmationDialog from "@/common/ModalComponent/ConfirmationDialog";
+import { useNavigate } from "react-router";
 
 const AppHeader: React.FC = () => {
+  const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const menuOpen = Boolean(anchorEl);
+
+  const [open, setOpen] = React.useState<boolean>(false);
+
+  const domain = localStorage.getItem("domain");
+  const domainUrl = domain ? domain : import.meta.env.VITE_API_URL;
+
+  const cmpLogo = lsCmpImg
+    ? `${domainUrl}${lsCmpImg.startsWith("..") ? lsCmpImg.replace(/^\.{1,2}/, "") : lsCmpImg}?timestamp=${new Date().getTime()}`
+    : "";
+
+  const userImg = lsUserImg
+    ? `${domainUrl}${lsUserImg.startsWith("..") ? lsUserImg.replace(/^\.{1,2}/, "") : lsUserImg}?timestamp=${new Date().getTime()}`
+    : "";
 
   const handleProfileClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -37,9 +61,22 @@ const AppHeader: React.FC = () => {
 
   const handleLogout = () => {
     // TODO: Implement logout functionality here.
+    setOpen(true);
     handleCloseMenu();
   };
 
+  const handleConfirm = async () => {
+    localStorage.clear();
+    await queryCache.clear();
+    navigate("/login", { replace: true });
+    setOpen(false);
+  };
+
+  const handleCancel = () => {
+    setOpen(false);
+  };
+
+  // console.log({ userImg });
   return (
     <>
       <AppBar
@@ -73,9 +110,9 @@ const AppHeader: React.FC = () => {
               alignItems={"center"}
               gap={1}
             >
-              <Avatar sx={{ width: 32, height: 32 }} />
+              <Avatar src={cmpLogo} sx={{ width: 32, height: 32 }} />
               <Typography variant="h6" sx={{ color: "black" }}>
-                Anvin Infosystem
+                {lsCmpName}
               </Typography>
             </Stack>
           </Box>
@@ -147,14 +184,15 @@ const AppHeader: React.FC = () => {
               }}
             >
               <Avatar
+                src={userImg}
                 sx={{ background: "#90caf9", width: 32, height: 32, mr: 1 }}
               />
               <Box>
                 <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                  Hello, Admin
+                  {`Hello, ${lsUserName}`}
                 </Typography>
                 <Typography variant="caption" color="gray">
-                  Developer
+                  {lsUserCode}
                 </Typography>
               </Box>
               <Icon sx={{ ml: 1 }}>
@@ -197,6 +235,16 @@ const AppHeader: React.FC = () => {
           <Typography> Logout</Typography>
         </MenuItem>
       </Menu>
+
+      <ConfirmationDialog
+        dialogType="logout"
+        open={open}
+        setOpen={setOpen}
+        title="Logout"
+        description="Do you want to logout?"
+        onConfirm={handleConfirm}
+        onCancel={handleCancel}
+      />
     </>
   );
 };

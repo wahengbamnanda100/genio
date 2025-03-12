@@ -200,12 +200,7 @@ const DemoSidebar = ({
             })}
           </Box>
 
-          <ProfileMenu
-            open={open}
-            userName="Username"
-            avatarImage="#"
-            logoutHandler={() => console.log("logout handler")}
-          />
+          <ProfileMenu open={open} />
         </Box>
       </Box>
 

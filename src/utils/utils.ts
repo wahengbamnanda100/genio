@@ -151,3 +151,18 @@ export function convertStringArray(
 
 export const lsUserId =
   JSON.parse(localStorage.getItem("userDetail")!)?.UserId || "";
+
+export const lsUserImg =
+  JSON.parse(localStorage.getItem("userDetail")!)?.EmpImage || "";
+
+export const lsUserName =
+  JSON.parse(localStorage.getItem("userDetail")!)?.EmpName || "";
+
+export const lsCmpName =
+  JSON.parse(localStorage.getItem("userDetail")!)?.CmpName || "";
+
+export const lsCmpImg =
+  JSON.parse(localStorage.getItem("userDetail")!)?.CmpLogo || "";
+
+export const lsUserCode =
+  JSON.parse(localStorage.getItem("userDetail")!)?.EmpCode || "";

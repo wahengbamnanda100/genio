@@ -1,29 +1,36 @@
 import React, { useState } from "react";
 import {
   Box,
-  Avatar,
   Typography,
   Popper,
   Button,
   Paper,
-  Stack,
+  ClickAwayListener,
+  List,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  useTheme,
 } from "@mui/material";
 
 import { BsTranslate } from "react-icons/bs";
 import { LuSettings } from "react-icons/lu";
-import { CustomTooltip } from "./Sidebar2";
+import Flags from "country-flag-icons/react/3x2";
+import { useTranslation } from "react-i18next";
 
 interface ProfileSectionProps {
   open: boolean;
-  userName: string;
-  avatarImage: string;
-  logoutHandler: () => void;
 }
 
 interface SettingItem {
   label: string;
   icon: JSX.Element;
 }
+
+const languages = [
+  { code: "en", name: "english" },
+  { code: "ar", name: "arabic" },
+];
 
 const settings: SettingItem[] = [
   {
@@ -36,32 +43,50 @@ const settings: SettingItem[] = [
   },
 ];
 
-const ProfileSection: React.FC<ProfileSectionProps> = ({
-  open,
-  userName,
-  avatarImage,
-  logoutHandler,
-}) => {
-  // Anchor element to position the Popper
+const ProfileSection: React.FC<ProfileSectionProps> = ({ open }) => {
+  const theme = useTheme();
+  const { t, i18n } = useTranslation();
   const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
+  const [openTranslate, setOpenTranslate] = useState(false);
+  const [translateAnchorEl, setTranslateAnchorEl] =
+    useState<HTMLElement | null>(null);
 
-  // Toggle popper on profile click
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
 
-  // Handle clicks on the settings item
-  const handleItemClick = (item: SettingItem, event: React.MouseEvent) => {
-    // Prevent the click from toggling the popper again
+  const handleItemClick = (
+    item: SettingItem,
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
     event.stopPropagation();
     console.log("Setting clicked:", item.label);
-    // Optionally close the popper
-    setAnchorEl(null);
+    if (item.label === "Translate") {
+      setOpenTranslate(!openTranslate);
+      setTranslateAnchorEl(translateAnchorEl ? null : event.currentTarget);
+    } else {
+      // Handle other settings
+      // Optionally close the popper
+      setAnchorEl(null);
+    }
   };
 
-  const popperOpen = Boolean(anchorEl);
+  const handleClose = () => {
+    setOpenTranslate(false);
+    setTranslateAnchorEl(null);
+  };
 
-  // The clickable content that includes settings icons and the profile (avatar and name)
+  const handleSelectLanguage = (languageCode: string) => {
+    i18n.changeLanguage(languageCode);
+    handleClose();
+  };
+
+  //  const popperOpen = Boolean(anchorEl);
+  //  const id = popperOpen ? "settings-popper" : undefined;
+  const translatePopperId = openTranslate ? "translate-popper" : undefined;
+
+  console.log({ open });
+
   const avatarContent = (
     <Box
       sx={{
@@ -76,110 +101,118 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
       onClick={handleClick}
     >
       {settings.map((item) => (
-        <CustomTooltip
-          key={item.label}
-          arrow
-          placement="right-end"
-          title={item.label}
-          disableFocusListener={open}
+        // <CustomTooltip
+        //   key={item.label}
+        //   arrow
+        //   placement="right-end"
+        //   title={item.label}
+        //   disableFocusListener={true}
+        // >
+        <Box
+          component={Button}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: open ? "flex-start" : "center",
+            p: 1,
+            py: open ? 1 : 1.5,
+            gap: 2,
+            cursor: "pointer",
+            borderRadius: 1,
+            width: "100%",
+            color: "#000",
+            mb: 1,
+            ":hover": {
+              backgroundColor: "#000",
+              color: "#fff",
+            },
+          }}
+          onClick={(e) => handleItemClick(item, e)}
         >
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: open ? "flex-start" : "center",
-              p: 1,
-              py: open ? 1 : 1.5,
-              gap: 2,
-              cursor: "pointer",
-              borderRadius: 1,
-              width: "100%",
-              mb: 1,
-              ":hover": {
-                backgroundColor: "#000",
-                color: "#fff",
-              },
-            }}
-            onClick={(e) => handleItemClick(item, e)}
-          >
-            {React.cloneElement(item.icon, {
-              style: { fontSize: "1.3em", fontWeight: "700" },
-            })}
-            {open && (
-              <Typography variant="body1" fontWeight="500">
-                {item.label}
-              </Typography>
-            )}
-          </Box>
-        </CustomTooltip>
+          {React.cloneElement(item.icon, {
+            style: { fontSize: "1.3em", fontWeight: "700" },
+          })}
+          {open && (
+            <Typography variant="body1" fontWeight="500">
+              {item.label}
+            </Typography>
+          )}
+        </Box>
+        // </CustomTooltip>
       ))}
-      {/* <Stack direction="row" alignItems="center">
-        <CustomTooltip
-          arrow
-          placement="right-end"
-          title={"username"}
-          disableFocusListener={open}
-        >
-          <Avatar
-            src={avatarImage}
-            alt="User Avatar"
-            sx={{ width: 40, height: 40 }}
-          />
-        </CustomTooltip>
-        {open && (
-          <Typography variant="body1" fontWeight={"500"} ml={1}>
-            {userName}
-          </Typography>
-        )}
-      </Stack> */}
     </Box>
-  );
-
-  // The content that appears in the Popper
-  const popperContent = (
-    <Paper
-      sx={{
-        p: 2,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        boxShadow: 5,
-      }}
-    >
-      <Stack
-        direction="row"
-        alignItems="center"
-        justifyContent="flex-start"
-        gap={2}
-      >
-        <Avatar
-          src={avatarImage}
-          alt="User Avatar"
-          sx={{ width: 40, height: 40, mb: 1 }}
-        />
-        <Typography variant="h6">{userName}</Typography>
-      </Stack>
-      <Button
-        variant="contained"
-        color="error"
-        sx={{ mt: 1 }}
-        onClick={logoutHandler}
-      >
-        Logout
-      </Button>
-    </Paper>
   );
 
   return (
     <>
       {avatarContent}
+      {/* Language Selection Popper */}
       <Popper
-        open={popperOpen}
-        anchorEl={anchorEl}
+        id={translatePopperId}
+        open={openTranslate}
+        anchorEl={translateAnchorEl}
         placement="right-start"
-        sx={{ zIndex: 2000 }}
+        modifiers={[
+          { name: "offset", options: { offset: [10, 0] } },
+          {
+            name: "zIndex",
+            options: { zIndex: 100000 },
+          },
+          {
+            name: "arrow",
+            options: {
+              element: ".translate-popper",
+              padding: 0,
+            },
+          },
+        ]}
+        sx={{
+          zIndex: 2000,
+        }}
       >
-        {popperContent}
+        <ClickAwayListener onClickAway={handleClose}>
+          <Paper
+            elevation={4}
+            sx={{ boxShadow: theme.shadows[5], mt: 1, minWidth: 150 }}
+          >
+            <List>
+              {languages.map((language) => (
+                <ListItemButton
+                  key={language.code}
+                  disabled={i18n.language === language.code}
+                  sx={{
+                    textAlign: "left",
+                    "&:hover": {
+                      backgroundColor: "rgba(0, 0, 0, 0.04)",
+                    },
+                  }}
+                  onClick={() => handleSelectLanguage(language.code)}
+                >
+                  <ListItemIcon>
+                    {language.code === "en" ? (
+                      <Flags.GB
+                        style={{
+                          height: 20,
+                          border: "1px solid black",
+                          borderRadius: "4px",
+                        }}
+                      />
+                    ) : (
+                      <Flags.QA
+                        style={{
+                          height: 20,
+                          border: "1px solid black",
+                          borderRadius: "4px",
+                        }}
+                      />
+                    )}
+                  </ListItemIcon>
+                  <ListItemText primary={t(language.name)} />
+                </ListItemButton>
+              ))}
+            </List>
+          </Paper>
+        </ClickAwayListener>
       </Popper>
     </>
   );
