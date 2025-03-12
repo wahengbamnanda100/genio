@@ -58,7 +58,7 @@ export type UserFormType = {
   password: string;
   confirmPassword: string;
   pin: string;
-
+  id?: string;
   desg: string;
   roleCode: string | UserRoleData;
   roleName: string | UserRoleData;

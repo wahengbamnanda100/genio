@@ -1,4 +1,5 @@
 import ConfirmationDialog from "@/common/ModalComponent/ConfirmationDialog";
+import CenteredLoader from "@/common/UI-component/CenerLoader";
 import SubmitButtons from "@/common/UI-component/SubmitButtons";
 import { UserFormType } from "@/components/user/user.type";
 import UserForm from "@/components/user/userForm";
@@ -92,7 +93,11 @@ const UserFormContainer = ({
 };
 
 const User = () => {
-  const { id, isEdit, isView, detailById } = useUserFormByID();
+  const { id, isEdit, isView, isLoading, detailById } = useUserFormByID();
+  if (isLoading) {
+    return <CenteredLoader glassmorphism={true} />;
+  }
+
   return (
     <UserFormContainer
       detailById={detailById}

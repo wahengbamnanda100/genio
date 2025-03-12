@@ -96,7 +96,8 @@ export const useUserFormByID = () => {
   const detailById: UserFormType = {
     EmpCode: empData,
     EmpName: empData,
-    userId: editData?.UserID || "",
+    id: editData?.UserID || "",
+    userId: editData?.UserLoginID || "",
     password: editData?.Password || "",
     confirmPassword: editData?.Password || "",
     pin: editData?.UserPin || "",

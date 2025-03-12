@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { RootState } from "@/store";
 import { setSelectCompanyIDs } from "@/store/slices/admin/user/userCompanySelect";
+import { setResetToggle } from "@/store/slices/admin/user/companyrestSlice";
 
 export const useUserForm = (detailData: UserFormType, id?: string) => {
   const navigate = useNavigate();
@@ -56,12 +57,15 @@ export const useUserForm = (detailData: UserFormType, id?: string) => {
 
   useEffect(() => {
     if (id && detailData) {
+      console.log({ detailData });
+
       method.setValue("EmpCode", detailData.EmpCode);
       method.setValue("EmpName", detailData.EmpName);
       method.setValue("userId", detailData.userId);
       // method.setValue("password", detailData.password);
       // method.setValue("confirmPassword", detailData.password);
       method.setValue("pin", detailData.pin);
+      method.setValue("defaultLoginModule", detailData.defaultLoginModule);
       method.setValue("desg", detailData.desg);
       method.setValue("roleCode", detailData.roleCode);
       method.setValue("roleName", detailData.roleName);
@@ -89,6 +93,7 @@ export const useUserForm = (detailData: UserFormType, id?: string) => {
           severity: "success",
         });
         method.reset();
+        dispatch(setResetToggle(true));
         dispatch(setSelectCompanyIDs([]));
 
         // refetch();
@@ -114,6 +119,7 @@ export const useUserForm = (detailData: UserFormType, id?: string) => {
     resetRefEmployee();
     resetRefRole();
     setReset(true);
+    dispatch(setResetToggle(true));
   }, [method.reset]);
 
   const handleSeachList = useCallback(() => {
@@ -168,11 +174,13 @@ export const useUserForm = (detailData: UserFormType, id?: string) => {
         ? data.securityQestion.QuestionName
         : "";
 
+    console.log("user id", detailData.id, id);
+
     const backendData: UserSavePayload = {
       EmpID,
       RoleId,
-      UserId: "",
-      LoginId: "",
+      UserId: id || "",
+      LoginId: data.userId,
       LoggedUserId:
         JSON.parse(localStorage.getItem("userDetail")!)?.UserId || "",
       Password: data.password,

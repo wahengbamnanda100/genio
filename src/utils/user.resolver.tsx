@@ -69,13 +69,12 @@ export const createResolver = () => {
       }
 
       // Password complexity check (optional)
-      const passwordRegex =
-        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$/;
+      const passwordRegex = /^.{4,}$/; // Minimum 4 characters of any type
+
       if (!passwordRegex.test(values.password)) {
         errors.password = {
           type: "pattern",
-          message:
-            "Password must include letters, numbers, and special characters",
+          message: "Password should be at least 4 characters long",
         };
       }
     }

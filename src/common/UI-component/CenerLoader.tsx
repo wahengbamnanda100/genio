@@ -1,6 +1,11 @@
 import { Box, LinearProgress } from "@mui/material";
 
-const CenteredLoader = () => {
+interface CenteredLoaderProps {
+  glassmorphism?: boolean;
+}
+const CenteredLoader: React.FC<CenteredLoaderProps> = ({
+  glassmorphism = false,
+}) => {
   return (
     <Box
       sx={{
@@ -9,6 +14,11 @@ const CenteredLoader = () => {
         alignItems: "center",
         height: "100%",
         width: "100%",
+        ...(glassmorphism && {
+          backdropFilter: "blur(10px)",
+          backgroundColor: "rgba(255, 255, 255, 0.4)",
+          borderRadius: 4,
+        }),
       }}
     >
       <LinearProgress
